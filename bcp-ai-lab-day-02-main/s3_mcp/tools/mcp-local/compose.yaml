@@ -1,0 +1,11 @@
+services:
+  mcp-http:
+    image: localhost/mcp-http:latest
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_OWNER: ${GITHUB_OWNER}
+      GITHUB_REPO: ${GITHUB_REPO}
+      MCP_TOOL_GROUPS: all
+      AGENT_RECLAIM_ENABLED: "false"
+    ports:
+      - "8081:8080"

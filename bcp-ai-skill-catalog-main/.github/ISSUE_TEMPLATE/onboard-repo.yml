@@ -1,0 +1,40 @@
+name: "Onboarding de nuevo repositorio"
+description: Registra un nuevo repositorio en subscribers.json y copia el workflow de sincronización en su ruta .github/workflows/.
+title: "[onboarding] Registrar repositorio <repo>"
+labels: ["repo-onboarding"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ingresa el/los repositorio(s) destino que deseas incorporar al catálogo de Skills.
+        Un workflow automatizado realizará las siguientes acciones:
+        1. Copiará `docs/consumer-workflow-template.yml` hacia `.github/workflows/sync-skills.yml` en la rama por defecto del repositorio destino.
+        2. Registrará la entrada correspondiente en `subscribers.json` del catálogo.
+
+  - type: input
+    id: target-repo
+    attributes:
+      label: Repositorios destinos
+      description: Ruta completa owner/repo de cada repositorio, separadas por coma (",").
+      placeholder: "NTTData-Academy/mi-nuevo-repo, NTTData-Academy/otro-repo"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: domains
+    attributes:
+      label: "Dominios iniciales (Opcional)"
+      description: "Selecciona los dominios que consumirá el repositorio. Si no marcas ninguno, se registrará con la lista vacía []."
+      options:
+        - label: api
+        - label: architecture
+        - label: backend
+        - label: database
+        - label: frontend
+        - label: governance
+        - label: platform
+        - label: quality
+        - label: review
+        - label: security
+        - label: specification
+        - label: test

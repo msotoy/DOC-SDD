@@ -1,0 +1,48 @@
+# podman-compose agrupa los servicios en un pod por defecto; en Podman sobre
+# WSL (cgroups v1) el cgroup del pod falla. Los servicios se hablan por nombre,
+# así que no necesitan pod. Docker ignora las extensiones x-*.
+x-podman:
+  in_pod: false
+
+services:
+  auth-backend:
+    image: docker.io/library/maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - ../reqflow-workspace/workshop-auth-backend:/app:Z
+      - auth-backend-m2:/root/.m2
+    command: mvn quarkus:dev -Dquarkus.http.host=0.0.0.0 -Dquarkus.enforceBuildGoal=false
+    ports:
+      - "8080:8080"
+
+  requirements-api:
+    image: docker.io/library/python:3.13-slim
+    working_dir: /app
+    volumes:
+      - ../reqflow-workspace/workshop-requirements-api:/app:Z
+    environment:
+      # Dentro de la red de compose, localhost no es el backend.
+      AUTH_HEALTH_URL: http://auth-backend:8080/q/health
+    command: >
+      sh -c "pip install --quiet -r requirements.txt -r requirements-dev.txt &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - auth-backend
+
+  frontend:
+    image: docker.io/library/node:24-slim
+    working_dir: /app
+    volumes:
+      - ../reqflow-workspace/workshop-login-frontend:/app:Z
+      - frontend-node-modules:/app/node_modules
+    command: sh -c "npm install && npx ng serve --host 0.0.0.0 --port 4200"
+    ports:
+      - "4200:4200"
+    depends_on:
+      - requirements-api
+
+volumes:
+  auth-backend-m2:
+  frontend-node-modules:

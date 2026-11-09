@@ -1,0 +1,367 @@
+# Se ejecuta cuando se crea/edita un issue con el label "skills-install"
+# (ver .github/ISSUE_TEMPLATE/install-skills.yml).
+#
+# Requiere una GitHub App instalada en los repositorios de los participantes,
+# con permiso "Contents: read and
+# write" y "Workflows: read and write", y sus credenciales guardadas como secrets:
+# - APP_ID: App ID de la GitHub App.
+# - APP_PRIVATE_KEY: clave privada (.pem) de la GitHub App.
+
+name: Install skills on participant repo
+
+on:
+  issues:
+    types: [opened, labeled, edited, reopened]
+
+jobs:
+  parse-issue:
+    if: contains(github.event.issue.labels.*.name, 'skills-install')
+    runs-on: ubuntu-latest
+    outputs:
+      repos: ${{ steps.parse.outputs.repos }}
+      skills: ${{ steps.parse.outputs.skills }}
+      domains: ${{ steps.resolve-domains.outputs.domains }}
+      missing_repos: ${{ steps.resolve-domains.outputs.missing_repos }}
+    steps:
+      - name: Checkout del catalogo
+        uses: actions/checkout@v4
+
+      - name: Parsear repositorios destino y skills seleccionados
+        id: parse
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import json
+
+          body = os.environ.get("ISSUE_BODY", "")
+          sections = re.split(r"^### ", body, flags=re.M)[1:]
+
+          repos_raw = ""
+          skills = []
+          invalid_repos = []
+          for section in sections:
+              lines = section.strip().splitlines()
+              if not lines:
+                  continue
+              header = lines[0].strip().lower()
+              content = "\n".join(lines[1:])
+              if "repositorio" in header:
+                  value_lines = [l.strip() for l in content.strip().splitlines() if l.strip()]
+                  value = value_lines[0] if value_lines else ""
+                  repos_raw = value if value != "_No response_" else ""
+              elif "dominio" in header:
+                  skills += re.findall(r"^- \[[xX]\] (.+)$", content, flags=re.M)
+
+          repos = []
+          for raw in repos_raw.split(","):
+              full_name = raw.strip().strip("/")
+              if not full_name:
+                continue
+              if not re.fullmatch(r"[A-Za-z0-9-]+/[A-Za-z0-9._-]+", full_name):
+                invalid_repos.append(full_name)
+              elif full_name not in repos:
+                repos.append(full_name)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"repos={json.dumps(repos)}\n")
+              f.write(f"skills={json.dumps(skills)}\n")
+              f.write(f"invalid_repos={str(bool(invalid_repos)).lower()}\n")
+          PY
+
+      - name: Validar entrada del issue
+        run: |
+          if [ '${{ steps.parse.outputs.repos }}' = '[]' ]; then
+            echo "::error::No se pudo leer ningun repositorio destino del issue."
+            exit 1
+          fi
+          if [ '${{ steps.parse.outputs.invalid_repos }}' = 'true' ]; then
+            echo "::error::Cada repositorio debe tener formato owner/repo."
+            exit 1
+          fi
+          if [ '${{ steps.parse.outputs.skills }}' = '[]' ]; then
+            echo "::error::No se selecciono ningun skill en el checklist."
+            exit 1
+          fi
+
+      - name: Resolver dominios de los skills y verificar suscriptores
+        id: resolve-domains
+        env:
+          SKILLS: ${{ steps.parse.outputs.skills }}
+          REPOS: ${{ steps.parse.outputs.repos }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import json
+
+          skills = json.loads(os.environ["SKILLS"])
+          repos = json.loads(os.environ["REPOS"])
+          with open("SKILLS-MANIFEST.json", "r", encoding="utf-8") as f:
+              manifest = json.load(f)
+
+          skill_domain_map = {
+              item["identifier"]: item["domain"]
+              for item in manifest.get("skills", [])
+              if "identifier" in item and "domain" in item
+          }
+
+          domains = sorted(list(set(
+              skill_domain_map[s] for s in skills if s in skill_domain_map
+          )))
+
+          with open("subscribers.json", "r", encoding="utf-8") as f:
+              subs_data = json.load(f)
+
+          existing_repos = {
+              sub["repo"].strip()
+              for sub in subs_data.get("subscribers", [])
+              if "repo" in sub
+          }
+
+          missing_repos = []
+          for r in repos:
+              if r not in existing_repos:
+                  missing_repos.append(r)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"domains={json.dumps(domains)}\n")
+              f.write(f"missing_repos={json.dumps(missing_repos)}\n")
+          PY
+
+  trigger-onboarding:
+    needs: parse-issue
+    if: needs.parse-issue.outputs.missing_repos != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Disparar workflow de onboarding para repositorios no registrados
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MISSING_REPOS: ${{ join(fromJson(needs.parse-issue.outputs.missing_repos), ',') }}
+          DOMAINS: ${{ needs.parse-issue.outputs.domains }}
+        run: |
+          echo "Ejecutando onboarding automatico para: $MISSING_REPOS con dominios: $DOMAINS"
+          gh workflow run onboard-repo-on-issue.yml \
+            -f repos="$MISSING_REPOS" \
+            -f domains="$DOMAINS"
+
+  install-skills:
+    needs: parse-issue
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: ${{ fromJson(needs.parse-issue.outputs.repos) }}
+    steps:
+      - name: Checkout del catalogo
+        uses: actions/checkout@v4
+        with:
+          path: catalog
+
+      - name: Separar owner y repositorio destino
+        id: target
+        env:
+          TARGET_REPOSITORY: ${{ matrix.repo }}
+        run: |
+          IFS='/' read -r owner name <<< "$TARGET_REPOSITORY"
+          echo "owner=${owner}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+
+      - name: Crear token de la GitHub App para ${{ matrix.repo }}
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ steps.target.outputs.owner }}
+          repositories: ${{ steps.target.outputs.name }}
+
+      - name: Obtener rama por defecto de ${{ matrix.repo }}
+        id: default-branch
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          TARGET_REPOSITORY: ${{ matrix.repo }}
+        run: |
+          branch=$(gh api "repos/${TARGET_REPOSITORY}" --jq .default_branch)
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout de ${{ matrix.repo }} (${{ steps.default-branch.outputs.branch }})
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repo }}
+          ref: ${{ steps.default-branch.outputs.branch }}
+          token: ${{ steps.app-token.outputs.token }}
+          path: target-repo
+
+      - name: Asegurar workflow de sincronizacion en repositorio destino
+        working-directory: target-repo
+        run: |
+          if [ ! -f ".github/workflows/sync-skills.yml" ]; then
+            echo "Workflow sync-skills.yml no existe en ${{ matrix.repo }}. Copiando desde template..."
+            mkdir -p .github/workflows
+            cp ../catalog/docs/consumer-workflow-template.yml .github/workflows/sync-skills.yml
+          fi
+
+      - name: Instalar o actualizar cada skill (un commit por skill)
+        id: apply
+        working-directory: target-repo
+        run: |
+          git config user.name "skills-catalog-bot"
+          git config user.email "skills-catalog-bot@users.noreply.github.com"
+
+          # Si se agrego sync-skills.yml, commitearlo primero
+          if [ -f ".github/workflows/sync-skills.yml" ]; then
+            git add .github/workflows/sync-skills.yml
+            if ! git diff --cached --quiet; then
+              git commit -m "ci: add sync-skills workflow from skills-catalog"
+            fi
+          fi
+
+          echo '${{ needs.parse-issue.outputs.skills }}' > /tmp/skills.json
+          count=0
+          while IFS= read -r skill; do
+            domain=$(jq -r --arg s "$skill" '.skills[] | select(.identifier==$s) | .domain' ../catalog/SKILLS-MANIFEST.json)
+            if [ -z "$domain" ] || [ "$domain" = "null" ]; then
+              echo "::warning::Skill '$skill' no existe en SKILLS-MANIFEST.json, se omite."
+              continue
+            fi
+
+            src="../catalog/domains/${domain}/${skill}"
+            dest=".github/skills/${skill}"
+
+            if [ -d "$dest" ]; then
+              action="update"
+            else
+              action="install"
+            fi
+
+            mkdir -p .github/skills
+            rm -rf "$dest"
+            cp -r "$src" "$dest"
+
+            git add "$dest"
+            if git diff --cached --quiet; then
+              echo "Sin cambios para $skill, se omite commit."
+            else
+              git commit -m "chore(skills): ${action} ${skill} from catalog"
+              count=$((count + 1))
+            fi
+          done < <(jq -r '.[]' /tmp/skills.json)
+
+          echo "commits_creados=${count}" >> "$GITHUB_OUTPUT"
+
+      - name: Push a la rama por defecto
+        working-directory: target-repo
+        run: |
+          git push origin HEAD:${{ steps.default-branch.outputs.branch }}
+
+  update-subscribers:
+    needs: [parse-issue, install-skills]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout del catalogo
+        uses: actions/checkout@v4
+
+      - name: Actualizar dominios en subscribers.json
+        env:
+          REPOS: ${{ needs.parse-issue.outputs.repos }}
+          DOMAINS: ${{ needs.parse-issue.outputs.domains }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          repos = json.loads(os.environ["REPOS"])
+          domains = json.loads(os.environ["DOMAINS"])
+          with open("subscribers.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          subscribers = data.get("subscribers", [])
+          existing = {item["repo"]: item for item in subscribers}
+
+          for r in repos:
+              full_repo = r
+              if full_repo in existing:
+                  current_domains = set(existing[full_repo].get("domains", []))
+                  current_domains.update(domains)
+                  existing[full_repo]["domains"] = sorted(list(current_domains))
+              else:
+                  entry = {
+                      "repo": full_repo,
+                      "domains": sorted(domains)
+                  }
+                  subscribers.append(entry)
+                  existing[full_repo] = entry
+
+          data["subscribers"] = subscribers
+          with open("subscribers.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+              f.write("\n")
+          PY
+
+      - name: Commit y push de subscribers.json
+        run: |
+          git config user.name "skills-catalog-bot"
+          git config user.email "skills-catalog-bot@users.noreply.github.com"
+
+          git pull --rebase origin ${{ github.ref_name }} || true
+          git add subscribers.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en subscribers.json."
+          else
+            git commit -m "chore(subscribers): update domains for ${{ join(fromJson(needs.parse-issue.outputs.repos), ', ') }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+
+      - name: Comentar resultado en el issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const repos = ${{ needs.parse-issue.outputs.repos }};
+            const skills = ${{ needs.parse-issue.outputs.skills }};
+            const domains = ${{ needs.parse-issue.outputs.domains }};
+            const missingRepos = ${{ needs.parse-issue.outputs.missing_repos }};
+            const repoList = repos.map(r => `\`${r}\``).join(', ');
+            const skillList = skills.map(s => `\`${s}\``).join(', ');
+            const domainList = domains.map(d => `\`${d}\``).join(', ');
+
+            let onboardingSection = '';
+            if (missingRepos && missingRepos.length > 0) {
+              const missingList = missingRepos.map(r => `\`${r}\``).join(', ');
+              onboardingSection = `\n- **Onboarding automático ejecutado:** ${missingList} no estaba en \`subscribers.json\` y se ejecutó el workflow \`onboard-repo-on-issue.yml\` incorporando los dominios asociados.`;
+            }
+
+            const body = `###  Instalación de Skills y Actualización de Suscriptores\n\n` +
+              `- **Repositorios:** ${repoList}\n` +
+              `- **Skills procesados:** ${skillList}\n` +
+              `- **Dominios registrados en \`subscribers.json\`:** ${domainList}${onboardingSection}\n\n` +
+              `Las carpetas en \`.github/skills/\` y el registro central han quedado actualizados.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Cerrar el issue tras una instalacion exitosa
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'completed',
+            });

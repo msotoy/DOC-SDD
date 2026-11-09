@@ -1,0 +1,126 @@
+name: "Instalar / actualizar Skills en un repositorio"
+description: Solicita instalar o actualizar uno o mas Skills del catalogo central en la rama main de un repositorio destino.
+title: "[skills] Instalar skills en <repo>"
+labels: ["skills-install"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Selecciona el/los repositorio(s) destino y marca los Skills que quieres
+        instalar o actualizar. Un workflow automatizado copiara cada Skill
+        seleccionado desde `domains/<dominio>/<skill>` de este catalogo hacia
+        `.github/skills/<skill>` de cada repositorio indicado en formato
+        `owner/repo`, con un commit por skill y un unico push a su rama por defecto.
+
+  - type: input
+    id: target-repo
+    attributes:
+      label: Repositorios destinos
+      description: Ruta completa owner/repo de cada repositorio, separadas por coma (",").
+      placeholder: "NTTData-Academy/john-doe-tarde, NTTData-Academy/jane-doe-tarde"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: skills-api
+    attributes:
+      label: "Dominio: api"
+      options:
+        - label: api-contract-generation
+
+  - type: checkboxes
+    id: skills-architecture
+    attributes:
+      label: "Dominio: architecture"
+      options:
+        - label: api-contract-review
+        - label: architecture-decision
+        - label: senior-architect
+
+  - type: checkboxes
+    id: skills-backend
+    attributes:
+      label: "Dominio: backend"
+      options:
+        - label: code-generation
+        - label: code-generation-henry
+        - label: code-generator-nodejs
+        - label: scaffold-microservice
+        - label: quarkus-secure-endpoint
+
+  - type: checkboxes
+    id: skills-database
+    attributes:
+      label: "Dominio: database"
+      options:
+        - label: database-migration-review
+
+  - type: checkboxes
+    id: skills-frontend
+    attributes:
+      label: "Dominio: frontend"
+      options:
+        - label: frontend-feature-generation
+        - label: frontend-session-safety
+        - label: safe-ui-messages
+        - label: angular-accessible-form
+
+  - type: checkboxes
+    id: skills-governance
+    attributes:
+      label: "Dominio: governance"
+      options:
+        - label: sdlc-documentation
+        - label: versioning-quality-gate
+
+  - type: checkboxes
+    id: skills-platform
+    attributes:
+      label: "Dominio: platform"
+      options:
+        - label: configuration-externalization
+
+  - type: checkboxes
+    id: skills-quality
+    attributes:
+      label: "Dominio: quality"
+      options:
+        - label: quality-lint-validation
+        - label: discovery-analysis
+        - label: issue-implementation
+
+  - type: checkboxes
+    id: skills-review
+    attributes:
+      label: "Dominio: review"
+      options:
+        - label: pull-request-review
+        - label: reqflow-definition-of-done
+
+  - type: checkboxes
+    id: skills-security
+    attributes:
+      label: "Dominio: security"
+      options:
+        - label: credential-hashing-migration
+        - label: dependency-review
+        - label: parameterized-query-review
+        - label: security-review
+        - label: signed-token-security
+        - label: secure-secrets-handling
+
+  - type: checkboxes
+    id: skills-specification
+    attributes:
+      label: "Dominio: specification"
+      options:
+        - label: spec-initial-definition
+        - label: spec-writing
+        - label: grill-me-bcp
+
+  - type: checkboxes
+    id: skills-test
+    attributes:
+      label: "Dominio: test"
+      options:
+        - label: test-strategy

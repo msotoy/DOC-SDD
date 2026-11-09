@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flujos - Dia 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap">
+  <style>
+    * {
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #080d14;
+      --surf: #0f1520;
+      --surf2: #16202e;
+      --bd: #1e2d42;
+      --t: #dce8f5;
+      --t2: #6b859e;
+      --t3: #2b3f56;
+      --acc: #00cfa8
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--t);
+      font-family: Syne, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    header,
+    footer {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .65rem 1.25rem;
+      background: var(--surf);
+      border-bottom: 1px solid var(--bd);
+      flex-shrink: 0
+    }
+
+    .logo {
+      font: 700 .68rem 'DM Mono', monospace;
+      letter-spacing: .12em;
+      color: var(--t3);
+      white-space: nowrap
+    }
+
+    .tabs {
+      display: flex;
+      gap: .25rem;
+      flex: 1;
+      flex-wrap: wrap
+    }
+
+    .tab,
+    .btn,
+    .spd {
+      font: 500 .68rem 'DM Mono', monospace;
+      color: var(--t2);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      padding: .4rem .7rem;
+      cursor: pointer
+    }
+
+    .tab.active,
+    .tab:hover {
+      color: var(--t);
+      background: var(--surf2);
+      border-color: var(--bd)
+    }
+
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden
+    }
+
+    .flow-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 1.25rem;
+      min-width: 0
+    }
+
+    .flow-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: .5rem
+    }
+
+    .flow-title {
+      font-size: 1rem;
+      color: var(--acc);
+      font-weight: 800
+    }
+
+    .flow-sub {
+      font: .62rem 'DM Mono', monospace;
+      color: var(--t3)
+    }
+
+    svg {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      overflow: visible
+    }
+
+    .log-panel {
+      width: 290px;
+      border-left: 1px solid var(--bd);
+      background: var(--surf);
+      display: flex;
+      flex-direction: column
+    }
+
+    .log-hdr {
+      padding: .55rem 1rem;
+      border-bottom: 1px solid var(--bd);
+      font: .62rem 'DM Mono', monospace;
+      color: var(--t3)
+    }
+
+    .log-body {
+      flex: 1;
+      overflow: auto;
+      padding: .7rem
+    }
+
+    .entry {
+      font: .67rem/1.55 'DM Mono', monospace;
+      color: var(--t2);
+      border-left: 2px solid var(--t3);
+      padding-left: .5rem;
+      margin-bottom: .5rem
+    }
+
+    .entry.cur {
+      border-left-color: var(--acc);
+      color: var(--t)
+    }
+
+    footer {
+      border-top: 1px solid var(--bd);
+      border-bottom: 0
+    }
+
+    .btn-play {
+      background: var(--acc);
+      color: #00130f
+    }
+
+    .btn-rst {
+      background: var(--surf2);
+      border-color: var(--bd)
+    }
+
+    .info {
+      flex: 1;
+      font: .67rem 'DM Mono', monospace;
+      color: var(--t2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .dots {
+      display: flex;
+      gap: 4px
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--t3);
+      border-radius: 50%
+    }
+
+    .dot.done,
+    .dot.cur {
+      background: var(--acc)
+    }
+
+    .dot.cur {
+      transform: scale(1.5)
+    }
+
+    .spd {
+      background: var(--surf2);
+      border-color: var(--bd)
+    }
+
+    .node {
+      fill: var(--surf2);
+      stroke: var(--bd);
+      stroke-width: 1.5
+    }
+
+    .node.io {
+      fill: var(--bg)
+    }
+
+    .node.on {
+      fill: #123c37;
+      stroke: var(--acc);
+      stroke-width: 2
+    }
+
+    .label {
+      fill: var(--t);
+      font-size: 12px;
+      text-anchor: middle;
+      font-weight: 700
+    }
+
+    .sub {
+      fill: var(--t2);
+      font: 9px 'DM Mono', monospace;
+      text-anchor: middle
+    }
+
+    .edge {
+      stroke: var(--bd);
+      stroke-width: 1.7;
+      fill: none;
+      marker-end: url(#arrow)
+    }
+
+    .edge.on {
+      stroke: var(--acc);
+      stroke-width: 2.5
+    }
+
+    .edge-label {
+      fill: var(--t3);
+      font: 9px 'DM Mono', monospace;
+      text-anchor: middle
+    }
+
+    @media(max-width:850px) {
+      .log-panel {
+        width: 235px
+      }
+    }
+
+    @media(max-width:650px) {
+      .workspace {
+        flex-direction: column
+      }
+
+      .log-panel {
+        width: 100%;
+        height: 145px;
+        border-left: 0;
+        border-top: 1px solid var(--bd)
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column
+      }
+
+      .tabs {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">NTT DATA · Dia 2 · Flujos</div>
+    <nav class="tabs" id="tabs">
+    </nav>
+  </header>
+  <div class="workspace">
+    <section class="flow-panel">
+      <div class="flow-header">
+        <span class="flow-title" id="title">Flujo de Login</span>
+        <span class="flow-sub" id="sub">Selecciona una sesion</span>
+      </div>
+      <svg id="svg" viewBox="0 0 1000 300" preserveAspectRatio="xMidYMid meet">
+      </svg>
+    </section>
+    <aside class="log-panel">
+      <div class="log-hdr">▸ execution log</div>
+      <div class="log-body" id="log">
+      </div>
+    </aside>
+  </div>
+  <footer>
+    <button class="btn btn-play" id="play">▶ Ejecutar</button>
+    <button class="btn btn-rst" id="reset">↺</button>
+    <div class="info" id="info">Selecciona una sesion y ejecuta el flujo</div>
+    <div class="dots" id="dots">
+    </div>
+    <select class="spd" id="speed">
+      <option value="900">Normal</option>
+      <option value="450">Rapido</option>
+      <option value="1600">Lento</option>
+    </select>
+  </footer>
+  <script>
+    const sessions = [
+      { id: 's1', name: 'S1 · Skills', color: '#00cfa8', sub: 'HALLAZGOS → Skill + HU-01', nodes: [['in', 80, 150, 'HALLAZGOS', 'Filas Pendiente H-xx'], ['ctx', 280, 150, 'PROMPTS', 'Entrada del Dia 1'], ['skill', 480, 150, 'SKILL', 'feature-intake v0.1.0'], ['hu', 680, 150, 'HU-01', 'Origen H-xx'], ['out', 900, 150, 'TAG', 'lab02-s1 + evidencia']], steps: [['HALLAZGOS', 'Filas "Pendiente" del Dia 1 con Id H-xx sobre el token'], ['PROMPTS', 'prompts/ del Dia 1 como ejemplo de entrada del Skill'], ['SKILL', 'feature-intake-spec-checklist v0.1.0 en .github/skills/'], ['HU-01', 'HU-01.md generada desde HALLAZGOS con seccion Origen'], ['TAG', 'Commit + tag skill-feature-intake-v0.1.0 y lab02-s1']] },
+      { id: 's2', name: 'S2 · Templates', color: '#4d8fff', sub: 'HU → catalogo + ciclo SDLC', nodes: [['in', 80, 150, 'HU', 'HU-01 + HU-05'], ['issue', 270, 150, 'ISSUE', 'Onboarding catalogo'], ['skills', 460, 150, 'SKILLS', '6 dominios SDLC'], ['sdlc', 650, 150, 'SDLC', 'ENDPOINTS+TESTING'], ['out', 900, 150, 'REVIEW', 'Decision + tag']], steps: [['HU', 'HU-01 y HU-05 locales, cada una con Origen H-xx'], ['ISSUE', 'Onboarding de tus 3 repos en bcp-ai-skill-catalog'], ['SKILLS', '6 Skills instalados via ISSUE: api, backend, frontend, test, docs, review'], ['SDLC', 'Contrato, HU-01, HU-05 y matriz con ENDPOINTS y TESTING del Dia 1'], ['REVIEW', 'SDLC-EVIDENCE.md por repo + review con decision + tag lab02-s2']] },
+      { id: 's3', name: 'S3 · MCP', color: '#ff7a45', sub: 'MCP → issues + Project ReqFlow', nodes: [['local', 80, 150, 'LOCAL', 'MCP :8081'], ['host', 270, 150, 'VS CODE', 'Host + cliente'], ['off', 460, 150, 'OFFICIAL', 'GitHub MCP'], ['issues', 650, 150, 'ISSUES', '1 por HU'], ['out', 900, 150, 'PROJECT', 'ReqFlow + H-xx']], steps: [['LOCAL', 'MCP local en http://localhost:8081/mcp (no choca con Quarkus)'], ['VS CODE', '.vscode/mcp.json conectado; discover_tools visible'], ['OFFICIAL', 'Lectura con github-official; tool visible != permiso efectivo'], ['ISSUES', 'Un issue por HU en el repo de la HU, con Origen H-xx'], ['PROJECT', 'Project ReqFlow + campo Hallazgo origen; tag day2-done']] },
+      { id: 'w1', name: 'W1 · Gate', color: '#f0c840', sub: 'ReqFlow · Individual assessment', nodes: [['issue', 80, 150, 'ISSUE', 'Unique req'], ['repo', 260, 150, 'REPO', 'Attendee'], ['sdlc', 440, 150, 'SDLC', 'Req→PR'], ['eval', 640, 150, 'EVAL', '5×20%'], ['gate', 900, 150, 'GATE', '≥80%']], steps: [['ISSUE', 'GitHub Project entrega una variante individual'], ['REPO', 'Repositorio propio con ReqFlow'], ['SDLC', 'Requirements, SDD, tasks, implementacion y tests'], ['EVAL', 'Skill, tools, MCP, review y evidencia'], ['GATE', 'Trainer registra resultado: aprobado ≥80%']] }
+    ];
+    let current = sessions[0], step = -1, timer = null; const svg = document.getElementById('svg'), log = document.getElementById('log'), tabs = document.getElementById('tabs'), dots = document.getElementById('dots'), title = document.getElementById('title'), sub = document.getElementById('sub'), info = document.getElementById('info'), play = document.getElementById('play');
+    function escapeHtml(v) { return v.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function render() { title.textContent = current.name; sub.textContent = current.sub; svg.innerHTML = '<defs><marker id="arrow" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L8,3 L0,6z" fill="#1e2d42"/></marker></defs>'; const nodes = {}; current.nodes.forEach(n => nodes[n[0]] = n); current.nodes.forEach(n => { svg.insertAdjacentHTML('beforeend', `<g id="n-${n[0]}"><rect class="node ${n[0] === 'in' || n[0] === 'out' || n[0] === 'issue' || n[0] === 'gate' ? 'io' : ''}" x="${n[1] - 60}" y="${n[2] - 25}" width="120" height="50" rx="8"/><text class="label" x="${n[1]}" y="${n[2] - 4}">${n[3]}</text><text class="sub" x="${n[1]}" y="${n[2] + 15}">${n[4]}</text></g>`) }); for (let i = 0; i < current.nodes.length - 1; i++) { const a = current.nodes[i], b = current.nodes[i + 1]; svg.insertAdjacentHTML('afterbegin', `<path id="e-${i}" class="edge" d="M${a[1] + 60},${a[2]} L${b[1] - 60},${b[2]}"/>`) } dots.innerHTML = current.steps.map((_, i) => `<span class="dot" id="d-${i}"></span>`).join(''); log.innerHTML = ''; step = -1; info.textContent = 'Selecciona una sesion y ejecuta el flujo'; play.textContent = '▶ Ejecutar' }
+    function activate(i) { if (i >= current.steps.length) { timer = null; play.disabled = false; play.textContent = '✓ Completado'; info.textContent = `✓ Flujo completado · ${current.steps.length} pasos`; return } step = i; if (i > 0) { document.getElementById('d-' + (i - 1)).className = 'dot done'; document.getElementById('e-' + (i - 1)).className = 'edge on' } document.getElementById('d-' + i).className = 'dot cur'; current.nodes.slice(0, i + 1).forEach(n => document.getElementById('n-' + n[0]).querySelector('rect').classList.add('on')); const s = current.steps[i]; log.querySelectorAll('.cur').forEach(e => e.classList.remove('cur')); log.insertAdjacentHTML('beforeend', `<div class="entry cur"><span>${String(i + 1).padStart(2, '0')}</span> <b>${escapeHtml(s[0])}</b><br>${escapeHtml(s[1])}</div>`); info.textContent = `Paso ${i + 1}/${current.steps.length} · ${s[0]}`; timer = setTimeout(() => activate(i + 1), Number(document.getElementById('speed').value)) }
+    function reset() { clearTimeout(timer); timer = null; render() }
+    play.onclick = () => { if (timer) return; reset(); play.disabled = true; play.textContent = '⏳ Ejecutando'; activate(0) }; document.getElementById('reset').onclick = reset; tabs.innerHTML = sessions.map((s, i) => `<button class="tab ${i ? '' : 'active'}" data-i="${i}">${s.name}</button>`).join(''); tabs.onclick = e => { if (e.target.dataset.i !== undefined) { current = sessions[Number(e.target.dataset.i)]; render(); document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.i == sessions.indexOf(current))) } }; render();
+  </script>
+</body>
+
+</html>

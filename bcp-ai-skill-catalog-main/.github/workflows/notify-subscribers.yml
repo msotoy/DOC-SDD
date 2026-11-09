@@ -1,0 +1,30 @@
+name: Notify subscriber repos of skills catalog update
+
+# Requiere un secret CATALOG_DISPATCH_TOKEN: un PAT (o token de GitHub App)
+# con permiso "Contents: read/write" y "Actions: read/write" sobre cada repo
+# suscrito, para poder disparar repository_dispatch en ellos.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'domains/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dispatch update event a cada repo suscrito
+        env:
+          GH_TOKEN: ${{ secrets.CATALOG_DISPATCH_TOKEN }}
+        run: |
+          repos=$(jq -r '.subscribers[].repo' subscribers.json)
+          for repo in $repos; do
+            echo "Dispatching skills-catalog-updated a $repo"
+            gh api "repos/${repo}/dispatches" \
+              -f event_type=skills-catalog-updated \
+              -f "client_payload[catalog_repo]=${GITHUB_REPOSITORY}" \
+              -f "client_payload[ref]=${GITHUB_SHA}"
+          done

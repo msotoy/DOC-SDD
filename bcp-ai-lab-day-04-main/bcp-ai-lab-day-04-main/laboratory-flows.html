@@ -1,0 +1,761 @@
+<title>Flujos Agénticos — Día 4</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#080d14;--surf:#0f1520;--surf2:#16202e;--bd:#1e2d42;
+  --t:#dce8f5;--t2:#6b859e;--t3:#2b3f56;
+  --s1:#00cfa8;--s2:#4d8fff;--s3:#b86fff;--s4:#ff7a45;
+  --acc:#00cfa8;
+}
+
+body{
+  background:var(--bg);color:var(--t);
+  font-family:'Syne',sans-serif;
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;gap:1.5rem;
+  padding:.6rem 1.25rem;
+  border-bottom:1px solid var(--bd);
+  background:var(--surf);flex-shrink:0;
+}
+.logo{
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--t3);white-space:nowrap;
+}
+.tabs{display:flex;gap:.2rem;flex:1}
+.tab{
+  padding:.38rem .85rem;border-radius:5px;
+  border:1px solid transparent;
+  font-family:'DM Mono',monospace;font-size:.68rem;
+  cursor:pointer;color:var(--t2);background:transparent;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.tab:hover{color:var(--t);border-color:var(--bd)}
+.tab.active{color:var(--t);background:var(--surf2);border-color:var(--bd)}
+.tdot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  margin-right:6px;vertical-align:middle;flex-shrink:0;
+}
+
+/* ── WORKSPACE ── */
+.workspace{flex:1;display:flex;overflow:hidden}
+
+/* ── FLOW PANEL ── */
+.flow-panel{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:1.1rem 1.25rem .8rem;
+  overflow:hidden;position:relative;
+}
+.flow-header{
+  width:100%;display:flex;justify-content:space-between;
+  align-items:baseline;margin-bottom:.6rem;flex-shrink:0;
+}
+.flow-title{font-size:1rem;font-weight:800;color:var(--acc);transition:color .3s}
+.flow-sub{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--t3)}
+#flow-svg{width:100%;flex:1;overflow:visible;min-height:0}
+
+/* ── SVG: node ── */
+.nbox{fill:var(--surf2);stroke:var(--bd);stroke-width:1.5;transition:fill .3s,stroke .3s,filter .3s}
+.nio .nbox{fill:var(--bg);stroke:var(--t3)}
+.nckpt .nbox{fill:var(--bg);stroke:var(--t3);stroke-dasharray:4 3}
+.nlbl{
+  font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;
+  fill:var(--t2);text-anchor:middle;dominant-baseline:auto;
+  transition:fill .3s;pointer-events:none;
+}
+.nsub{
+  font-family:'DM Mono',monospace;font-size:9px;
+  fill:var(--t3);text-anchor:middle;dominant-baseline:auto;
+  transition:fill .3s;pointer-events:none;
+}
+.fnode[data-s=on] .nbox{
+  fill:color-mix(in srgb,var(--acc) 14%,var(--surf2));
+  stroke:var(--acc);stroke-width:2;
+  filter:drop-shadow(0 0 10px color-mix(in srgb,var(--acc) 50%,transparent));
+}
+.fnode[data-s=on] .nlbl,.fnode[data-s=ok] .nlbl{fill:var(--t)}
+.fnode[data-s=on] .nsub,.fnode[data-s=ok] .nsub{fill:var(--t2)}
+.fnode[data-s=ok] .nbox{
+  fill:color-mix(in srgb,var(--acc) 8%,var(--surf2));
+  stroke:color-mix(in srgb,var(--acc) 55%,var(--bd));
+}
+@keyframes pulse{0%,100%{opacity:1}55%{opacity:.72}}
+.fnode[data-s=on] .nbox{animation:pulse 1.7s ease-in-out infinite}
+
+/* ── SVG: edge ── */
+.fedge{stroke:var(--bd);stroke-width:1.5;fill:none;marker-end:url(#arr)}
+.fedge.info{stroke:var(--t3);stroke-dasharray:4 4;opacity:.55;stroke-width:1.2;marker-end:url(#arr-info)}
+.elbl{font-family:'DM Mono',monospace;font-size:8.5px;fill:var(--t3);text-anchor:middle}
+
+/* ── LOG PANEL ── */
+.log-panel{
+  width:260px;flex-shrink:0;border-left:1px solid var(--bd);
+  display:flex;flex-direction:column;background:var(--surf);
+}
+.log-hdr{
+  padding:.52rem 1rem;border-bottom:1px solid var(--bd);
+  font-family:'DM Mono',monospace;font-size:.62rem;color:var(--t3);
+  letter-spacing:.05em;flex-shrink:0;
+}
+.log-body{flex:1;overflow-y:auto;padding:.65rem;display:flex;flex-direction:column;gap:.4rem}
+.log-body::-webkit-scrollbar{width:4px}
+.log-body::-webkit-scrollbar-track{background:transparent}
+.log-body::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.lentry{
+  font-family:'DM Mono',monospace;font-size:.67rem;line-height:1.55;
+  color:var(--t2);border-left:2px solid var(--t3);padding-left:.52rem;
+  opacity:0;transform:translateY(5px);animation:fadeUp .28s ease forwards;
+}
+.lentry.cur{border-left-color:var(--acc);color:var(--t)}
+@keyframes fadeUp{to{opacity:1;transform:none}}
+.lts{color:var(--t3);margin-right:.3rem}
+.lbadge{
+  display:inline-block;padding:1px 5px;border-radius:3px;
+  font-size:.59rem;margin-right:.3rem;font-weight:500;
+  background:color-mix(in srgb,var(--acc) 18%,transparent);
+  color:var(--acc);
+}
+
+/* ── FOOTER ── */
+footer{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.58rem 1.25rem;border-top:1px solid var(--bd);
+  background:var(--surf);flex-shrink:0;
+}
+.btn{
+  padding:.38rem 1rem;border-radius:5px;border:none;
+  font-family:'DM Mono',monospace;font-size:.7rem;font-weight:500;
+  cursor:pointer;transition:opacity .2s,transform .1s;
+}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.32;cursor:not-allowed}
+.btn-play{background:var(--acc);color:#000}
+.btn-rst{background:var(--surf2);color:var(--t2);border:1px solid var(--bd)}
+.step-info{
+  font-family:'DM Mono',monospace;font-size:.67rem;color:var(--t2);
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.sdots{display:flex;gap:4px;align-items:center}
+.sdot{
+  width:6px;height:6px;border-radius:50%;background:var(--t3);
+  transition:all .25s;flex-shrink:0;
+}
+.sdot.done{background:var(--acc)}
+.sdot.cur{background:var(--acc);transform:scale(1.5)}
+.spd{
+  background:var(--surf2);border:1px solid var(--bd);color:var(--t2);
+  border-radius:4px;font-family:'DM Mono',monospace;font-size:.67rem;
+  padding:.3rem .45rem;cursor:pointer;
+}
+</style>
+
+<header>
+  <div class="logo">NTT DATA · Día 4</div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<div class="workspace">
+  <div class="flow-panel">
+    <div class="flow-header">
+      <span class="flow-title" id="ftitle">—</span>
+      <span class="flow-sub"   id="fsub">—</span>
+    </div>
+    <svg id="flow-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+  </div>
+  <div class="log-panel">
+    <div class="log-hdr">▸ execution log</div>
+    <div class="log-body" id="log-body"></div>
+  </div>
+</div>
+<footer>
+  <button class="btn btn-play" id="bplay">▶ Ejecutar</button>
+  <button class="btn btn-rst"  id="brst">↺</button>
+  <button class="btn btn-rst"  id="bprev" disabled>◀ Anterior</button>
+  <button class="btn btn-rst"  id="bnext" disabled>Siguiente ▶</button>
+  <div class="step-info" id="sinfo">Selecciona una sesión y ejecuta el flujo</div>
+  <div class="sdots" id="sdots"></div>
+  <select class="spd" id="spd">
+    <option value="950">Normal</option>
+    <option value="480">Rápido</option>
+    <option value="1700">Lento</option>
+  </select>
+</footer>
+
+<script>
+// ── Constants ─────────────────────────────────────────────────────────
+const NW = 130, NH = 54, NR = 8;   // node width, height, corner radius
+
+// ── Session definitions ────────────────────────────────────────────────
+const SESS = [
+  // ─── S1: CrewAI — HITL + Checkpoint ───────────────────────────────
+  {
+    id:'s1', name:'S1 · CrewAI', color:'#00cfa8',
+    sub:'HITL · Mini-Crews por agente · Checkpoint por paso · Retry',
+    vb:'0 0 1145 290',
+    nodes:[
+      {id:'inp',  x:70,   y:100, lbl:'INPUT',       sub:'MCP Backlog',       io:true},
+      {id:'ckpt', x:230,  y:100, lbl:'Checkpoint',   sub:'Resume / Fresh',   ckpt:true},
+      {id:'des',  x:400,  y:100, lbl:'Designer',     sub:'mini-Crew · HITL'},
+      {id:'bck',  x:570,  y:100, lbl:'Backend Dev',  sub:'mini-Crew · HITL'},
+      {id:'fro',  x:740,  y:100, lbl:'Frontend Dev', sub:'mini-Crew · HITL'},
+      {id:'rev',  x:910,  y:100, lbl:'Reviewer',     sub:'mini-Crew · HITL'},
+      {id:'out',  x:1070, y:100, lbl:'OUTPUT',       sub:'Specs + Código',   io:true},
+    ],
+    edges:[
+      {id:'e01', f:'inp',  t:'ckpt'},
+      {id:'e12', f:'ckpt', t:'des'},
+      {id:'e23', f:'des',  t:'bck'},
+      {id:'e34', f:'bck',  t:'fro'},
+      {id:'e45', f:'fro',  t:'rev'},
+      {id:'e56', f:'rev',  t:'out'},
+      // Retry self-loops (dashed, below nodes)
+      {id:'er1', f:'des',  t:'des',  type:'self', lbl:'retry', info:true},
+      {id:'er2', f:'bck',  t:'bck',  type:'self', lbl:'retry', info:true},
+      {id:'er3', f:'fro',  t:'fro',  type:'self', lbl:'retry', info:true},
+      {id:'er4', f:'rev',  t:'rev',  type:'self', lbl:'retry', info:true},
+    ],
+    steps:[
+      {nodes:['inp'],  edges:[],       badge:'MCP',
+       msg:'mcp_projects.list_projects()\n→ lista proyectos del MCP\nlist_project_items(project_id)\n→ backlog con N features\nget_feature_from_item(item)\n→ feature seleccionado interactivamente\nfeature: {title, description, acceptance_criteria}'},
+      {nodes:['ckpt'], edges:['e01'],  badge:'CKPT',
+       msg:'load_checkpoint()\n→ output/.checkpoint.json\nSi feature_title distinto → ¿reiniciar?\nSteps ya aprobados → omitir\nOutputs aprobados → approved_outputs{}\nbuild_tasks(feature) → 4 Task dinámicas'},
+      {nodes:['des'],  edges:['e12'],  badge:'DESIGNER',
+       msg:'mini-Crew(Designer, t_story)\nFeature brief inyectado en task.description\nCrewAI run_step() → output.raw\nEspecificación + criterios Dado/Cuando/Entonces\nContrato API · Reglas de negocio'},
+      {nodes:['des'],  edges:[],       badge:'HITL-1',
+       msg:'hitl_approve("Designer — Especificación")\n→ preview truncado a 1200 chars\n[s] Aprobar → save_spec("user_story.md")\n       + checkpoint{status:"approved"}\n[n] Rechazar → checkpoint{status:"rejected"} + exit\n[r] Reintentar → rebuild task + re-run'},
+      {nodes:['bck'],  edges:['e23'],  badge:'BACKEND',
+       msg:'build_context_note(approved_outputs)\n→ ctx = Designer output (último 3000 chars)\nmini-Crew(BackendDev, t_backend + ctx)\nJava Quarkus 3.x · JWT · BCrypt\nEntityJPA · DTOs · Service · Resource'},
+      {nodes:['bck'],  edges:[],       badge:'HITL-2',
+       msg:'hitl_approve("Backend Dev — Java")\n[s] Aprobar → save_spec("backend_spec.md")\n       + extract_and_save_code() → .java files\n       + approved_outputs["backend_dev"] = output\n       + checkpoint{status:"approved"}\n[n] Rechazar → exit  [r] Reintentar'},
+      {nodes:['fro'],  edges:['e34'],  badge:'FRONTEND',
+       msg:'build_context_note(approved_outputs)\n→ ctx = Designer + Backend (últimos 3000 chars)\nmini-Crew(FrontendDev, t_frontend + ctx)\nAngular 17 · AuthGuard · interceptor JWT\nmodels.ts · service · component · html'},
+      {nodes:['fro'],  edges:[],       badge:'HITL-3',
+       msg:'hitl_approve("Frontend Dev — Angular")\n[s] Aprobar → save_spec("frontend_spec.md")\n       + extract_and_save_code() → .ts/.html\n       + approved_outputs["frontend_dev"] = output\n       + checkpoint{status:"approved"}\n[n] Rechazar → exit  [r] Reintentar'},
+      {nodes:['rev'],  edges:['e45'],  badge:'REVIEWER',
+       msg:'build_context_note(approved_outputs)\n→ ctx = Designer+Backend+Frontend\nmini-Crew(LTReviewer, t_review + ctx)\nRevisa acceptance_criteria uno a uno\nVerifica seguridad · contratos · compilabilidad'},
+      {nodes:['rev'],  edges:[],       badge:'HITL-4',
+       msg:'hitl_approve("Líder Técnico — Revisión")\n[s] Aprobar → save_spec("lt_review.md")\n       + extract_and_save_code()\n       + checkpoint{status:"approved"}\n[n] Rechazar → exit  [r] Reintentar\n→ VEREDICTO: APROBADO ✓'},
+      {nodes:['out'],  edges:['e56'],  badge:'OUTPUT',
+       msg:'Pipeline HITL completado ✓\n4/4 pasos aprobados por humano\noutput/specs/ → user_story.md · backend_spec.md\n             frontend_spec.md · lt_review.md\noutput/backend-quarkus/ → .java extraídos\noutput/frontend-angular/ → .ts/.html extraídos\noutput/db/ → schema.sql · seed.sql\noutput/.checkpoint.json → 4 pasos approved'},
+    ],
+  },
+
+  // ─── S2: LangGraph ─────────────────────────────────────────────────
+  {
+    id:'s2', name:'S2 · LangGraph', color:'#4d8fff',
+    sub:'StateGraph · interrupt_before × 4 · Checkpoint · Validación hexagonal',
+    vb:'0 0 1145 290',
+    nodes:[
+      {id:'inp',  x:70,   y:100, lbl:'INPUT',        sub:'MCP Backlog',      io:true},
+      {id:'ckpt', x:230,  y:100, lbl:'Checkpoint',   sub:'Resume / Fresh',   ckpt:true},
+      {id:'des',  x:400,  y:100, lbl:'designer',     sub:'interrupt_before'},
+      {id:'bck',  x:570,  y:100, lbl:'backend_dev',  sub:'interrupt_before'},
+      {id:'fro',  x:740,  y:100, lbl:'frontend_dev', sub:'interrupt_before'},
+      {id:'rev',  x:910,  y:100, lbl:'reviewer',     sub:'interrupt_before'},
+      {id:'out',  x:1070, y:100, lbl:'END',          sub:'Código + hex_report', io:true},
+    ],
+    edges:[
+      {id:'e01', f:'inp',  t:'ckpt'},
+      {id:'e12', f:'ckpt', t:'des'},
+      {id:'e23', f:'des',  t:'bck'},
+      {id:'e34', f:'bck',  t:'fro'},
+      {id:'e45', f:'fro',  t:'rev'},
+      {id:'e56', f:'rev',  t:'out'},
+      {id:'er1', f:'des',  t:'des',  type:'self', lbl:'[r]', info:true},
+      {id:'er2', f:'bck',  t:'bck',  type:'self', lbl:'[r]', info:true},
+      {id:'er3', f:'fro',  t:'fro',  type:'self', lbl:'[r]', info:true},
+      {id:'er4', f:'rev',  t:'rev',  type:'self', lbl:'[r]', info:true},
+    ],
+    steps:[
+      {nodes:['inp'],  edges:[],       badge:'MCP',
+       msg:'mcp_projects.list_projects()\n→ GitHub Projects v2 visibles\nlist_project_items(project_id)\n→ backlog del proyecto elegido\nget_feature_from_item(item)\n→ {title, description, acceptance_criteria}'},
+      {nodes:['inp'],  edges:[],       badge:'STATE',
+       msg:'WorkflowState (TypedDict, 7 campos)\nfeature_title · feature_brief · acceptance\ndesigner_output · backend_output\nfrontend_output · reviewer_output\nSin retry_count, sin approved'},
+      {nodes:['ckpt'], edges:['e01'],  badge:'CKPT',
+       msg:'Checkpointer: SqliteSaver si está instalado\n(langgraph-checkpoint-sqlite)\n→ .langgraph_checkpoint.db\nsi no: MemorySaver + output/.checkpoint.json\nCONFIG thread_id = "s2-langgraph-crew-01" (fijo)'},
+      {nodes:['des'],  edges:['e12'],  badge:'DESIGNER',
+       msg:'graph.invoke(None, CONFIG)\n→ ejecuta designer_node y vuelve a pausar\n_invoke(): retry exponencial ante 502/503/504\nEspecificación técnica + contrato API\n+ criterios Dado/Cuando/Entonces'},
+      {nodes:['des'],  edges:[],       badge:'HITL-1',
+       msg:'[s] guardar → output/designer_spec.md\n[r] reintentar → designer_node(state_vals)\n       + graph.update_state(as_node="designer")\n[n] cancelar → SystemExit\nsave_checkpoint(next_step="backend_dev")'},
+      {nodes:['bck'],  edges:['e23'],  badge:'BACKEND',
+       msg:'backend_dev_node(state)\nsystem += HEX_PROMPT_PREFIX\n_ctx(designer_output, max_chars=2000)\nPide 11 archivos POR CAPA con su package:\n  domain.model · domain.port.input/output\n  application.service\n  infrastructure.adapter.input/output · config'},
+      {nodes:['bck'],  edges:[],       badge:'HITL-2',
+       msg:'[s] guardar → output/backend_code.md\n       + extract_and_save_code()\n       → output/hex/domain/model/User.java\n       → output/hex/application/service/LoginService.java\n       → output/hex/infrastructure/adapter/…\n[r] reintentar   [n] cancelar'},
+      {nodes:['fro'],  edges:['e34'],  badge:'FRONTEND',
+       msg:'frontend_dev_node(state)\n_ctx(designer_output, 1500)\n+ _ctx(backend_output, 2000)\nAngular 17 · TypeScript estricto\nmodels · service · guard · component · interceptor'},
+      {nodes:['fro'],  edges:[],       badge:'HITL-3',
+       msg:'[s] guardar → output/frontend_code.md\n       + extract_and_save_code()\n       → output/frontend-angular/**/*.ts\n       → *.html\n[r] reintentar   [n] cancelar'},
+      {nodes:['rev'],  edges:['e45'],  badge:'REVIEWER',
+       msg:'reviewer_node(state)\nContexto de los tres outputs anteriores\nChecklist SÍ/NO de 5 ítems\nacceptance verificados uno a uno\n→ VEREDICTO: APROBADO / RECHAZADO'},
+      {nodes:['rev'],  edges:[],       badge:'HITL-4',
+       msg:'[s] guardar → output/reviewer_report.md\n[r] reintentar   [n] cancelar\nsave_checkpoint(next_step="done")'},
+      {nodes:['out'],  edges:['e56'],  badge:'OUTPUT',
+       msg:'scaffold(output/hex, feature.title)\n→ completa capas faltantes + ARCHITECTURE.md\nvalidate(output/hex)\n→ estructural: 7 capas con archivos reales\n→ semántica: domain/ y application/ sin\n   imports de infrastructure/\n→ output/hex_report.md · APROBADO / RECHAZADO\n\nclear_checkpoint(). S2 no crea PR.'},
+    ],
+  },
+
+  // ─── S3: Harness ───────────────────────────────────────────────────
+  {
+    id:'s3', name:'S3 · Harness', color:'#b86fff',
+    sub:'Clone → Constitution → Analyze → Refactor → Compliance → PR (MCP Git)',
+    vb:'0 0 940 305',
+    nodes:[
+      {id:'cln', x:75,  y:82,  lbl:'CLONE',        sub:'_repos/<repo>',          io:true},
+      {id:'snp', x:255, y:82,  lbl:'SNAPSHOT',      sub:'.java .ts .py .sql .xml'},
+      {id:'ctx', x:435, y:82,  lbl:'CONSTITUTION',  sub:'harness/context/'},
+      {id:'anl', x:615, y:82,  lbl:'ANALYZE',       sub:'hallazgos de calidad'},
+      {id:'chp', x:795, y:82,  lbl:'CHAPTER',       sub:'plan de refactor'},
+      {id:'dev', x:795, y:218, lbl:'BACK + FRONT',  sub:'dev agents · HITL'},
+      {id:'rev', x:615, y:218, lbl:'REVIEWER',      sub:'veredicto técnico'},
+      {id:'cmp', x:435, y:218, lbl:'COMPLIANCE',    sub:'check_security_compliance()'},
+      {id:'out', x:255, y:218, lbl:'PUSH + PR',     sub:'MCP Git :8082',          io:true},
+    ],
+    edges:[
+      {id:'e01', f:'cln', t:'snp'},
+      {id:'e12', f:'snp', t:'ctx'},
+      {id:'e23', f:'ctx', t:'anl'},
+      {id:'e34', f:'anl', t:'chp'},
+      {id:'e4d', f:'chp', t:'dev', type:'down'},
+      {id:'e56', f:'dev', t:'rev'},
+      {id:'e67', f:'rev', t:'cmp'},
+      {id:'e78', f:'cmp', t:'out'},
+    ],
+    steps:[
+      {nodes:['cln'], edges:[],      badge:'CLONE',
+       msg:'_clone_or_pull(GITHUB_REPO)\ngit clone --depth=1 → _repos/<repo>\nSi ya existe: git pull --quiet\nGITHUB_TOKEN embebido en la URL si el repo es privado\nDefaults: NTTData-Academy / workshop-requirements-api-template'},
+      {nodes:['snp'], edges:['e01'], badge:'SNAP',
+       msg:'_read_snapshot(repo_dir)\nExtensiones: .java .ts .html .py\n              .properties .sql .xml\n_detect_project_type(repo_dir)\n→ BACKEND / FRONTEND / AMBOS\nTruncado a _CTX_LIMIT = 4000 chars'},
+      {nodes:['ctx'], edges:['e12'], badge:'CONSTITUTION',
+       msg:'harness.load_context()\ninstructions.md + constitution.md\n   + policies/allowed_tools.json\nrun_with_harness() lo deja en state[\"context\"]\nR1 Contratos preservados\nR2 Secretos por entorno\nR3 SQL parametrizado · hash\nR4 Token firmado con exp\nR5 Errores genéricos · sin innerHTML\nR6 Pruebas · #issue · H-xx\n+ REGLAS/ENDPOINTS/specs del repo (Días 1-3)\n\nSi falta el directorio → corre SIN constitución'},
+      {nodes:['anl'], edges:['e23'], badge:'ANALYZE',
+       msg:'harness.step() -> analyze_node(state)\nDetecta problemas de calidad del repo real\nNo usa context: el diagnostico no se sesga\ninterrupt_before: 1 invoke = 1 nodo\n→ output/analysis.md\nHITL: aprobar / reintentar / abortar'},
+      {nodes:['chp'], edges:['e34'], badge:'CHAPTER',
+       msg:'harness.step() -> chapter_node(state)\nUsa state[\"context\"] para acotar el scope\nDefine el plan de refactorización\n→ output/chapter_plan.md'},
+      {nodes:['dev'], edges:['e4d'], badge:'DEV',
+       msg:'backend_dev_agent(plan, snapshot, constitution)\nfrontend_dev_agent(plan, snapshot, constitution)\nCorren según _detect_project_type()\n→ output/backend_refactor.md\n→ output/frontend_refactor.md\n_extract_files() → archivos en su ruta original'},
+      {nodes:['rev'], edges:['e56'], badge:'REVIEWER',
+       msg:'reviewer_agent(plan, backend, frontend, constitution)\nVerifica el plan contra las REGLAS\n→ output/reviewer_report.md\n→ VEREDICTO: APROBADO / RECHAZADO'},
+      {nodes:['cmp'], edges:['e67'], badge:'COMPLIANCE',
+       msg:'_check_compliance(reviewer_report)\n5 checks deterministas sobre el texto:\nbcrypt_factor_12 · jwt_exp_8h\nrate_limit_5_intentos · https_enforced\nno_plaintext_passwords\n→ evidence/compliance_report.json\nEl score se inyecta en el cuerpo del PR'},
+      {nodes:['out'], edges:['e78'], badge:'PUSH+PR',
+       msg:'_derive_commit_type(plan, review) → feat/fix/refactor\n_branch_name(repo, tipo, plan) → rama derivada\n_copy_files_to_repo(output, repo_dir)\n_git_branch_push() → git plano + token en remote\n   (NO usa gh para el push)\n\nmcp_git.create_pr(owner, repo, head, base)\n  Paso 1: tools MCP en :8082\n  Paso 2: fallback → gh pr create\n   (si el MCP no expone PR o falla GraphQL)\n→ PR abierto con reporte + compliance'},
+      {nodes:['out'], edges:[],      badge:'NOTA',
+       msg:'── El harness es la puerta de entrada ──\nmain.py no instancia modelos ni arma prompts.\nrun_with_harness() siembra el estado,\nstep() ejecuta un nodo y devuelve el control,\nretry_node() re-corre uno si el humano pide [r].\n\ncompare() corre el MISMO pipeline sin y con\nconstitucion para cuantificar la diferencia\n→ evidence/run_{with,without}_harness.json'},
+    ],
+  },
+
+  // ─── S4: Guardrails + Review Loop ─────────────────────────────────
+  {
+    id:'s4', name:'S4 · Guardrails', color:'#ff7a45',
+    sub:'Guardrail IN → harness → graph (5 nodos) → Review Loop → Guardrail OUT → gh PR',
+    vb:'0 0 880 330',
+    nodes:[
+      {id:'cln', x:80,  y:82,  lbl:'CLONE',          sub:'git clone GitHub',         io:true},
+      {id:'snp', x:255, y:82,  lbl:'SNAPSHOT',        sub:'listado de archivos'},
+      {id:'anl', x:440, y:82,  lbl:'ANALYZE',         sub:'Arquitecto · LLM'},
+      {id:'cft', x:640, y:82,  lbl:'CONFIRM TYPE',    sub:'backend/frontend/ambos',   io:true},
+      {id:'chp', x:800, y:82,  lbl:'CHAPTER',         sub:'brief implementación'},
+      {id:'bck', x:800, y:218, lbl:'BACKEND DEV',     sub:'ronda N · +feedback'},
+      {id:'fro', x:640, y:218, lbl:'FRONTEND DEV',    sub:'ronda N · +feedback'},
+      {id:'rev', x:440, y:218, lbl:'TECH LEAD\nREVIEWER', sub:'APROBADO / OBS / RECHAZADO'},
+      {id:'psh', x:255, y:218, lbl:'GH PUSH',         sub:'gh auth setup-git'},
+      {id:'prc', x:80,  y:218, lbl:'GH PR CREATE',    sub:'--body-file',              io:true},
+    ],
+    edges:[
+      {id:'e01', f:'cln', t:'snp'},
+      {id:'e12', f:'snp', t:'anl'},
+      {id:'e23', f:'anl', t:'cft'},
+      {id:'e3d', f:'cft', t:'chp'},
+      {id:'e4d', f:'chp', t:'bck', type:'down'},
+      {id:'e45', f:'bck', t:'fro'},
+      {id:'e56', f:'fro', t:'rev'},
+      {id:'elp', f:'rev', t:'bck', type:'back'},
+      {id:'e67', f:'rev', t:'psh'},
+      {id:'e78', f:'psh', t:'prc'},
+    ],
+    steps:[
+      {nodes:['cln'], edges:[],      badge:'CLONE',
+       msg:'_clone_or_pull(GITHUB_REPO) -> git clone --depth=1\n→ repo clonado en .tmp/<repo>\nCheckpoint guardado: next_step=analyze'},
+      {nodes:['snp'], edges:['e01'], badge:'SNAP',
+       msg:'_snapshot(repo_dir, max_chars=80_000)\nfiltrado: .git/, binarios, node_modules\n→ (texto, n_archivos) en memoria — no se escribe a disco\nContexto para el Arquitecto LLM'},
+      {nodes:['anl'], edges:['e12'], badge:'ANALYZE',
+       msg:'LLM actúa como Arquitecto:\n— detecta stack tecnológico\n— identifica capas del proyecto\n— genera recomendaciones de mejora\n→ output/analysis.md'},
+      {nodes:['cft'], edges:['e23'], badge:'CONFIRM',
+       msg:'Usuario confirma tipo de proyecto:\n"Tipo [backend/frontend/ambos]: "\n→ project_type guardado en checkpoint\nDetermina qué agentes corren en el loop'},
+      {nodes:['chp'], edges:['e3d'], badge:'CHAPTER',
+       msg:'LLM actúa como Chapter Leader:\n— define objetivos de implementación\n— criterios de aceptación\n— restricciones técnicas y patrones\n→ output/chapter_plan.md'},
+      {nodes:['bck'], edges:['e4d'], badge:'BACK-R1',
+       msg:'[Backend Dev · Ronda 1/3]\nLLM genera código backend basado en:\n— brief del Chapter\n— análisis del repo\nSin feedback previo en la 1ª ronda\n→ output/backend_refactor_r1.md'},
+      {nodes:['fro'], edges:['e45'], badge:'FRONT-R1',
+       msg:'[Frontend Dev · Ronda 1/3]\nLLM genera código frontend:\n— componentes Angular / módulos\n— consume API del backend generado\n→ output/frontend_refactor_r1.md'},
+      {nodes:['rev'], edges:['e56'], badge:'REVIEW-R1',
+       msg:'[Tech Lead Reviewer · Ronda 1/3]\n_parse_verdict(reviewer_out):\n  "rechazado" → rechazado\n  "aprobado con observaciones" → observaciones\n  "aprobado" → aprobado\n  otro → observaciones (conservador)\n→ output/reviewer_report_r1.md'},
+      {nodes:['bck','fro'], edges:['elp'], badge:'LOOP',
+       msg:'Veredicto: APROBADO CON OBSERVACIONES\n¿Reintentar? [s/n]: s\nreview_feedback = reviewer_r1.md\n\n[Ronda 2/3 — developer recibe feedback]\nBackend y Frontend incorporan TODOS\nlos comentarios del reviewer anterior\n→ backend_refactor_r2.md\n→ frontend_refactor_r2.md\n→ reviewer_report_r2.md: APROBADO ✓'},
+      {nodes:['psh'], edges:['e67'], badge:'PUSH',
+       msg:'gh auth setup-git\n→ credenciales via gh token (no en URL)\n_branch_name(repo, tipo, plan) — rama derivada del plan\ngit add -A && git commit -m "feat(s4): ..."\ngit push --set-upstream origin <rama derivada>\n→ branch publicada en GitHub'},
+      {nodes:['prc'], edges:['e78'], badge:'PR',
+       msg:'gh pr create \\\n  --title "<tipo>(<repo>): guardrails refactoring" \\\n  --body-file output/.pr_body.md \\\n  --head <rama derivada> \\\n  --base $GIT_BASE_BRANCH \\\n  --repo $GITHUB_OWNER/$GITHUB_REPO\n→ PR abierto · URL en consola'},
+      {nodes:['prc'], edges:[],      badge:'S3 + GOBIERNO',
+       msg:'── Misma arquitectura que S3 ──\nmain.py → harness/ → graph/ (5 nodos)\nmain.py NO instancia modelos ni arma prompts.\n\nLo que S4 agrega encima:\n  guardrails/input_check  antes del 1er nodo\n     tamano · secretos · PII\n  review_feedback  el dev corrige con las\n     observaciones textuales del reviewer\n  guardrails/output_check  antes del PR\n     OUT-01..OUT-04\n  evals/eval_basic.py  10 evals sobre el repo\n\n→ evidence/eval_results.json'},
+    ],
+  },
+];
+
+// ── State ─────────────────────────────────────────────────────────────
+let cur = null, curStep = -1, running = false, tmr = null;
+
+// ── DOM ───────────────────────────────────────────────────────────────
+const SVG     = document.getElementById('flow-svg');
+const logBody = document.getElementById('log-body');
+const sinfo   = document.getElementById('sinfo');
+const sdots   = document.getElementById('sdots');
+const bplay   = document.getElementById('bplay');
+const brst    = document.getElementById('brst');
+
+// ── Geometry helpers ──────────────────────────────────────────────────
+function nodeById(nodes, id) { return nodes.find(n => n.id === id); }
+
+function edgePath(e, nodes) {
+  const f = nodeById(nodes, e.f), t = nodeById(nodes, e.t);
+  if (!f || !t) return '';
+
+  if (e.type === 'self') {
+    // Self-loop arc below the node
+    const x = f.x, y = f.y + NH / 2;
+    return `M ${x-20},${y} C ${x-58},${y+72} ${x+58},${y+72} ${x+20},${y}`;
+  }
+  if (e.type === 'back') {
+    // Curved loop below nodes
+    const x1 = f.x, y1 = f.y + NH / 2;
+    const x2 = t.x, y2 = t.y + NH / 2;
+    const cy = y1 + 70;
+    return `M ${x1},${y1} C ${x1},${cy} ${x2},${cy} ${x2},${y2}`;
+  }
+  if (e.type === 'down') {
+    // Vertical drop
+    return `M ${f.x},${f.y + NH/2} L ${t.x},${t.y - NH/2}`;
+  }
+  // Horizontal: detect direction
+  if (t.x >= f.x) {
+    return `M ${f.x + NW/2},${f.y} L ${t.x - NW/2},${t.y}`;
+  } else {
+    return `M ${f.x - NW/2},${f.y} L ${t.x + NW/2},${t.y}`;
+  }
+}
+
+function edgeLabelPos(e, nodes) {
+  const f = nodeById(nodes, e.f), t = nodeById(nodes, e.t);
+  if (!f || !t) return {x:0, y:0};
+  if (e.type === 'self') {
+    return { x: f.x, y: f.y + NH/2 + 86 };
+  }
+  if (e.type === 'back') {
+    return { x: (f.x + t.x) / 2, y: f.y + NH/2 + 85 };
+  }
+  if (e.type === 'down') {
+    return { x: f.x + 18, y: (f.y + NH/2 + t.y - NH/2) / 2 };
+  }
+  return { x: (f.x + t.x) / 2, y: f.y - 10 };
+}
+
+// ── SVG rendering ─────────────────────────────────────────────────────
+function renderSession(s) {
+  document.documentElement.style.setProperty('--acc', s.color);
+  document.getElementById('ftitle').textContent = s.name;
+  document.getElementById('fsub').textContent   = s.sub;
+  SVG.setAttribute('viewBox', s.vb);
+
+  const defs = `
+<defs>
+  <marker id="arr" viewBox="0 0 8 6" refX="7.5" refY="3"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L8,3 L0,6z" fill="#1e2d42"/>
+  </marker>
+  <marker id="arr-info" viewBox="0 0 8 6" refX="7.5" refY="3"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L8,3 L0,6z" fill="#2b3f56"/>
+  </marker>
+  <marker id="arr-lit" viewBox="0 0 8 6" refX="7.5" refY="3"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L8,3 L0,6z" fill="${s.color}"/>
+  </marker>
+</defs>`;
+
+  // Edges first (behind nodes)
+  let edges = '';
+  for (const e of s.edges) {
+    const d   = edgePath(e, s.nodes);
+    const cls = 'fedge' + (e.info ? ' info' : '');
+    const lp  = e.lbl ? edgeLabelPos(e, s.nodes) : null;
+    edges += `<g id="fe-${e.id}">
+  <path class="${cls}" d="${d}" id="fp-${e.id}"/>
+  ${lp ? `<text class="elbl" x="${lp.x}" y="${lp.y}">${esc(e.lbl)}</text>` : ''}
+</g>`;
+  }
+
+  // Nodes on top
+  let nodes = '';
+  for (const n of s.nodes) {
+    const rx  = n.x - NW/2, ry = n.y - NH/2;
+    const cls = 'fnode' + (n.io ? ' nio' : n.ckpt ? ' nckpt' : '');
+    nodes += `<g class="${cls}" id="fn-${n.id}" data-s="">
+  <rect class="nbox" x="${rx}" y="${ry}" width="${NW}" height="${NH}" rx="${NR}"/>
+  <text class="nlbl" x="${n.x}" y="${n.y - 6}">${esc(n.lbl)}</text>
+  <text class="nsub" x="${n.x}" y="${n.y + 16}">${esc(n.sub||'')}</text>
+</g>`;
+  }
+
+  SVG.innerHTML = defs + edges + nodes;
+
+  // Step dots
+  sdots.innerHTML = s.steps.map((_,i) => `<div class="sdot" id="sd-${i}"></div>`).join('');
+}
+
+// ── Animation ─────────────────────────────────────────────────────────
+function activateStep(i) {
+  if (!cur || i >= cur.steps.length) {
+    running = false;
+    bplay.textContent = '✓ Completado';
+    bplay.disabled = false;
+    sinfo.textContent = `✓ Pipeline completado — ${cur.steps.length} pasos ejecutados`;
+    const ld = document.getElementById(`sd-${i-1}`);
+    if (ld) { ld.classList.remove('cur'); ld.classList.add('done'); }
+    return;
+  }
+
+  const st = cur.steps[i];
+
+  // Dots
+  if (i > 0) {
+    const pd = document.getElementById(`sd-${i-1}`);
+    if (pd) { pd.classList.remove('cur'); pd.classList.add('done'); }
+  }
+  const cd = document.getElementById(`sd-${i}`);
+  if (cd) cd.classList.add('cur');
+
+  // Previous step nodes → done
+  if (i > 0) {
+    cur.steps[i-1].nodes.forEach(id => {
+      const el = document.getElementById(`fn-${id}`);
+      if (el) el.setAttribute('data-s', 'ok');
+    });
+  }
+
+  // Animate edges
+  st.edges.forEach(eid => {
+    const path = document.getElementById(`fp-${eid}`);
+    if (!path) return;
+    const len = (path.getTotalLength && path.getTotalLength()) || 400;
+    path.style.stroke = cur.color;
+    path.style.strokeWidth = '2';
+    path.style.markerEnd = 'url(#arr-lit)';
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    path.style.transition = 'none';
+    void path.getBoundingClientRect();
+    path.style.transition = 'stroke-dashoffset .5s ease';
+    path.style.strokeDashoffset = 0;
+  });
+
+  // Activate nodes
+  st.nodes.forEach(id => {
+    const el = document.getElementById(`fn-${id}`);
+    if (el) el.setAttribute('data-s', 'on');
+  });
+
+  // Log entry
+  addLog(st.badge, st.msg);
+
+  // Info bar
+  sinfo.textContent = `Paso ${i+1} / ${cur.steps.length}  ·  ${st.badge}`;
+
+  curStep = i;
+  _updateNav();
+  tmr = setTimeout(() => activateStep(i + 1), parseInt(document.getElementById('spd').value, 10));
+}
+
+function addLog(badge, msg) {
+  logBody.querySelectorAll('.lentry.cur').forEach(e => e.classList.remove('cur'));
+  const d = new Date();
+  const ts = [d.getHours(), d.getMinutes(), d.getSeconds()]
+    .map(n => String(n).padStart(2,'0')).join(':');
+  const el = document.createElement('div');
+  el.className = 'lentry cur';
+  el.innerHTML = `<span class="lts">${ts}</span><span class="lbadge">${esc(badge)}</span><br>${esc(msg).replace(/\n/g,'<br>')}`;
+  logBody.appendChild(el);
+  logBody.scrollTop = logBody.scrollHeight;
+}
+
+function doPlay() {
+  if (!cur || running) return;
+  doReset();
+  running = true;
+  bplay.textContent = '⏳ Ejecutando…';
+  bplay.disabled = true;
+  activateStep(0);
+}
+
+function _resetVisual() {
+  if (!cur) return;
+  cur.nodes.forEach(n => {
+    const el = document.getElementById(`fn-${n.id}`);
+    if (el) el.setAttribute('data-s', '');
+  });
+  cur.edges.forEach(e => {
+    const path = document.getElementById(`fp-${e.id}`);
+    if (!path) return;
+    path.style.transition = 'none';
+    path.style.stroke = '';
+    path.style.strokeWidth = '';
+    path.style.markerEnd = '';
+    path.style.strokeDasharray = '';
+    path.style.strokeDashoffset = '';
+  });
+  sdots.querySelectorAll('.sdot').forEach(d => d.classList.remove('cur','done'));
+  logBody.innerHTML = '';
+}
+
+function doReset() {
+  clearTimeout(tmr);
+  running = false;
+  curStep = -1;
+  if (!cur) return;
+  _resetVisual();
+  sinfo.textContent = 'Presiona ▶ Ejecutar para iniciar el flujo';
+  bplay.textContent = '▶ Ejecutar';
+  bplay.disabled = false;
+  _updateNav();
+}
+
+// ── Manual step navigation ─────────────────────────────────────────────
+function _applyStepInstant(i) {
+  _resetVisual();
+  for (let j = 0; j <= i; j++) {
+    const st = cur.steps[j];
+    const isCurrent = (j === i);
+    const cd = document.getElementById(`sd-${j}`);
+
+    if (isCurrent) {
+      if (cd) cd.classList.add('cur');
+      st.nodes.forEach(id => {
+        const el = document.getElementById(`fn-${id}`);
+        if (el) el.setAttribute('data-s', 'on');
+      });
+    } else {
+      if (cd) cd.classList.add('done');
+      st.nodes.forEach(id => {
+        const el = document.getElementById(`fn-${id}`);
+        if (el) el.setAttribute('data-s', 'ok');
+      });
+    }
+
+    st.edges.forEach(eid => {
+      const path = document.getElementById(`fp-${eid}`);
+      if (!path) return;
+      path.style.stroke = cur.color;
+      path.style.strokeWidth = '2';
+      path.style.markerEnd = 'url(#arr-lit)';
+      path.style.strokeDasharray = '';
+      path.style.strokeDashoffset = '';
+    });
+
+    addLog(st.badge, st.msg);
+  }
+  sinfo.textContent = `Paso ${i+1} / ${cur.steps.length}  ·  ${cur.steps[i].badge}`;
+  _updateNav();
+}
+
+function _updateNav() {
+  const bprev = document.getElementById('bprev');
+  const bnext  = document.getElementById('bnext');
+  if (!cur || curStep < 0) {
+    bprev.disabled = true;
+    bnext.disabled = true;
+    return;
+  }
+  bprev.disabled = (curStep <= 0);
+  bnext.disabled = (curStep >= cur.steps.length - 1);
+}
+
+function doNext() {
+  if (!cur) return;
+  clearTimeout(tmr);
+  running = false;
+  bplay.textContent = '▶ Ejecutar';
+  bplay.disabled = false;
+  const next = curStep + 1;
+  if (next >= cur.steps.length) return;
+  curStep = next;
+  _applyStepInstant(curStep);
+}
+
+function doPrev() {
+  if (!cur || curStep <= 0) return;
+  clearTimeout(tmr);
+  running = false;
+  bplay.textContent = '▶ Ejecutar';
+  bplay.disabled = false;
+  curStep = curStep - 1;
+  _applyStepInstant(curStep);
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────
+const tabsEl = document.getElementById('tabs');
+SESS.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'tab';
+  btn.setAttribute('data-id', s.id);
+  btn.innerHTML = `<span class="tdot" style="background:${s.color}"></span>${esc(s.name)}`;
+  btn.addEventListener('click', () => {
+    if (running) { clearTimeout(tmr); running = false; }
+    tabsEl.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    cur = s;
+    renderSession(s);
+    doReset();
+  });
+  tabsEl.appendChild(btn);
+});
+
+// ── Hash-based tab navigation ──────────────────────────────────────────
+function activateById(id) {
+  const btn = tabsEl.querySelector('[data-id="' + id + '"]');
+  if (btn) {
+    tabsEl.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    cur = SESS.find(s => s.id === id) || SESS[0];
+    renderSession(cur);
+    doReset();
+  }
+}
+const _hash = location.hash.replace('#','');
+if (_hash && SESS.find(s => s.id === _hash)) {
+  activateById(_hash);
+}
+window.addEventListener('hashchange', () => {
+  const h = location.hash.replace('#','');
+  if (h && SESS.find(s => s.id === h)) activateById(h);
+});
+bplay.addEventListener('click', doPlay);
+brst.addEventListener('click', doReset);
+document.getElementById('bprev').addEventListener('click', doPrev);
+document.getElementById('bnext').addEventListener('click', doNext);
+
+// Auto-select first session
+tabsEl.querySelector('.tab').click();
+</script>

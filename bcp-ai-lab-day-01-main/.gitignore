@@ -1,0 +1,51 @@
+# Java / Maven (workshop-auth-backend-template/)
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# Node / Angular (workshop-login-frontend-template/)
+node_modules/
+dist/
+.angular/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (workshop-requirements-api-template/)
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Datos y archivos generados durante el laboratorio (cualquiera de los 3 repos)
+data/*.db
+data/*.db-*
+uploads/*
+!uploads/.gitkeep
+
+# Entorno / secretos
+.env
+.env.local
+*.pem
+*.key
+
+# Editor / SO
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Worktrees locales aislados
+.worktrees/
+
+# GitHub Agentic Workflow local diagnostics
+.github/aw/logs/
+audit-*.json
+gh-aw-models.json
+encoding-report.txt

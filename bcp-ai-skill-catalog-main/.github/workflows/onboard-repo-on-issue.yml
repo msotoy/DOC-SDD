@@ -1,0 +1,284 @@
+# Se ejecuta cuando se crea/edita un issue con el label "repo-onboarding"
+# (ver .github/ISSUE_TEMPLATE/onboard-repo.yml).
+#
+# Realiza el onboarding automatizado de nuevos repositorios consumidores:
+# 1. Copia docs/consumer-workflow-template.yml a .github/workflows/sync-skills.yml en el repo objetivo.
+# 2. Registra el repositorio y sus dominios en subscribers.json de este catalogo.
+#
+# Requiere una GitHub App instalada en los repositorios de los participantes,
+# con permiso "Contents: read and write" y "Workflows: read and write":
+# - APP_ID: App ID de la GitHub App.
+# - APP_PRIVATE_KEY: Clave privada (.pem) de la GitHub App.
+
+name: Onboard participant repo
+
+on:
+  issues:
+    types: [opened, labeled, edited, reopened]
+  workflow_dispatch:
+    inputs:
+      repos:
+        description: 'Rutas owner/repo destino separadas por coma'
+        required: true
+        type: string
+      domains:
+        description: 'Dominios a asociar (separados por coma o JSON array)'
+        required: false
+        default: '[]'
+        type: string
+
+jobs:
+  parse-issue:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'repo-onboarding')
+    runs-on: ubuntu-latest
+    outputs:
+      repos: ${{ steps.parse.outputs.repos }}
+      domains: ${{ steps.parse.outputs.domains }}
+    steps:
+      - name: Parsear repositorios destino y dominios seleccionados
+        id: parse
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_REPOS: ${{ inputs.repos }}
+          INPUT_DOMAINS: ${{ inputs.domains }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import json
+
+          event_name = os.environ.get("EVENT_NAME", "")
+          repos = []
+          domains = []
+          invalid_repos = []
+
+          if event_name == "workflow_dispatch":
+              repos_raw = os.environ.get("INPUT_REPOS", "")
+              domains_raw = os.environ.get("INPUT_DOMAINS", "").strip()
+
+              for raw in repos_raw.split(","):
+                  full_name = raw.strip().strip("/")
+                  if not full_name:
+                    continue
+                  if not re.fullmatch(r"[A-Za-z0-9-]+/[A-Za-z0-9._-]+", full_name):
+                    invalid_repos.append(full_name)
+                  elif full_name not in repos:
+                    repos.append(full_name)
+
+              if domains_raw.startswith("["):
+                  try:
+                      domains = json.loads(domains_raw)
+                  except Exception:
+                      domains = []
+              elif domains_raw:
+                  domains = [d.strip() for d in domains_raw.split(",") if d.strip()]
+          else:
+              body = os.environ.get("ISSUE_BODY", "")
+              sections = re.split(r"^### ", body, flags=re.M)[1:]
+
+              repos_raw = ""
+              for section in sections:
+                  lines = section.strip().splitlines()
+                  if not lines:
+                      continue
+                  header = lines[0].strip().lower()
+                  content = "\n".join(lines[1:])
+                  if "repositorio" in header:
+                      value_lines = [l.strip() for l in content.strip().splitlines() if l.strip()]
+                      value = value_lines[0] if value_lines else ""
+                      repos_raw = value if value != "_No response_" else ""
+                  elif "dominio" in header:
+                      domains += re.findall(r"^- \[[xX]\] (.+)$", content, flags=re.M)
+
+              for raw in repos_raw.split(","):
+                  full_name = raw.strip().strip("/")
+                  if not full_name:
+                    continue
+                  if not re.fullmatch(r"[A-Za-z0-9-]+/[A-Za-z0-9._-]+", full_name):
+                    invalid_repos.append(full_name)
+                  elif full_name not in repos:
+                    repos.append(full_name)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"repos={json.dumps(repos)}\n")
+              f.write(f"domains={json.dumps(domains)}\n")
+              f.write(f"invalid_repos={str(bool(invalid_repos)).lower()}\n")
+          PY
+
+      - name: Validar entrada del issue
+        run: |
+          if [ '${{ steps.parse.outputs.repos }}' = '[]' ]; then
+            echo "::error::No se pudo leer ningun repositorio destino del issue."
+            exit 1
+          fi
+          if [ '${{ steps.parse.outputs.invalid_repos }}' = 'true' ]; then
+            echo "::error::Cada repositorio debe tener formato owner/repo."
+            exit 1
+          fi
+
+  onboard-target-repo:
+    needs: parse-issue
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: ${{ fromJson(needs.parse-issue.outputs.repos) }}
+    steps:
+      - name: Checkout del catalogo
+        uses: actions/checkout@v4
+        with:
+          path: catalog
+
+      - name: Separar owner y repositorio destino
+        id: target
+        env:
+          TARGET_REPOSITORY: ${{ matrix.repo }}
+        run: |
+          IFS='/' read -r owner name <<< "$TARGET_REPOSITORY"
+          echo "owner=${owner}" >> "$GITHUB_OUTPUT"
+          echo "name=${name}" >> "$GITHUB_OUTPUT"
+
+      - name: Crear token de la GitHub App para ${{ matrix.repo }}
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ steps.target.outputs.owner }}
+          repositories: ${{ steps.target.outputs.name }}
+
+      - name: Obtener rama por defecto de ${{ matrix.repo }}
+        id: default-branch
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          TARGET_REPOSITORY: ${{ matrix.repo }}
+        run: |
+          branch=$(gh api "repos/${TARGET_REPOSITORY}" --jq .default_branch)
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout de ${{ matrix.repo }} (${{ steps.default-branch.outputs.branch }})
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repo }}
+          ref: ${{ steps.default-branch.outputs.branch }}
+          token: ${{ steps.app-token.outputs.token }}
+          path: target-repo
+
+      - name: Copiar workflow de sincronizacion
+        id: copy-workflow
+        working-directory: target-repo
+        run: |
+          git config user.name "skills-catalog-bot"
+          git config user.email "skills-catalog-bot@users.noreply.github.com"
+
+          mkdir -p .github/workflows
+          cp ../catalog/docs/consumer-workflow-template.yml .github/workflows/sync-skills.yml
+
+          git add .github/workflows/sync-skills.yml
+          if git diff --cached --quiet; then
+            echo "El workflow sync-skills.yml ya estaba actualizado en el repositorio."
+          else
+            git commit -m "ci: add sync-skills workflow from skills-catalog"
+            git push origin HEAD:${{ steps.default-branch.outputs.branch }}
+          fi
+
+  update-subscribers:
+    needs: [parse-issue, onboard-target-repo]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout del catalogo
+        uses: actions/checkout@v4
+
+      - name: Actualizar subscribers.json
+        env:
+          REPOS: ${{ needs.parse-issue.outputs.repos }}
+          DOMAINS: ${{ needs.parse-issue.outputs.domains }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          repos = json.loads(os.environ["REPOS"])
+          domains = json.loads(os.environ["DOMAINS"])
+          with open("subscribers.json", "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          subscribers = data.get("subscribers", [])
+          existing = {item["repo"]: item for item in subscribers}
+
+          for r in repos:
+              full_repo = r
+              if full_repo in existing:
+                  if domains:
+                      current_domains = set(existing[full_repo].get("domains", []))
+                      current_domains.update(domains)
+                      existing[full_repo]["domains"] = sorted(list(current_domains))
+              else:
+                  subscribers.append({
+                      "repo": full_repo,
+                      "domains": sorted(domains) if domains else []
+                  })
+
+          data["subscribers"] = subscribers
+          with open("subscribers.json", "w", encoding="utf-8") as f:
+              json.dump(data, f, indent=2)
+              f.write("\n")
+          PY
+
+      - name: Commit y push en catalogo
+        run: |
+          git config user.name "skills-catalog-bot"
+          git config user.email "skills-catalog-bot@users.noreply.github.com"
+
+          git add subscribers.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en subscribers.json."
+          else
+            git commit -m "chore(subscribers): register ${{ join(fromJson(needs.parse-issue.outputs.repos), ', ') }}"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+
+      - name: Comentar resultado en el issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const repos = ${{ needs.parse-issue.outputs.repos }};
+            const domains = ${{ needs.parse-issue.outputs.domains }};
+            const repoLinks = repos.map(r => `\`${r}\``).join(', ');
+            const domainList = domains.length > 0 ? domains.map(d => `\`${d}\``).join(', ') : '`[]` (vacio)';
+
+            const body = `###  Onboarding completado exitosamente\n\n` +
+              `- **Repositorios incorporados:** ${repoLinks}\n` +
+              `- **Workflow copiado:** \`.github/workflows/sync-skills.yml\` (desde \`docs/consumer-workflow-template.yml\`)\n` +
+              `- **Registro en subscribers.json:** configurado con dominios: ${domainList}\n\n` +
+              `> **Siguientes pasos:**\n` +
+              `> 1. Asegúrate de que el repositorio objetivo tenga configurado el secret \`CATALOG_READ_TOKEN\` si el catálogo es privado.\n` +
+              `> 2. Ejecuta el workflow \`Sync skills from catalog\` manualmente desde la pestaña Actions en el repo consumidor para la primera sincronización.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Cerrar el issue tras un onboarding exitoso
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed',
+              state_reason: 'completed',
+            });

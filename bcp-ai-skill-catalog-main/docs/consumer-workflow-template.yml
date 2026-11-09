@@ -1,0 +1,67 @@
+# Copiar este archivo a .github/workflows/sync-skills.yml en CADA repo
+# consumidor. Editar la lista de sparse-checkout con los dominios que ese
+# repo necesita (ver subscribers.json en el catálogo).
+#
+# Requiere un secret CATALOG_READ_TOKEN: un PAT con permiso de lectura
+# ("Contents: read") sobre el repo skills-catalog, si el catálogo es privado.
+# Si el catálogo es público, no hace falta token.
+
+name: Sync skills from catalog
+
+on:
+  repository_dispatch:
+    types: [skills-catalog-updated]
+  workflow_dispatch: {}
+  schedule:
+    # Red de seguridad semanal, por si se pierde algún dispatch
+    - cron: '0 6 * * 1'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout de este repo
+        uses: actions/checkout@v4
+
+      - name: Checkout disperso del catálogo (solo dominios necesarios)
+        uses: actions/checkout@v4
+        with:
+          repository: NTTData-Academy/skills-catalog
+          token: ${{ secrets.CATALOG_READ_TOKEN }}
+          sparse-checkout: |
+            domains/backend
+            domains/security
+            domains/api
+            domains/architecture
+            domains/frontend
+            domains/database
+            domains/governance
+            domains/platform
+            domains/quality
+            domains/review
+            domains/security
+            domains/specification
+            domains/test
+          sparse-checkout-cone-mode: false
+          path: .catalog-tmp
+
+      - name: Sincronizar carpetas de skills a .github/skills
+        run: |
+          mkdir -p .github/skills
+          find .catalog-tmp/domains -mindepth 2 -maxdepth 2 -type d | while read -r skill_dir; do
+            skill_name=$(basename "$skill_dir")
+            rm -rf ".github/skills/${skill_name}"
+            cp -r "$skill_dir" ".github/skills/${skill_name}"
+          done
+          rm -rf .catalog-tmp
+
+      - name: Abrir PR con las skills actualizadas
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync skills from catalog"
+          branch: chore/sync-skills-catalog
+          title: "chore: sync skills desde el catálogo central"
+          body: |
+            Actualización automática de `.github/skills/` a partir de
+            [skills-catalog](https://github.com/NTTData-Academy/skills-catalog).
+          delete-branch: true

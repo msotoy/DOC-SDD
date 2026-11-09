@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grill Me BCP"
+  short_description: "Preguntas para construir prompts con los cinco ejes BCP"
+  default_prompt: "Usa $grill-me-bcp para cuestionar mi idea y ayudarme a construir un prompt con los cinco ejes BCP."

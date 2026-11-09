@@ -1,0 +1,12 @@
+{
+  "owner": "<OWNER> (cada participante)",
+  "project_name": "ReqFlow",
+  "visibility": "private",
+  "fields": ["Status", "Assignee", "Requirement ID", "Hallazgo origen", "Lab", "Backend", "Frontend", "Tests", "Evidence", "Gate W1"],
+  "statuses": ["Todo", "In progress", "In review", "Done"],
+  "case_policy": {
+    "labs": "ReqFlow - Flujo de Login",
+    "evaluation": "ReqFlow",
+    "continuity": "El Project lo reutilizan los Dias 3 y 4; no se recrea."
+  }
+}

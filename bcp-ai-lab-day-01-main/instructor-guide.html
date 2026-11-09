@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 1 — Prompting &amp; Secure AI Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap">
+
+<style>
+/* ── Tokens: Light ─────────────────────────────────────── */
+:root {
+  --bg:             #EBF0F7;
+  --surface:        #FFFFFF;
+  --surface-alt:    #F4F7FB;
+  --border:         #CDD8E8;
+  --accent:         #007F6E;
+  --accent-light:   #DDF4F0;
+  --accent2:        #0072BC;
+  --accent2-light:  #E0ECFA;
+  --text-primary:   #0C1A28;
+  --text-secondary: #3D5670;
+  --text-muted:     #7A93A8;
+  --am-stripe:      #0072BC;
+  --pm-stripe:      #007F6E;
+  --tag-am-bg:      #E0ECFA;
+  --tag-am-text:    #0F4A90;
+  --tag-pm-bg:      #DDF4F0;
+  --tag-pm-text:    #005348;
+  --checklist-bg:   #F2F6FA;
+  --corte-bg:       #ECF8F6;
+  --corte-border:   #9ECFC7;
+  --gate-bg:        #FFFBEC;
+  --gate-border:    #D4A800;
+  --gate-text:      #6B4D00;
+  --gate-chip-bg:   #D4A800;
+  --gate-chip-fg:   #FFFFFF;
+  --break-line:     #CDD8E8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:             #090F18;
+    --surface:        #101C2C;
+    --surface-alt:    #152030;
+    --border:         #1C3050;
+    --accent:         #00C2A8;
+    --accent-light:   #0B2520;
+    --accent2:        #4D9FE8;
+    --accent2-light:  #0B1E3A;
+    --text-primary:   #DDE8F5;
+    --text-secondary: #6D9ABE;
+    --text-muted:     #3D5E7A;
+    --am-stripe:      #4D9FE8;
+    --pm-stripe:      #00C2A8;
+    --tag-am-bg:      #0B1E3A;
+    --tag-am-text:    #7DC5F8;
+    --tag-pm-bg:      #0B2520;
+    --tag-pm-text:    #55DFC8;
+    --checklist-bg:   #0C1828;
+    --corte-bg:       #0A201C;
+    --corte-border:   #1A5E52;
+    --gate-bg:        #181200;
+    --gate-border:    #B89000;
+    --gate-text:      #F0CA40;
+    --gate-chip-bg:   #B89000;
+    --gate-chip-fg:   #000;
+    --break-line:     #1C3050;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:             #090F18;
+  --surface:        #101C2C;
+  --surface-alt:    #152030;
+  --border:         #1C3050;
+  --accent:         #00C2A8;
+  --accent-light:   #0B2520;
+  --accent2:        #4D9FE8;
+  --accent2-light:  #0B1E3A;
+  --text-primary:   #DDE8F5;
+  --text-secondary: #6D9ABE;
+  --text-muted:     #3D5E7A;
+  --am-stripe:      #4D9FE8;
+  --pm-stripe:      #00C2A8;
+  --tag-am-bg:      #0B1E3A;
+  --tag-am-text:    #7DC5F8;
+  --tag-pm-bg:      #0B2520;
+  --tag-pm-text:    #55DFC8;
+  --checklist-bg:   #0C1828;
+  --corte-bg:       #0A201C;
+  --corte-border:   #1A5E52;
+  --gate-bg:        #181200;
+  --gate-border:    #B89000;
+  --gate-text:      #F0CA40;
+  --gate-chip-bg:   #B89000;
+  --gate-chip-fg:   #000;
+  --break-line:     #1C3050;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.87em;
+  color: var(--accent2);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.04em 0.38em;
+}
+
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 2rem 2rem 1.6rem; }
+.header-inner { max-width: 900px; margin: 0 auto; }
+.eyebrow { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.55rem; }
+.header h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(1.55rem, 4vw, 2.3rem); font-weight: 700; color: var(--text-primary); text-wrap: balance; line-height: 1.15; margin-bottom: 0.5rem; }
+.header h1 em { font-style: normal; color: var(--accent); }
+.header-sub { color: var(--text-secondary); font-size: 0.88rem; max-width: 62ch; margin-bottom: 1.2rem; line-height: 1.55; }
+.stats-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.stat { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-secondary); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 6px; padding: 0.28rem 0.65rem; }
+.stat strong { color: var(--text-primary); }
+
+.main { max-width: 900px; margin: 1.8rem auto; padding: 0 1.5rem 3rem; }
+
+.section-label { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.session { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; position: relative; }
+.session::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 12px 0 0 12px; }
+.session.am::before { background: var(--am-stripe); }
+.session.pm::before { background: var(--pm-stripe); }
+
+.session-header { padding: 1.15rem 1.5rem 1rem 1.7rem; display: flex; align-items: flex-start; gap: 1rem; border-bottom: 1px solid var(--border); }
+.time-col { min-width: 68px; padding-top: 0.1rem; }
+.time-start { font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; color: var(--text-primary); line-height: 1; display: block; }
+.time-end { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.15rem; }
+.session-title-area { flex: 1; min-width: 0; }
+.session-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; padding: 0.14rem 0.48rem; margin-bottom: 0.3rem; }
+.am .session-tag { background: var(--tag-am-bg); color: var(--tag-am-text); }
+.pm .session-tag { background: var(--tag-pm-bg); color: var(--tag-pm-text); }
+.session-title { font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); text-wrap: balance; line-height: 1.25; margin-bottom: 0.25rem; }
+.session-obj { font-size: 0.82rem; color: var(--text-secondary); font-style: italic; }
+.dur-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; padding-top: 0.15rem; }
+
+.session-body { padding: 1.2rem 1.5rem 1.25rem 1.7rem; }
+.timing-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem; }
+.t-chip { font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 0.18rem 0.5rem; border-radius: 4px; background: var(--surface-alt); border: 1px solid var(--border); color: var(--text-secondary); }
+
+.act-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1rem; }
+@media (max-width: 620px) { .act-grid { grid-template-columns: 1fr; } }
+.act-col { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem; }
+.act-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.38rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.teoría .dot { background: var(--accent2); }
+.como .dot { background: var(--text-muted); }
+.lab-col .dot { background: var(--accent); }
+.act-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.28rem; }
+.act-col li { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45; padding-left: 0.9rem; position: relative; }
+.act-col li::before { content: '→'; position: absolute; left: 0; color: var(--text-muted); font-size: 0.7rem; top: 0.15rem; }
+
+.s-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+@media (max-width: 560px) { .s-footer { grid-template-columns: 1fr; } }
+.checklist-box { background: var(--checklist-bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem 0.9rem; }
+.box-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.45rem; }
+.checklist-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.22rem; }
+.checklist-box li { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; position: relative; padding-left: 1.05rem; overflow-wrap: break-word; }
+.checklist-box li::before { content: '☐'; color: var(--text-muted); font-size: 0.72rem; position: absolute; left: 0; top: 0.08rem; }
+.corte-box { background: var(--corte-bg); border: 1px solid var(--corte-border); border-radius: 8px; padding: 0.8rem 0.9rem; }
+.corte-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.45rem; }
+.corte-box p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+.break-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.4rem 0; margin-bottom: 1.25rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em; }
+.break-row::before, .break-row::after { content: ''; flex: 1; height: 1px; background: var(--break-line); }
+
+.gate { background: var(--gate-bg); border: 1px solid var(--gate-border); border-radius: 12px; overflow: hidden; margin-top: 1.8rem; }
+.gate-head { padding: 1rem 1.5rem; border-bottom: 1px solid var(--gate-border); display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.gate-chip { font-family: 'DM Sans', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--gate-chip-bg); color: var(--gate-chip-fg); padding: 0.22rem 0.6rem; border-radius: 5px; }
+.gate-title { font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--gate-text); text-wrap: balance; }
+.gate-body { padding: 1.2rem 1.5rem; }
+.gate-desc { font-size: 0.83rem; color: var(--text-secondary); margin-bottom: 1rem; max-width: 65ch; }
+.rubric { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+@media (max-width: 620px) { .rubric { grid-template-columns: repeat(2, 1fr); } }
+.r-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 0.6rem; text-align: center; }
+.r-pct { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; color: var(--accent); display: block; margin-bottom: 0.3rem; font-variant-numeric: tabular-nums; }
+.r-label { font-size: 0.71rem; color: var(--text-secondary); line-height: 1.35; }
+.gate-threshold { font-family: 'DM Mono', monospace; font-size: 0.73rem; color: var(--text-muted); display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+
+.matrix-wrap { margin-bottom: 1rem; }
+.matrix-wrap .matrix-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.matrix { border-collapse: collapse; font-size: 0.72rem; }
+.matrix th, .matrix td { border: 1px solid var(--border); padding: 0.4rem 0.6rem; text-align: center; }
+.matrix th { background: var(--surface-alt); color: var(--text-secondary); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 0.64rem; }
+.matrix td { font-weight: 700; }
+.gate-threshold strong { color: var(--gate-text); }
+
+.repo-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1rem; }
+@media (max-width: 620px) { .repo-row { grid-template-columns: 1fr; } }
+.repo-chip { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.7rem; font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-secondary); }
+.repo-chip strong { color: var(--accent2); display: block; margin-bottom: 0.15rem; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <p class="eyebrow">NTT DATA · Train-the-Trainers IA · Día 1 · Diario del formador</p>
+    <h1>Día 1 — <em>Prompting &amp; Secure AI Engineering</em></h1>
+    <p class="header-sub">Guía mínima para llevar el día: qué decir, qué prompt corresponde, y cómo saber que el bloque está listo. Caso: <strong>ReqFlow</strong> (Nuvexa Andina Digital, empresa ficticia), 3 servicios conectados (Angular → Quarkus → FastAPI) con hallazgos de seguridad ya sembrados en el código, no inyectados a mitad del día.</p>
+    <div class="stats-row">
+      <span class="stat"><strong>8 h</strong> · 7 bloques</span>
+      <span class="stat">Repo de entrada: <strong>bcp-ai-lab-day-01</strong></span>
+      <span class="stat">Roles: Chapter · Backend · Frontend · Cyber · Líder Técnico · QA · PO/PM · LT aprobador (<a href="ROLES.md">cómo repartirlos según cuántos estudiantes hay</a>)</span>
+    </div>
+    <div class="repo-row" style="margin-top:1rem">
+      <div class="repo-chip"><strong>workshop-auth-backend-template</strong>Quarkus · 8080 · POST /auth/login</div>
+      <div class="repo-chip"><strong>workshop-requirements-api-template</strong>FastAPI · 8000 · tareas + archivos</div>
+      <div class="repo-chip"><strong>workshop-login-frontend-template</strong>Angular · 4200 · login + dashboard</div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <p class="section-label">Mañana</p>
+
+  <!-- ── Apertura ── -->
+  <div class="session am">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">09:00</span><span class="time-end">09:20</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S1 AM</span>
+        <h2 class="session-title">Apertura</h2>
+        <p class="session-obj">Mostrar los 3 servicios corriendo y plantear la pregunta del día.</p>
+      </div>
+      <span class="dur-badge">20 min</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Qué decir</div>
+          <ul>
+            <li>Hoy trabajan sobre 3 repos conectados: el login llama al backend de auth, que a su vez es consultado por la API de tareas</li>
+            <li>Pregunta disparadora: "si algo falla, ¿en cuál de los 3 repos revisas primero?"</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Demo de 2 minutos</div>
+          <ul>
+            <li>Login en <code>localhost:4200</code> con <code>student</code> / <code>Workshop123!</code></li>
+            <li>Mostrar el dashboard con tareas cargadas desde el 8000</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Mensaje clave</div>
+          <ul>
+            <li>La IA acelera decisiones bien expresadas; no reemplaza la responsabilidad sobre ellas</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Antes de que lleguen</div>
+          <ul>
+            <li>Los 3 servicios corriendo en tu máquina para la demo</li>
+            <li>Proyección lista</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>Todos entienden que son 3 repos, no uno, y que "levantar todo" significa levantar los 3 en orden (auth → API → frontend).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Prompting + Context Engineering ── -->
+  <div class="session am">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">09:20</span><span class="time-end">10:15</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S2 AM</span>
+        <h2 class="session-title">Prompting + Context Engineering</h2>
+        <p class="session-obj">La teoría va en las láminas — aquí solo el puente hacia el laboratorio.</p>
+      </div>
+      <span class="dur-badge">55 min</span>
+    </div>
+    <div class="session-body">
+      <div class="timing-strip"><span class="t-chip">Láminas · 30 min</span><span class="t-chip">Setup de los 3 repos · 25 min</span></div>
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Qué mostrar</div>
+          <ul>
+            <li>Framework de 5 partes (Contexto/Objetivo/Restricciones/Criterios/Formato)</li>
+            <li>El ejemplo real de <code>template.md</code> (en <code>ejercicios/&lt;repo&gt;/</code>, en bcp-ai-lab-day-01)</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Setup</div>
+          <ul>
+            <li>Clonar los 3 repos como hermanos de <code>bcp-ai-lab-day-01</code> (comandos en su README)</li>
+            <li>Rama <code>instructor</code> en los 3</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Levantar los 3</div>
+          <ul>
+            <li>1) auth-backend (<code>mvn quarkus:dev</code>) 2) requirements-api (<code>uvicorn</code>) 3) frontend (<code>npm start</code>)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Materiales</div>
+          <ul>
+            <li>Java 21, Maven 3.9+, Node 22.12+, Python 3.13 instalados</li>
+            <li><code>laboratory-guide.html</code> proyectado (es la guía de los alumnos)</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>Los 3 servicios levantados en al menos un grupo, login funcionando en <code>localhost:4200</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-row">Pausa · 10:15 – 10:30</div>
+
+  <!-- ── Lab 1: discovery ── -->
+  <div class="session am">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">10:30</span><span class="time-end">11:30</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S3 AM</span>
+        <h2 class="session-title">Lab 1 — Discovery (los 3 repos)</h2>
+        <p class="session-obj">Confirmar con evidencia los hallazgos de RETO.md, generar HALLAZGOS.md. Sin editar código.</p>
+      </div>
+      <span class="dur-badge">1 h</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Prompt</div>
+          <ul>
+            <li><code>discovery.md</code>, ya armado y listo para copiar en cada repo</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Cómo se reparten</div>
+          <ul>
+            <li>Backend → auth-backend</li>
+            <li>Frontend → login-frontend</li>
+            <li>QA / Cyber → requirements-api</li>
+            <li>Si el grupo es grande: los 3 en paralelo</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Checkpoint C1</div>
+          <ul>
+            <li>HALLAZGOS.md generado, cada fila con evidencia archivo:línea real</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Materiales</div>
+          <ul>
+            <li><code>RETO.md</code> y <code>REGLAS.md</code> ya existen en cada repo, no hace falta prepararlos</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>Cada grupo puede abrir al menos una evidencia de HALLAZGOS.md y confirmar que la línea existe de verdad.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Lab 2: refactor ── -->
+  <div class="session am">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">11:30</span><span class="time-end">13:00</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S4 AM</span>
+        <h2 class="session-title">Lab 2 — Corregir hallazgos (plan antes de código)</h2>
+        <p class="session-obj">Priorizan 2-3 hallazgos si el tiempo apremia, o todos si les alcanza. Plan primero, siempre.</p>
+      </div>
+      <span class="dur-badge">1 h 30</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Prompt, 2 pasos</div>
+          <ul>
+            <li><code>refactor.md</code>: paso 1 genera PLAN.md, paso 2 implementa lo aprobado</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Regla</div>
+          <ul>
+            <li>No saltar el paso 1. Un hallazgo por vez, con test antes y después</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Checkpoint C2 · 12:45</div>
+          <ul>
+            <li>Al menos un hallazgo "Resuelto" en HALLAZGOS.md, con test en verde</li>
+          </ul>
+        </div>
+      </div>
+      <div class="matrix-wrap">
+        <div class="matrix-label">Si necesitan priorizar cuáles resolver: matriz impacto × probabilidad</div>
+        <div class="act-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 0.8rem;">
+          <div class="act-col teoría">
+            <div class="act-label"><span class="dot"></span>Impacto — si preguntan cómo clasificar</div>
+            <ul>
+              <li><strong>Alto:</strong> expone datos o toca datos de otro usuario</li>
+              <li><strong>Medio:</strong> rompe una funcionalidad, sin exponer datos</li>
+              <li><strong>Bajo:</strong> solo estilo</li>
+            </ul>
+          </div>
+          <div class="act-col como">
+            <div class="act-label"><span class="dot"></span>Probabilidad</div>
+            <ul>
+              <li><strong>Alta:</strong> alcanza con cambiar un valor en la URL/formulario</li>
+              <li><strong>Media:</strong> requiere leer código o armar un request a mano</li>
+              <li><strong>Baja:</strong> requiere acceso privilegiado</li>
+            </ul>
+          </div>
+        </div>
+        <p style="font-size:0.74rem;color:var(--text-muted);margin-bottom:0.6rem">Guía completa con ejemplos: <code>laboratory-guide.html</code>, Paso 2.</p>
+        <table class="matrix">
+          <tr><th></th><th>Prob. baja</th><th>Prob. media</th><th>Prob. alta</th></tr>
+          <tr><th>Impacto alto</th><td style="background:#FFC400;color:#0C1A28">Medio</td><td style="background:#FF7A00;color:#fff">Alto</td><td style="background:#E42600;color:#fff">Crítico</td></tr>
+          <tr><th>Impacto medio</th><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#FFC400;color:#0C1A28">Medio</td><td style="background:#FF7A00;color:#fff">Alto</td></tr>
+          <tr><th>Impacto bajo</th><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#FFC400;color:#0C1A28">Medio</td></tr>
+        </table>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Regla del laboratorio, siempre</div>
+          <ul>
+            <li>Nunca pegar tokens, contraseñas ni datos reales en un prompt</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>PLAN.md existió y fue leído antes de tocar código. El grupo explica qué generó la IA y qué revisó una persona.</p>
+        </div>
+      </div>
+      <div class="s-footer" style="margin-top: 0.85rem;">
+        <div class="checklist-box">
+          <div class="box-label"><code>refactor.md</code> — cuándo usarlo</div>
+          <ul>
+            <li>Los hallazgos del Lab 1, el primer lote</li>
+          </ul>
+        </div>
+        <div class="checklist-box">
+          <div class="box-label"><code>resolver-item.md</code> — cuándo usarlo</div>
+          <ul>
+            <li>Lo que aparezca después, sin repetir el prompt de refactor</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-row">Almuerzo · 13:00 – 14:00</div>
+  <p class="section-label">Tarde</p>
+
+  <!-- ── Lab 3: review ── -->
+  <div class="session pm">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">14:00</span><span class="time-end">15:00</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S5 PM</span>
+        <h2 class="session-title">Lab 3 — Code review con evidencia</h2>
+        <p class="session-obj">Verificar que lo "Resuelto" del Lab 2 esté realmente corregido, no solo marcado.</p>
+      </div>
+      <span class="dur-badge">1 h</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Prompt</div>
+          <ul>
+            <li><code>review.md</code>, idealmente lo corre alguien distinto de quien programó</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Regla</div>
+          <ul>
+            <li>Ningún hallazgo nuevo se pierde en el chat: se agrega a HALLAZGOS.md como "Pendiente"</li>
+            <li>Para resolverlo, usan <code>resolver-item.md</code> — no repiten <code>refactor.md</code></li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Checkpoint C3</div>
+          <ul>
+            <li>Bloqueantes con evidencia real, ningún quality gate reducido</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Materiales</div>
+          <ul>
+            <li>Rotar: que revise el PR alguien de otro rol, no el mismo que lo escribió</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>Al menos una observación con archivo:línea concreto, no una impresión general.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-row">Pausa · 15:00 – 15:15</div>
+
+  <!-- ── Lab 4: endpoints ── -->
+  <div class="session pm">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">15:15</span><span class="time-end">16:00</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S6 PM</span>
+        <h2 class="session-title">Lab 4 — Documentar el contrato final</h2>
+        <p class="session-obj">docs/ENDPOINTS.md tan completo que alguien nuevo pueda integrar sin leer el código.</p>
+      </div>
+      <span class="dur-badge">45 min</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Prompt</div>
+          <ul>
+            <li><code>endpoints.md</code> — exige 6 puntos por endpoint, no "método + ruta" en una línea</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>No se premia</div>
+          <ul>
+            <li>Documentación genérica; cada ejemplo debe poder verificarse contra el código real</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Listo cuando</div>
+          <ul>
+            <li>docs/ENDPOINTS.md ya no describe el contrato legacy, sino el estado post-refactor</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Materiales</div>
+          <ul>
+            <li>El Lab 2 y 3 ya mergeados en el repo del grupo</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Punto de corte</div>
+          <p>Un ejemplo del documento se puede confirmar contra el código en menos de 1 minuto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Lab 5: testing + cierre ── -->
+  <div class="session pm">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">16:00</span><span class="time-end">17:00</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">S7 PM</span>
+        <h2 class="session-title">Lab 5 — Pruebas (feliz, borde, error)</h2>
+        <p class="session-obj">Completar docs/TESTING.md; nada de tests adaptados a un bug.</p>
+      </div>
+      <span class="dur-badge">1 h</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>Prompt</div>
+          <ul>
+            <li><code>testing.md</code> — 3 categorías por endpoint, cobertura 85% del código modificado</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Verificación rápida</div>
+          <ul>
+            <li>Romper el código a propósito y confirmar que el test lo detecta</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Cierre técnico mínimo</div>
+          <ul>
+            <li>Al menos 1 hallazgo resuelto con test, docs/ENDPOINTS.md y docs/TESTING.md actualizados</li>
+          </ul>
+        </div>
+      </div>
+      <div class="s-footer">
+        <div class="checklist-box">
+          <div class="box-label">Materiales</div>
+          <ul>
+            <li>Proyector para las demos de las 17:00</li>
+          </ul>
+        </div>
+        <div class="corte-box">
+          <div class="corte-label">Entregable final del día</div>
+          <p>HALLAZGOS.md, PLAN.md, docs/ENDPOINTS.md y docs/TESTING.md, en al menos uno de los 3 repos, con evidencia real.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Demo final ── -->
+  <div class="session pm">
+    <div class="session-header">
+      <div class="time-col"><span class="time-start">17:00</span><span class="time-end">18:00</span></div>
+      <div class="session-title-area">
+        <span class="session-tag">Cierre</span>
+        <h2 class="session-title">Demo y retrospectiva</h2>
+        <p class="session-obj">4 minutos por grupo: contexto → prompt → hallazgo → test → decisión humana.</p>
+      </div>
+      <span class="dur-badge">1 h</span>
+    </div>
+    <div class="session-body">
+      <div class="act-grid">
+        <div class="act-col teoría">
+          <div class="act-label"><span class="dot"></span>4 minutos por grupo</div>
+          <ul>
+            <li>Un hallazgo encontrado y su corrección</li>
+            <li>Un test que lo prueba</li>
+          </ul>
+        </div>
+        <div class="act-col como">
+          <div class="act-label"><span class="dot"></span>Cierre individual</div>
+          <ul>
+            <li>Una frase: "la próxima vez que use IA para programar, siempre voy a..."</li>
+          </ul>
+        </div>
+        <div class="act-col lab-col">
+          <div class="act-label"><span class="dot"></span>Preview</div>
+          <ul>
+            <li>Día 2: Agent Skills, Templates &amp; MCP</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Rúbrica de cierre ── -->
+  <div class="gate">
+    <div class="gate-head">
+      <span class="gate-chip">Cierre</span>
+      <span class="gate-title">Evaluación Día 1 — Demo final</span>
+    </div>
+    <div class="gate-body">
+      <p class="gate-desc">No se evalúa por cantidad de código generado, sino por contexto, comportamiento, seguridad, tests y decisiones explicadas.</p>
+      <div class="rubric">
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Preservación funcional</span></div>
+        <div class="r-item"><span class="r-pct">25 %</span><span class="r-label">Seguridad</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Clean Code y arquitectura</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Testing y calidad</span></div>
+        <div class="r-item"><span class="r-pct">10 %</span><span class="r-label">Calidad del PR</span></div>
+        <div class="r-item"><span class="r-pct">5 %</span><span class="r-label">Uso responsable de IA</span></div>
+      </div>
+      <p class="gate-threshold">Modalidad: <strong>demo de 4 minutos</strong> · sin umbral estricto — es diagnóstico para el Día 2.</p>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

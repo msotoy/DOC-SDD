@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Día 1 — Guía de Laboratorio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap">
+
+<style>
+:root {
+  --bg:           #EBF0F7;
+  --surface:      #FFFFFF;
+  --surface-alt:  #F4F7FB;
+  --border:       #CDD8E8;
+  --accent:       #007F6E;
+  --accent2:      #0072BC;
+  --text-primary: #0C1A28;
+  --text-sec:     #3D5670;
+  --text-muted:   #7A93A8;
+  --am:           #0072BC;
+  --pm:           #007F6E;
+  --tag-am-bg:    #E0ECFA;  --tag-am-fg:   #0F4A90;
+  --tag-pm-bg:    #DDF4F0;  --tag-pm-fg:   #005348;
+  --step-num:     #0072BC;
+  --code-bg:      #0C1A28;
+  --code-fg:      #A8D5FF;
+  --code-border:  #1C3050;
+  --mat-bg:       #F4F7FB;
+  --out-bg:       #ECF8F6;
+  --out-border:   #9ECFC7;
+  --out-label:    #005A4D;
+  --gate-bg:      #FFFBEC;
+  --gate-border:  #D4A800;
+  --gate-text:    #6B4D00;
+  --gate-chip:    #D4A800;
+  --gate-chip-fg: #FFFFFF;
+  --break-line:   #CDD8E8;
+  --bad:          #E42600;
+  --good:         #00A855;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:           #090F18;
+    --surface:      #101C2C;
+    --surface-alt:  #152030;
+    --border:       #1C3050;
+    --accent:       #00C2A8;
+    --accent2:      #4D9FE8;
+    --text-primary: #DDE8F5;
+    --text-sec:     #6D9ABE;
+    --text-muted:   #3D5E7A;
+    --am:           #4D9FE8;
+    --pm:           #00C2A8;
+    --tag-am-bg:    #0B1E3A;  --tag-am-fg:   #7DC5F8;
+    --tag-pm-bg:    #0B2520;  --tag-pm-fg:   #55DFC8;
+    --step-num:     #4D9FE8;
+    --code-bg:      #060D18;
+    --code-fg:      #7FC8FF;
+    --code-border:  #1C3050;
+    --mat-bg:       #0C1828;
+    --out-bg:       #0A201C;
+    --out-border:   #1A5E52;
+    --out-label:    #55DFC8;
+    --gate-bg:      #181200;
+    --gate-border:  #B89000;
+    --gate-text:    #F0CA40;
+    --gate-chip:    #B89000;
+    --gate-chip-fg: #000;
+    --break-line:   #1C3050;
+    --bad:          #FF6B57;
+    --good:         #3DDC97;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:           #090F18;
+  --surface:      #101C2C;
+  --surface-alt:  #152030;
+  --border:       #1C3050;
+  --accent:       #00C2A8;
+  --accent2:      #4D9FE8;
+  --text-primary: #DDE8F5;
+  --text-sec:     #6D9ABE;
+  --text-muted:   #3D5E7A;
+  --am:           #4D9FE8;
+  --pm:           #00C2A8;
+  --tag-am-bg:    #0B1E3A;  --tag-am-fg:   #7DC5F8;
+  --tag-pm-bg:    #0B2520;  --tag-pm-fg:   #55DFC8;
+  --step-num:     #4D9FE8;
+  --code-bg:      #060D18;
+  --code-fg:      #7FC8FF;
+  --code-border:  #1C3050;
+  --mat-bg:       #0C1828;
+  --out-bg:       #0A201C;
+  --out-border:   #1A5E52;
+  --out-label:    #55DFC8;
+  --gate-bg:      #181200;
+  --gate-border:  #B89000;
+  --gate-text:    #F0CA40;
+  --gate-chip:    #B89000;
+  --gate-chip-fg: #000;
+  --break-line:   #1C3050;
+  --bad:          #FF6B57;
+  --good:         #3DDC97;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; font-size: 15px; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent2); }
+code, .k { font-family: 'DM Mono', monospace; font-size: 0.87em; color: var(--accent2); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 4px; padding: 0.04em 0.38em; }
+.code code, .out-tree code, .out-log code { background: none; border: none; padding: 0; color: inherit; }
+
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 2rem 2rem 1.6rem; }
+.header-inner { max-width: 960px; margin: 0 auto; }
+.eyebrow { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.header h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 700; color: var(--text-primary); text-wrap: balance; line-height: 1.15; margin-bottom: 0.45rem; }
+.header h1 em { font-style: normal; color: var(--accent); }
+.header-sub { color: var(--text-sec); font-size: 0.87rem; max-width: 64ch; margin-bottom: 1.1rem; line-height: 1.55; }
+.stats-row { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.stat { font-family: 'DM Mono', monospace; font-size: 0.71rem; color: var(--text-sec); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 6px; padding: 0.27rem 0.62rem; }
+.stat strong { color: var(--text-primary); }
+
+.main { max-width: 960px; margin: 1.8rem auto; padding: 0 1.5rem 3.5rem; }
+.sec-label { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin: 2.4rem 0 1rem; display: flex; align-items: center; gap: 0.7rem; }
+.sec-label:first-child { margin-top: 0; }
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.block-title { font-family: 'DM Sans', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; text-wrap: balance; }
+.block-sub { font-size: 0.85rem; color: var(--text-sec); max-width: 68ch; margin-bottom: 1.3rem; line-height: 1.5; }
+
+.session { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; position: relative; }
+.session::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 12px 0 0 12px; }
+.session.am::before { background: var(--am); }
+.session.pm::before { background: var(--pm); }
+
+.s-head { padding: 1.15rem 1.5rem 1rem 1.7rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 1rem; }
+.time-col { min-width: 68px; padding-top: 0.1rem; }
+.t-start { font-family: 'DM Mono', monospace; font-size: 0.98rem; font-weight: 500; color: var(--text-primary); display: block; line-height: 1; }
+.t-end { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 0.15rem; }
+.s-meta { flex: 1; min-width: 0; }
+.s-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.61rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 4px; padding: 0.13rem 0.46rem; margin-bottom: 0.28rem; }
+.am .s-tag { background: var(--tag-am-bg); color: var(--tag-am-fg); }
+.pm .s-tag { background: var(--tag-pm-bg); color: var(--tag-pm-fg); }
+.s-title { font-family: 'DM Sans', sans-serif; font-size: 1.08rem; font-weight: 700; color: var(--text-primary); text-wrap: balance; line-height: 1.2; margin-bottom: 0.22rem; }
+.s-obj { font-size: 0.81rem; color: var(--text-sec); font-style: italic; }
+.dur { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); padding-top: 0.1rem; }
+
+.panels { display: grid; grid-template-columns: 240px 1fr; gap: 0; }
+@media (max-width: 760px) { .panels { grid-template-columns: 1fr; } }
+.panel { padding: 1.25rem 1.3rem; border-right: 1px solid var(--border); }
+.panel:last-child { border-right: none; }
+@media (max-width: 760px) { .panel { border-right: none; border-bottom: 1px solid var(--border); } .panel:last-child { border-bottom: none; } }
+
+.out-panel { grid-column: 1 / -1 !important; border-top: 1px solid var(--out-border); border-right: none !important; border-left: 1px solid var(--out-border) !important; background: var(--out-bg); }
+
+.panel-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+.panel-label .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.mat-dot { background: var(--accent2); }
+.step-dot { background: var(--text-muted); }
+.out-dot { background: var(--accent); }
+
+.mat-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.mat-list li { font-size: 0.79rem; color: var(--text-sec); line-height: 1.4; position: relative; padding-left: 1.05rem; overflow-wrap: break-word; }
+.mat-list li::before { content: '☐'; color: var(--text-muted); font-size: 0.72rem; position: absolute; left: 0; top: 0.1rem; }
+.mat-note { font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin-top: 0.65rem; line-height: 1.4; }
+
+.steps { display: flex; flex-direction: column; gap: 1rem; }
+.step { display: flex; gap: 0.75rem; align-items: flex-start; }
+.step-num { font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 500; color: var(--step-num); background: var(--surface-alt); border: 1px solid var(--border); border-radius: 5px; padding: 0.12rem 0.42rem; min-width: 32px; text-align: center; flex-shrink: 0; margin-top: 0.1rem; }
+.step-body { flex: 1; min-width: 0; }
+.step-title { font-size: 0.84rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.18rem; line-height: 1.35; }
+.step-desc { font-size: 0.78rem; color: var(--text-sec); line-height: 1.45; }
+
+.code { background: var(--code-bg); border: 1px solid var(--code-border); border-radius: 6px; padding: 0.55rem 0.7rem; margin-top: 0.35rem; overflow-x: auto; }
+.code pre { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--code-fg); line-height: 1.55; white-space: pre-wrap; }
+.code-comment { color: #4A6A88; }
+.k { font-family: 'DM Mono', monospace; }
+
+.out-list { list-style: none; display: flex; flex-direction: column; gap: 0.42rem; }
+.out-list li { font-size: 0.8rem; color: var(--text-sec); line-height: 1.45; position: relative; padding-left: 1.1rem; overflow-wrap: break-word; }
+.out-list li::before { content: '✓'; color: var(--accent); font-size: 0.72rem; position: absolute; left: 0; top: 0.12rem; font-weight: 700; }
+.out-key { font-size: 0.73rem; color: var(--out-label); font-family: 'DM Mono', monospace; font-weight: 500; display: block; margin-bottom: 0.35rem; }
+.out-tree, .out-log { font-family: 'DM Mono', monospace; font-size: 0.68rem; line-height: 1.6; background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--code-border); border-radius: 6px; padding: 0.65rem 0.8rem; margin-bottom: 0.6rem; white-space: pre; overflow-x: auto; }
+.out-tree { color: #a8d5ff; }
+.out-tree .dim { color: #3D5670; }
+.out-log { color: #86e8be; }
+.out-log .ok { color: #00cfa8; }
+
+.break-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.4rem 0; margin-bottom: 1.25rem; color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 0.67rem; letter-spacing: 0.06em; }
+.break-row::before, .break-row::after { content: ''; flex: 1; height: 1px; background: var(--break-line); }
+
+.gate { background: var(--gate-bg); border: 1px solid var(--gate-border); border-radius: 12px; overflow: hidden; margin-top: 1.8rem; }
+.gate-head { padding: 1rem 1.5rem; border-bottom: 1px solid var(--gate-border); display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; }
+.gate-chip { font-family: 'DM Sans', sans-serif; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; background: var(--gate-chip); color: var(--gate-chip-fg); padding: 0.2rem 0.58rem; border-radius: 5px; }
+.gate-title { font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--gate-text); text-wrap: balance; }
+.gate-body { padding: 1.2rem 1.5rem; }
+.gate-desc { font-size: 0.83rem; color: var(--text-sec); margin-bottom: 1rem; max-width: 65ch; }
+.rubric { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; margin-bottom: 0.9rem; }
+@media (max-width: 620px) { .rubric { grid-template-columns: repeat(2, 1fr); } }
+.r-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.55rem; text-align: center; }
+.r-pct { font-family: 'DM Mono', monospace; font-size: 1.05rem; font-weight: 500; color: var(--accent); display: block; margin-bottom: 0.28rem; font-variant-numeric: tabular-nums; }
+.r-label { font-size: 0.69rem; color: var(--text-sec); line-height: 1.35; }
+.gate-thr { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-muted); display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.gate-thr strong { color: var(--gate-text); }
+
+.repo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.8rem; }
+@media (max-width: 700px) { .repo-grid { grid-template-columns: 1fr; } }
+.repo-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
+.repo-name { font-family: 'DM Mono', monospace; font-size: 0.74rem; font-weight: 500; color: var(--accent2); margin-bottom: 0.3rem; word-break: break-word; }
+.repo-stack { font-size: 0.71rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+.repo-desc { font-size: 0.78rem; color: var(--text-sec); line-height: 1.45; }
+
+.paths-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.8rem; }
+@media (max-width: 700px) { .paths-grid { grid-template-columns: 1fr; } }
+.path-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.15rem 1.25rem 1.1rem; position: relative; display: flex; flex-direction: column; gap: 0.5rem; }
+.path-badge { display: inline-block; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; border-radius: 5px; padding: 0.16rem 0.48rem; color: #fff; align-self: flex-start; margin-bottom: 0.1rem; }
+.badge-chapter { background: #0072BC; } .badge-backend { background: #005B96; } .badge-frontend { background: #19A3FC; }
+.badge-cyber { background: #00A88E; } .badge-lt { background: #00CB5D; } .badge-qa { background: #C07000; }
+.badge-pm { background: #6B4FBB; } .badge-ltaprobador { background: #B8890A; }
+.path-title { font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--text-primary); line-height: 1.25; }
+.path-desc { font-size: 0.77rem; color: var(--text-sec); line-height: 1.45; }
+.path-note { font-size: 0.71rem; color: var(--text-muted); font-style: italic; line-height: 1.4; }
+.paths-heading { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.65rem; }
+
+/* Grid generico para tarjetas de concepto (usado en toda la parte de
+   fundamentos): mismo look que repo-card/path-card, numero de columnas
+   flexible segun cuantas tarjetas entren, sin tener que crear un grid
+   nuevo por cada seccion. */
+.concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
+.concept-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
+.concept-card.bad { border-color: color-mix(in srgb, var(--bad) 45%, var(--border)); }
+.concept-card.good { border-color: color-mix(in srgb, var(--good) 45%, var(--border)); }
+.concept-title { font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+.concept-desc { font-size: 0.78rem; color: var(--text-sec); line-height: 1.5; }
+.concept-num { font-family: 'DM Mono', monospace; font-size: 0.7rem; font-weight: 700; color: #fff; background: var(--text-muted); width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.prose { font-size: 0.85rem; color: var(--text-sec); max-width: 70ch; margin-bottom: 1.2rem; line-height: 1.6; }
+.prose strong { color: var(--text-primary); }
+
+.file-link { display: inline-flex; align-items: center; gap: 0.35rem; font-family: 'DM Mono', monospace; font-size: 0.74rem; margin-top: 0.5rem; }
+
+.matrix-wrap { margin: 0.8rem 0 1.2rem; }
+.matrix-wrap .matrix-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+.matrix { border-collapse: collapse; font-size: 0.72rem; }
+.matrix th, .matrix td { border: 1px solid var(--border); padding: 0.4rem 0.6rem; text-align: center; }
+.matrix th { background: var(--surface-alt); color: var(--text-sec); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 0.64rem; }
+.matrix td { font-weight: 700; }
+.classify-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 0.8rem 0 1.2rem; }
+.classify-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+.classify-title { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+.classify-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.classify-card li { font-size: 0.76rem; color: var(--text-sec); line-height: 1.4; }
+.classify-card li strong { color: var(--text-primary); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <p class="eyebrow">NTT DATA · Día 1 · Prompting &amp; Secure AI Engineering</p>
+    <h1>Guía de <em>Laboratorio</em> — Paso a paso</h1>
+    <p class="header-sub">La teoría está en las láminas. Esta guía es para el laboratorio: <strong>ReqFlow</strong> (Nuvexa Andina Digital, caso ficticio), 3 servicios conectados con deuda técnica y hallazgos de seguridad sembrados a propósito. Cada paso trae el prompt completo, listo para copiar y pegar.</p>
+    <div class="stats-row">
+      <span class="stat"><strong>3</strong> repos conectados</span>
+      <span class="stat"><strong>5</strong> pasos, mismo orden en cada repo</span>
+      <span class="stat">Usuarios demo: <strong>student</strong> / <strong>trainer</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <p class="sec-label">Antes de arrancar</p>
+  <div class="concept-grid" style="grid-template-columns: repeat(5, 1fr)">
+    <div class="concept-card"><div class="concept-title">📄 Contexto real</div><div class="concept-desc">Apunta a <code>REGLAS.md</code>/<code>docs/</code>, no reexpliques todo de nuevo.</div></div>
+    <div class="concept-card"><div class="concept-title">🔂 Un cambio a la vez</div><div class="concept-desc">No pidas arreglar todo <code>HALLAZGOS.md</code> junto.</div></div>
+    <div class="concept-card"><div class="concept-title">📝 Plan antes de ejecutar</div><div class="concept-desc">Confirma el plan antes de que se aplique el cambio.</div></div>
+    <div class="concept-card"><div class="concept-title">🔍 Verifica</div><div class="concept-desc">Corre el test, abre el archivo. No confíes a ciegas.</div></div>
+    <div class="concept-card"><div class="concept-title">❓ Pide evidencia</div><div class="concept-desc">Si inventa algo, pídele archivo y línea.</div></div>
+  </div>
+
+  <p class="sec-label">Los repos</p>
+  <div class="repo-grid">
+    <div class="repo-card">
+      <div class="repo-name">workshop-auth-backend</div>
+      <div class="repo-stack">Java 21 + Quarkus · puerto 8080</div>
+      <div class="repo-desc">Único dueño de <code>POST /auth/login</code>. Emite el token que consumen los otros dos servicios.</div>
+    </div>
+    <div class="repo-card">
+      <div class="repo-name">workshop-requirements-api</div>
+      <div class="repo-stack">Python + FastAPI · puerto 8000</div>
+      <div class="repo-desc">Tareas y carga de archivos de requerimientos. Valida el token emitido por el backend de auth.</div>
+    </div>
+    <div class="repo-card">
+      <div class="repo-name">workshop-login-frontend</div>
+      <div class="repo-stack">Angular · puerto 4200</div>
+      <div class="repo-desc">Login + dashboard. Llama a los otros dos servicios.</div>
+    </div>
+  </div>
+
+  <p class="paths-heading">Tu rol hoy</p>
+  <p class="prose">Los 3 repos son independientes pero comparten el mismo flujo (los 5 prompts numerados de esta guía, adaptados a cada uno). Tu rol define en cuál pasas más tiempo, no cuál "te toca" en exclusiva.</p>
+  <div class="paths-grid">
+    <div class="path-card"><span class="path-badge badge-chapter">Chapter</span><div class="path-title">Coordinación</div><div class="path-desc">Miras el estado general (<code>HALLAZGOS.md</code> de los 3 repos) y ayudas a priorizar.</div></div>
+    <div class="path-card"><span class="path-badge badge-backend">Backend</span><div class="path-title">workshop-auth-backend</div><div class="path-desc">SQL parametrizado, hash de contraseñas, token firmado, separación de capas.</div></div>
+    <div class="path-card"><span class="path-badge badge-frontend">Frontend</span><div class="path-title">workshop-login-frontend</div><div class="path-desc">Tipado estricto, servicios en vez de HTTP directo, sin <code>[innerHTML]</code> sin sanitizar.</div></div>
+    <div class="path-card"><span class="path-badge badge-cyber">Cyber</span><div class="path-title">Seguridad, en los 3 repos</div><div class="path-desc">Lideras <code>discovery.md</code> y <code>review.md</code>: confirmar con evidencia.</div></div>
+    <div class="path-card"><span class="path-badge badge-lt">Líder Técnico</span><div class="path-title">Review entre repos</div><div class="path-desc">Que lo resuelto en un repo no rompa el contrato que usan los otros dos.</div></div>
+    <div class="path-card"><span class="path-badge badge-qa">QA</span><div class="path-title">workshop-requirements-api + pruebas</div><div class="path-desc">IDOR, validación de archivos, y las 3 categorías de test.</div></div>
+    <div class="path-card"><span class="path-badge badge-pm">PO / PM</span><div class="path-title">Historias y criterios</div><div class="path-desc">Enmarca qué problema de negocio resuelve cada hallazgo antes de priorizarlo.</div></div>
+    <div class="path-card"><span class="path-badge badge-ltaprobador">LT aprobador</span><div class="path-title">Cierre del día</div><div class="path-desc">Revisa la evidencia final (rúbrica) y decide si el avance de hoy queda aprobado.</div></div>
+  </div>
+
+  <p class="block-title">Antes de empezar</p>
+  <div class="session am" style="margin-bottom:1.8rem">
+    <div class="panels" style="grid-template-columns: 1fr 1fr;">
+      <div class="panel">
+        <div class="panel-label"><span class="dot mat-dot"></span>Conseguir los 3 repos</div>
+        <ul class="mat-list">
+          <li>Este repo no trae el código: crea <code>reqflow-workspace/</code> <strong>al lado</strong> de este lab, con los 3 repos publicados bajo tu owner (comandos en <code>README.md</code>). Es el mismo workspace de los 4 días y contiene solo el producto.</li>
+          <li>Rama <code>instructor</code> en los 3.</li>
+        </ul>
+        <p class="mat-note">Java 21, Maven 3.9+, Node.js 22.12+ y Python 3.13 instalados.</p>
+        <p class="mat-note">Si <code>mvn --version</code> no responde, abre PowerShell como Administrador, ejecuta <code>choco install maven -y</code>, abre una terminal nueva y vuelve a comprobarlo.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Arranque, en este orden</div>
+        <div class="code"><pre><span class="code-comment"># 1. Backend de autenticación (8080)</span>
+cd workshop-auth-backend && mvn quarkus:dev
+
+<span class="code-comment"># 2. API de tareas (8000), en otra terminal</span>
+cd workshop-requirements-api
+uvicorn app.main:app --port 8000 --reload
+
+<span class="code-comment"># 3. Frontend (4200), en otra terminal</span>
+cd workshop-login-frontend
+npm install && npm start
+
+<span class="code-comment"># Verifica que los 3 respondan antes de seguir</span>
+curl http://localhost:8080/q/health
+curl http://localhost:8000/docs
+curl http://localhost:4200</pre></div>
+        <p class="mat-note">Si alguno no responde, revisa la terminal correspondiente antes de continuar. Login en <span class="k">localhost:4200</span> con <span class="k">student</span> / <span class="k">Workshop123!</span></p>
+      </div>
+    </div>
+  </div>
+
+  <p class="block-title">Por qué cada prompt tiene 5 partes</p>
+  <p class="prose">La teoría completa está en las láminas — esto es el resumen que te queda a mano. Cada prompt de esta guía (Paso 1 a 5) sigue siempre la misma estructura:</p>
+  <div class="concept-grid" style="grid-template-columns: repeat(5, 1fr)">
+    <div class="concept-card"><div class="concept-title">1. CONTEXTO</div><div class="concept-desc">Qué código es y qué archivos ya existen (<code>REGLAS.md</code>, <code>RETO.md</code>...).</div></div>
+    <div class="concept-card"><div class="concept-title">2. OBJETIVO</div><div class="concept-desc">Qué archivo tiene que producir la IA al terminar.</div></div>
+    <div class="concept-card"><div class="concept-title">3. RESTRICCIONES</div><div class="concept-desc">Qué no debe tocar o asumir.</div></div>
+    <div class="concept-card"><div class="concept-title">4. CRITERIOS</div><div class="concept-desc">Cómo se sabe que el resultado está completo.</div></div>
+    <div class="concept-card"><div class="concept-title">5. FORMATO</div><div class="concept-desc">La estructura exacta del archivo de salida.</div></div>
+  </div>
+  <p class="prose">Si la respuesta no es lo que esperabas, no repitas el mismo prompt: ajústalo agregando la parte que faltó (un ejemplo, una restricción, el archivo que ignoró). Esa es toda la "iteración" — mejorar el prompt según lo que salió mal, no el código a mano.</p>
+
+  <p class="block-title">Qué produce cada paso, y quién lo usa después</p>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:1.2rem;font-size:0.85rem">
+    <thead><tr style="text-align:left;border-bottom:1px solid var(--border)"><th style="padding:0.4rem 0.6rem">Paso</th><th style="padding:0.4rem 0.6rem">Entrada</th><th style="padding:0.4rem 0.6rem">Salida</th><th style="padding:0.4rem 0.6rem">Quién la usa después</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">1 · Discovery</td><td style="padding:0.4rem 0.6rem"><code>RETO.md</code></td><td style="padding:0.4rem 0.6rem"><code>HALLAZGOS.md</code></td><td style="padding:0.4rem 0.6rem">Paso 2, 3</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">2 · Refactor</td><td style="padding:0.4rem 0.6rem"><code>HALLAZGOS.md</code></td><td style="padding:0.4rem 0.6rem"><code>PLAN.md</code> + código + <code>HALLAZGOS.md</code> actualizado</td><td style="padding:0.4rem 0.6rem">Paso 3</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">3 · Review</td><td style="padding:0.4rem 0.6rem"><code>PLAN.md</code> + código</td><td style="padding:0.4rem 0.6rem">Observaciones; <code>HALLAZGOS.md</code> confirmado o reabierto</td><td style="padding:0.4rem 0.6rem">Paso 4, 5</td></tr>
+      <tr style="border-bottom:1px solid var(--border)"><td style="padding:0.4rem 0.6rem">4 · Endpoints</td><td style="padding:0.4rem 0.6rem">Código ya revisado</td><td style="padding:0.4rem 0.6rem"><code>docs/ENDPOINTS.md</code></td><td style="padding:0.4rem 0.6rem">Paso 5</td></tr>
+      <tr><td style="padding:0.4rem 0.6rem">5 · Testing</td><td style="padding:0.4rem 0.6rem"><code>docs/ENDPOINTS.md</code></td><td style="padding:0.4rem 0.6rem"><code>docs/TESTING.md</code> + tests</td><td style="padding:0.4rem 0.6rem">Rúbrica final</td></tr>
+    </tbody>
+  </table>
+
+  <p class="block-title">El flujo, dentro de cada repo</p>
+  <p class="prose">Se repite igual en los 3 repos. Los prompts de abajo son el texto completo, tal cual, de <code>workshop-auth-backend</code> — cópialo y pégalo en tu IA. Si estás trabajando en otro de los 3 repos, los prompts equivalentes están en este mismo repo (<code>bcp-ai-lab-day-01</code>), en <code>ejercicios/frontend/</code> o <code>ejercicios/requirements-api/</code>: la estructura es idéntica, solo cambian los nombres propios del código.</p>
+  <p class="prose">Antes de pegar el prompt del Paso 1, confirma que tu clon trae estos 3 archivos (los links abren la versión de referencia en GitHub, para comparar):</p>
+  <ul class="mat-list" style="margin-bottom:1rem">
+    <li><strong>workshop-auth-backend</strong>: <a href="https://github.com/NTTData-Academy/workshop-auth-backend-template/blob/main/README.md" target="_blank" rel="noopener">README.md</a>, <a href="https://github.com/NTTData-Academy/workshop-auth-backend-template/blob/main/RETO.md" target="_blank" rel="noopener">RETO.md</a>, <a href="https://github.com/NTTData-Academy/workshop-auth-backend-template/blob/main/REGLAS.md" target="_blank" rel="noopener">REGLAS.md</a></li>
+    <li><strong>workshop-login-frontend</strong>: <a href="https://github.com/NTTData-Academy/workshop-login-frontend-template/blob/main/README.md" target="_blank" rel="noopener">README.md</a>, <a href="https://github.com/NTTData-Academy/workshop-login-frontend-template/blob/main/RETO.md" target="_blank" rel="noopener">RETO.md</a>, <a href="https://github.com/NTTData-Academy/workshop-login-frontend-template/blob/main/REGLAS.md" target="_blank" rel="noopener">REGLAS.md</a></li>
+    <li><strong>workshop-requirements-api</strong>: <a href="https://github.com/NTTData-Academy/workshop-requirements-api-template/blob/main/README.md" target="_blank" rel="noopener">README.md</a>, <a href="https://github.com/NTTData-Academy/workshop-requirements-api-template/blob/main/RETO.md" target="_blank" rel="noopener">RETO.md</a>, <a href="https://github.com/NTTData-Academy/workshop-requirements-api-template/blob/main/REGLAS.md" target="_blank" rel="noopener">REGLAS.md</a></li>
+  </ul>
+  <p class="prose"><code>docs/ENDPOINTS.md</code> normalmente <strong>no existe todavía</strong> en ninguno de los 3 — el prompt lo genera si falta, así que no es un error si no lo encuentras.</p>
+
+  <div class="session am">
+    <div class="s-head"><div class="time-col"><span class="t-start">01</span><span class="t-end">discovery</span></div><div class="s-meta"><span class="s-tag">Paso 1</span><h2 class="s-title">Explorar y confirmar hallazgos</h2><p class="s-obj">Confirmar con evidencia real cuáles hallazgos de RETO.md existen en el código de hoy. No se edita nada todavía.</p></div><span class="dur">30-40 min</span></div>
+    <div class="panels" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Prompt — copiar y pegar</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+CONTEXTO
+Backend Quarkus de autenticacion (AuthResource, LegacyDatabase, LegacyTokenUtil,
+UserRecord). Lee primero README.md (como correrlo), RETO.md (tabla de hallazgos
+esperados), REGLAS.md (reglas del laboratorio) y docs/ENDPOINTS.md si existe (si
+no, genéralo a partir del codigo). NO EDITES CODIGO todavia.
+
+OBJETIVO
+Mapear el flujo completo de login (validacion, persistencia, generacion de token,
+configuracion) y generar HALLAZGOS.md: una matriz de seguimiento con cada
+hallazgo de RETO.md que exista realmente en el codigo, con evidencia archivo +
+linea.
+
+RESTRICCIONES
+No modifiques ningun archivo de codigo. No des por cierto un hallazgo que no
+puedas senalar en el codigo con archivo y linea. Respeta el contrato de
+docs/ENDPOINTS.md: no propongas cambiarlo, solo corregirlo por dentro.
+
+CRITERIOS DE ACEPTACION
+Cada hallazgo de RETO.md queda en HALLAZGOS.md como una fila con: id (H-01, H-02...), hallazgo,
+tipo (Vulnerabilidad / Bug / Refactor / Sugerencia — el que mejor describa el
+hallazgo), explicacion breve del riesgo (que puede salir mal y por que),
+evidencia (archivo:linea), severidad (alta/media/baja) y estado inicial
+"Pendiente". Los hallazgos quedan ordenados de mayor a menor severidad. Si un
+hallazgo de RETO.md no aparece en el codigo, se marca como "No encontrado" en
+vez de omitirse.
+
+FORMATO DE RESPUESTA
+El archivo HALLAZGOS.md, con esta tabla:
+id | hallazgo | tipo | explicacion | evidencia (archivo:linea) | severidad | estado
+Sin tocar codigo todavia. HALLAZGOS.md es el unico lugar donde se lleva el
+seguimiento: 2-refactor.md lo va a ir actualizando hallazgo por hallazgo.</pre></div>
+      </div>
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <span class="out-key">HALLAZGOS.md — ejemplo de fila</span>
+        <pre class="out-log">hallazgo: SQL concatenado en LegacyDatabase.findByCredentials
+tipo: Vulnerabilidad
+evidencia: LegacyDatabase.java:46
+severidad: alta
+estado: <span class="ok">Pendiente</span></pre>
+        <span class="out-key">🔎 Revísalo tú, no lo aceptes a ciegas</span>
+        <ul class="mat-list">
+          <li>¿La evidencia (archivo:línea) existe de verdad? Ábrela y confirma.</li>
+          <li>¿El "tipo" asignado tiene sentido, o parece forzado?</li>
+          <li>¿Falta algún hallazgo de RETO.md sin marcar (ni Pendiente ni No encontrado)?</li>
+        </ul>
+        <span class="out-key" style="margin-top:0.6rem">Archivo real de este prompt</span>
+        <a class="file-link" href="ejercicios/auth-backend/1-discovery.md">📄 ejercicios/auth-backend/1-discovery.md</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="session am">
+    <div class="s-head"><div class="time-col"><span class="t-start">02</span><span class="t-end">refactor</span></div><div class="s-meta"><span class="s-tag">Paso 2</span><h2 class="s-title">Corregir hallazgos, plan antes de código</h2><p class="s-obj">Tú eliges el alcance: prioriza los 2-3 de mayor severidad si el tiempo apremia, o resuélvelos todos si te alcanza.</p></div><span class="dur">45-60 min</span></div>
+    <div class="panels" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <p class="prose" style="margin-bottom:0.9rem">Ojo con el nombre: este paso corrige <strong>cualquier tipo</strong> de hallazgo pendiente (Vulnerabilidad, Bug, Refactor o Sugerencia), no solo los que tienen "Refactor" en la columna Tipo de <code>HALLAZGOS.md</code>. "Refactor" aquí es el nombre de la sesión, no un filtro.</p>
+        <div class="panel-label"><span class="dot step-dot"></span>Cómo clasificar cada hallazgo, antes de elegir</div>
+        <p class="prose" style="margin-bottom:0.6rem">Para cada fila de <code>HALLAZGOS.md</code>, pregúntate estas dos cosas por separado:</p>
+        <div class="classify-grid">
+          <div class="classify-card">
+            <div class="classify-title">Impacto — ¿qué tan grave es si pasa?</div>
+            <ul>
+              <li><strong>Alto:</strong> expone contraseñas/datos personales, o deja que alguien cambie o borre datos de otro usuario.</li>
+              <li><strong>Medio:</strong> rompe una funcionalidad, pero no expone datos sensibles.</li>
+              <li><strong>Bajo:</strong> es un detalle de estilo o legibilidad — no afecta seguridad ni funcionamiento.</li>
+            </ul>
+          </div>
+          <div class="classify-card">
+            <div class="classify-title">Probabilidad — ¿qué tan fácil es que pase?</div>
+            <ul>
+              <li><strong>Alta:</strong> no requiere saber nada especial — cambiar un valor en la URL o el formulario alcanza.</li>
+              <li><strong>Media:</strong> requiere algo de intención técnica, como leer el código o armar un request a mano.</li>
+              <li><strong>Baja:</strong> requiere acceso privilegiado o condiciones muy específicas.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="matrix-wrap">
+          <div class="matrix-label">Cruza los dos valores en esta tabla</div>
+          <table class="matrix">
+            <tr><th></th><th>Prob. baja</th><th>Prob. media</th><th>Prob. alta</th></tr>
+            <tr><th>Impacto alto</th><td style="background:#FFC400;color:#0C1A28">Medio</td><td style="background:#FF7A00;color:#fff">Alto</td><td style="background:#E42600;color:#fff">Crítico</td></tr>
+            <tr><th>Impacto medio</th><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#FFC400;color:#0C1A28">Medio</td><td style="background:#FF7A00;color:#fff">Alto</td></tr>
+            <tr><th>Impacto bajo</th><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#00CB5D;color:#0C1A28">Bajo</td><td style="background:#FFC400;color:#0C1A28">Medio</td></tr>
+          </table>
+        </div>
+        <div class="classify-card">
+          <div class="classify-title">Ejemplos ya clasificados</div>
+          <ul>
+            <li>"Un usuario puede consultar tareas de otro cambiando un parámetro" → impacto alto (ve datos ajenos) + probabilidad alta (solo cambiar un valor) = <strong>Crítico</strong>, se resuelve primero.</li>
+            <li>"SQL concatenado" → impacto alto + probabilidad media (hay que saber armar el input) = <strong>Alto</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels" style="grid-template-columns: 1fr; margin-top: -1px;">
+      <div class="panel">
+        <p class="prose" style="margin-bottom:0.9rem">⚠️ Este prompt tiene un hueco para completar (el <code>[...]</code> del OBJETIVO): decide qué hallazgos vas a resolver ahora antes de pegarlo — no lo copies con el corchete tal cual.</p>
+        <div class="panel-label"><span class="dot step-dot"></span>Paso 1 del prompt — generar el plan</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+Analiza este código antes de modificarlo.
+
+CONTEXTO
+Consulta primero:
+- docs/ENDPOINTS.md: contrato de POST /auth/login a preservar
+- docs/GOOD_PRACTICES.md: convenciones a las que debe converger el codigo
+- REGLAS.md: reglas del laboratorio
+- HALLAZGOS.md: hallazgos confirmados con su estado
+
+OBJETIVO
+Tomar de HALLAZGOS.md estos hallazgos marcados "Pendiente":
+[completa aquí cuáles vas a resolver ahora — los 2 o 3 de mayor severidad,
+o todos si el tiempo te alcanza] y generar PLAN.md con la propuesta de
+correccion para cada uno.
+
+RESTRICCIONES
+No cambies el contrato de docs/ENDPOINTS.md. No agregues dependencias sin
+justificar. No asumas convenciones que no esten en docs/GOOD_PRACTICES.md. No
+modifiques codigo todavia.
+
+CRITERIOS DE ACEPTACION
+PLAN.md tiene un apartado por hallazgo, con: que hallazgo de HALLAZGOS.md es,
+el problema, el cambio propuesto (parametrizar SQL, hash de contrasenas, token
+firmado, configuracion externa o separacion de capas, segun corresponda), los
+archivos a tocar, y la prueba de caracterizacion a escribir antes de tocarlos.
+El contrato de docs/ENDPOINTS.md se mantiene intacto. El cambio propuesto
+tambien respeta las reglas de Clean Code de REGLAS.md (una responsabilidad
+por metodo, sin duplicacion, sin anidamiento profundo, sin numeros magicos).
+
+FORMATO DE RESPUESTA
+Un archivo PLAN.md con esa estructura. No modifiques codigo todavia.</pre></div>
+        <div class="panel-label" style="margin-top:1rem"><span class="dot step-dot"></span>Paso 2 del prompt — implementar el plan aprobado</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+Ya leiste PLAN.md. Úsalo como guia.
+
+CONTEXTO
+PLAN.md fue aprobado. docs/GOOD_PRACTICES.md sigue siendo la referencia de
+como debe quedar el codigo.
+
+OBJETIVO
+Implementar unicamente lo que dice PLAN.md, hallazgo por hallazgo: la prueba de
+caracterizacion primero, despues el cambio.
+
+RESTRICCIONES
+No agregues cambios fuera de PLAN.md. No reduzcas quality gates (CodeQL,
+Dependency Review, JaCoCo). No uses secretos reales.
+
+CRITERIOS DE ACEPTACION
+El contrato de docs/ENDPOINTS.md sigue funcionando igual para el cliente.
+Cobertura del codigo modificado en 85% o superior (REGLAS.md). El codigo
+resultante respeta las reglas de Clean Code de REGLAS.md, no solo el
+hallazgo puntual. Cada hallazgo resuelto queda marcado "Resuelto" en
+HALLAZGOS.md, con una nota corta de como se resolvio.
+
+FORMATO DE RESPUESTA
+Por cada hallazgo: el diff, el test corriendo en verde antes y despues, y
+HALLAZGOS.md actualizado. Al finalizar, explica cualquier desviacion del plan.</pre></div>
+      </div>
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>🔎 Revísalo tú, no lo aceptes a ciegas</div>
+        <ul class="mat-list">
+          <li>¿PLAN.md toca solo los hallazgos que pediste, o se metió con algo más?</li>
+          <li>¿El diff cambia algo del contrato (docs/ENDPOINTS.md) que no debería?</li>
+          <li>¿El test realmente fallaba antes del cambio? Ejecútalo tú sobre el código viejo.</li>
+        </ul>
+        <span class="out-key" style="margin-top:0.6rem">¿2-refactor.md o resolver-item.md?</span>
+        <ul class="mat-list">
+          <li><code>2-refactor.md</code> (este) → el primer lote, lo que salió del Paso 1.</li>
+          <li><code>resolver-item.md</code> → lo que aparezca después (Paso 3 en adelante), sin repetir este prompt.</li>
+        </ul>
+        <span class="out-key">Archivos reales de este paso</span>
+        <a class="file-link" href="ejercicios/auth-backend/2-refactor.md">📄 ejercicios/auth-backend/2-refactor.md</a><br>
+        <a class="file-link" href="ejercicios/auth-backend/resolver-item.md">📄 ejercicios/auth-backend/resolver-item.md</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="session pm">
+    <div class="s-head"><div class="time-col"><span class="t-start">03</span><span class="t-end">review</span></div><div class="s-meta"><span class="s-tag">Paso 3</span><h2 class="s-title">Code review con evidencia</h2><p class="s-obj">Verificar que cada hallazgo "Resuelto" esté realmente corregido.</p></div><span class="dur">30-40 min</span></div>
+    <div class="panels" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Prompt — copiar y pegar</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+CONTEXTO
+El PR implementa uno o mas hallazgos de HALLAZGOS.md. Consulta los documentos
+del repositorio que consideres necesarios para justificar cada observacion (por
+ejemplo README.md, RETO.md, docs/ENDPOINTS.md, docs/GOOD_PRACTICES.md,
+REGLAS.md) y al final dime cuales usaste.
+
+OBJETIVO
+Revisar el PR como lider tecnico y especialista AppSec, verificando que cada
+hallazgo marcado "Resuelto" en HALLAZGOS.md este realmente corregido en el
+codigo, y que respeta REGLAS.md.
+
+RESTRICCIONES
+No apruebes un PR que reduzca quality gates (CodeQL, Dependency Review, JaCoCo) o
+que marque un hallazgo como "Resuelto" sin corregirlo de verdad. No inventes
+riesgos que no puedas senalar con archivo y linea.
+
+CRITERIOS DE ACEPTACION
+Cada hallazgo "Resuelto" de HALLAZGOS.md queda verificado con evidencia, o se
+regresa a "Pendiente" si el PR no lo corrigio del todo. Se revisan ademas:
+regresiones funcionales, SQL injection, secretos, manejo de contrasenas,
+validacion de entrada, errores verbosos, autenticacion debil, dependencias
+vulnerables, cobertura y complejidad.
+
+FORMATO DE RESPUESTA
+Observaciones clasificadas en bloqueantes, importantes y sugerencias. Para cada
+bloqueante: por que bloquea el merge y que evidencia lo respalda. Si algun
+hallazgo vuelve a "Pendiente", dilo explicitamente. Al final, que documentos
+consultaste.</pre></div>
+      </div>
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <ul class="out-list"><li>Bloqueantes con evidencia real, no impresiones</li><li>Confirmación de que ningún quality gate se redujo</li></ul>
+        <span class="out-key">🔎 Revísalo tú, no lo aceptes a ciegas</span>
+        <ul class="mat-list">
+          <li>¿Cada bloqueante tiene archivo:línea, o es una opinión general?</li>
+          <li>¿Algún hallazgo "Resuelto" volvió a "Pendiente"? Fíjate por qué.</li>
+        </ul>
+        <p class="step-desc" style="margin-top:0.6rem">Si encontraste algo que no estaba en <code>HALLAZGOS.md</code> (un bug nuevo, una sugerencia importante), agrégalo ahí mismo como fila nueva en estado "Pendiente" — no lo dejes solo mencionado en el chat. Se resuelve con <code>resolver-item.md</code>, no con <code>2-refactor.md</code> de nuevo.</p>
+        <span class="out-key" style="margin-top:0.6rem">Archivo real de este prompt</span>
+        <a class="file-link" href="ejercicios/auth-backend/3-review.md">📄 ejercicios/auth-backend/3-review.md</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="session pm">
+    <div class="s-head"><div class="time-col"><span class="t-start">04</span><span class="t-end">endpoints</span></div><div class="s-meta"><span class="s-tag">Paso 4</span><h2 class="s-title">Documentar el contrato final</h2><p class="s-obj">Que alguien nuevo pueda integrar contra el servicio sin leer el código fuente.</p></div><span class="dur">20-30 min</span></div>
+    <div class="panels" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Prompt — copiar y pegar</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+CONTEXTO
+Backend Quarkus de autenticacion, ya refactorizado. docs/ENDPOINTS.md tiene el
+contrato legacy (defectos incluidos); hay que actualizarlo a como quedo el
+codigo hoy. Consulta el codigo y los documentos del repositorio que consideres
+necesarios para verificar cada campo. NO EDITES CODIGO, esto es solo
+documentacion.
+
+OBJETIVO
+Actualizar docs/ENDPOINTS.md para que un desarrollador que nunca vio este
+backend pueda integrar contra el sin leer el codigo fuente.
+
+RESTRICCIONES
+No inventes campos, tipos o codigos de respuesta que no existan en el codigo. Si
+algo no esta claro leyendo el codigo, márcalo como pregunta abierta en vez de
+asumirlo. No documentes "GET /q/health" y "POST /auth/login" con una sola linea
+cada uno: sigue la estructura de abajo completa.
+
+CRITERIOS DE ACEPTACION
+Por cada endpoint, docs/ENDPOINTS.md incluye TODO lo siguiente (nada es
+opcional):
+1. Que hace (una frase, en terminos de negocio, no solo tecnicos).
+2. Si requiere autenticacion y que header exacto.
+3. Request: una tabla campo | tipo | obligatorio | descripcion, mas un ejemplo
+   JSON real y completo.
+4. Response exitosa: codigo de estado, tabla campo | tipo | descripcion, mas un
+   ejemplo JSON real y completo.
+5. Cada respuesta de error posible: codigo de estado, cuando ocurre, y un
+   ejemplo de cuerpo de esa respuesta (no solo "puede fallar").
+6. Notas de seguridad relevantes si aplica (por ejemplo, que el token ahora es
+   firmado y expira de verdad).
+Cada campo y cada ejemplo tienen que poder verificarse contra el codigo real
+(archivo + linea si hace falta justificarlo).
+
+FORMATO DE RESPUESTA
+El archivo docs/ENDPOINTS.md actualizado, siguiendo exactamente esa estructura
+de 6 puntos por endpoint. Al final, que documentos consultaste para escribirlo.</pre></div>
+      </div>
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <span class="out-key">docs/ENDPOINTS.md actualizado, 6 puntos por endpoint</span>
+        <span class="out-key" style="margin-top:0.6rem">🔎 Revísalo tú, no lo aceptes a ciegas</span>
+        <ul class="mat-list">
+          <li>¿El ejemplo JSON es real? Prueba el endpoint y compara la respuesta.</li>
+          <li>¿Los errores documentados son los que el código realmente devuelve?</li>
+        </ul>
+        <span class="out-key" style="margin-top:0.6rem">Archivo real de este prompt</span>
+        <a class="file-link" href="ejercicios/auth-backend/4-endpoints.md">📄 ejercicios/auth-backend/4-endpoints.md</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="session pm">
+    <div class="s-head"><div class="time-col"><span class="t-start">05</span><span class="t-end">testing</span></div><div class="s-meta"><span class="s-tag">Paso 5</span><h2 class="s-title">Pruebas: feliz, borde, error</h2><p class="s-obj">Cada endpoint de docs/ENDPOINTS.md, con sus 3 categorías.</p></div><span class="dur">30-40 min</span></div>
+    <div class="panels" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Prompt — copiar y pegar</div>
+        <div class="code"><pre>AMBITO
+Trabaja unicamente en la carpeta workshop-auth-backend/ de reqflow-workspace.
+Todas las rutas de este prompt son relativas a esa carpeta. No leas ni
+modifiques los otros repositorios del workspace.
+
+CONTEXTO
+Backend Quarkus de autenticacion. docs/ENDPOINTS.md ya refleja el contrato real
+y detallado. Consulta ese archivo, REGLAS.md (meta de cobertura) y cualquier
+otro documento que consideres necesario.
+
+OBJETIVO
+Generar docs/TESTING.md y completar las pruebas que falten para cada endpoint de
+docs/ENDPOINTS.md, cubriendo tres categorias: camino feliz, casos borde y
+errores.
+
+RESTRICCIONES
+No inventes endpoints ni comportamientos que no esten en docs/ENDPOINTS.md. No
+adaptes un test para que pase con un bug existente: si encuentras un bug,
+repórtalo aparte, no lo escondas dentro del test.
+
+CRITERIOS DE ACEPTACION
+Por cada endpoint de docs/ENDPOINTS.md hay al menos: un test de camino feliz
+(dato valido), un test de caso borde (campo vacio, duplicado o limite), y un
+test por cada respuesta de error documentada. Cobertura del codigo modificado en
+85% o superior.
+
+FORMATO DE RESPUESTA
+El archivo docs/TESTING.md con una tabla (endpoint | caso | tipo | resultado
+esperado) y despues el codigo de los tests, corriendo en verde. Al final, que
+documentos consultaste.</pre></div>
+      </div>
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <ul class="out-list"><li>Ningún test adaptado para esconder un bug real</li><li>Cobertura del código modificado en 85% o superior</li></ul>
+        <span class="out-key">🔎 Revísalo tú, no lo aceptes a ciegas</span>
+        <ul class="mat-list">
+          <li>¿El "caso borde" prueba algo real, o es trivial y no dice nada?</li>
+          <li>¿Algún test se armó a partir del bug en vez de exponerlo? Rompe el código a propósito y confirma que el test falla.</li>
+        </ul>
+        <span class="out-key" style="margin-top:0.6rem">Archivo real de este prompt</span>
+        <a class="file-link" href="ejercicios/auth-backend/5-testing.md">📄 ejercicios/auth-backend/5-testing.md</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="prose" style="margin-top:0.5rem">Los links de arriba abren el archivo dentro de este mismo repo (<code>bcp-ai-lab-day-01</code>), organizados por repo — no están dentro de los repos clonados.</p>
+
+  <!-- ── Handoff al Día 2 ── -->
+  <div class="gate">
+    <div class="gate-head">
+      <span class="gate-chip">Handoff</span>
+      <span class="gate-title">Lo que produces hoy es la entrada del Día 2</span>
+    </div>
+    <div class="gate-body">
+      <p class="gate-desc">Los hallazgos "Pendiente" de <code>HALLAZGOS.md</code> se convierten en historias de usuario e issues; tus prompts se convierten en Skills. No borres nada al terminar.</p>
+      <ul class="mat-list">
+        <li>Guarda en <code>prompts/</code> los prompts que te funcionaron, un archivo por prompt.</li>
+        <li>Deja al menos una fila "Pendiente" en <code>HALLAZGOS.md</code>, con su Id <code>H-xx</code>.</li>
+        <li>Commit y tag: <code>git tag day1-done</code> y <code>git push --follow-tags</code>.</li>
+        <li>Verifica desde la carpeta del laboratorio: <code>python tools/check_handoff.py --day 1 ../reqflow-workspace</code> (al menos 1 repo en <code>[OK]</code>).</li>
+      </ul>
+      <p class="gate-thr">Si no completaste ningún repo, el instructor entrega la rama <code>checkpoint/day1</code>.</p>
+    </div>
+  </div>
+
+  <!-- ── Rúbrica de cierre ── -->
+  <div class="gate">
+    <div class="gate-head">
+      <span class="gate-chip">Cierre</span>
+      <span class="gate-title">Cómo se evalúa la demo final</span>
+    </div>
+    <div class="gate-body">
+      <p class="gate-desc">No se evalúa por cantidad de código generado: se evalúa contexto, comportamiento, seguridad, tests y decisiones explicadas.</p>
+      <div class="rubric">
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Preservación funcional</span></div>
+        <div class="r-item"><span class="r-pct">25 %</span><span class="r-label">Seguridad</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Clean Code y arquitectura</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Testing y calidad</span></div>
+        <div class="r-item"><span class="r-pct">10 %</span><span class="r-label">Calidad del PR</span></div>
+        <div class="r-item"><span class="r-pct">5 %</span><span class="r-label">Uso responsable de IA</span></div>
+      </div>
+      <p class="gate-thr">Evidencia que vas a mostrar: <strong>HALLAZGOS.md · PLAN.md · diff · test</strong> — para cualquier prompt fuera de los 5 numerados, usa <code>template.md</code> (el framework de 5 partes, en <code>ejercicios/&lt;repo&gt;/</code>).</p>
+    </div>
+  </div>
+</main>
+</body>
+</html>

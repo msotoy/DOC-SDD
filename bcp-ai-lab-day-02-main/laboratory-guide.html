@@ -1,0 +1,1711 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dia 2 - Guia de Laboratorio</title>
+    <style>
+        :root {
+            --bg: #EBF0F7;
+            --surface: #FFFFFF;
+            --surface-alt: #F4F7FB;
+            --border: #CDD8E8;
+            --accent: #007F6E;
+            --accent2: #1A65B8;
+            --text-primary: #0C1A28;
+            --text-sec: #3D5670;
+            --text-muted: #7A93A8;
+            --am: #1A65B8;
+            --pm: #007F6E;
+            --tag-am-bg: #E0ECFA;
+            --tag-am-fg: #0F4A90;
+            --tag-pm-bg: #DDF4F0;
+            --tag-pm-fg: #005348;
+            --step-num: #1A65B8;
+            --code-bg: #0C1A28;
+            --code-fg: #A8D5FF;
+            --code-border: #1C3050;
+            --out-bg: #ECF8F6;
+            --out-border: #9ECFC7;
+            --out-label: #005A4D;
+            --gate-bg: #FFFBEC;
+            --gate-border: #D4A800;
+            --gate-text: #6B4D00;
+            --gate-chip: #D4A800;
+            --gate-chip-fg: #FFFFFF;
+            --break-line: #CDD8E8
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --bg: #090F18;
+                --surface: #101C2C;
+                --surface-alt: #152030;
+                --border: #1C3050;
+                --accent: #00C2A8;
+                --accent2: #4D9FE8;
+                --text-primary: #DDE8F5;
+                --text-sec: #6D9ABE;
+                --text-muted: #3D5E7A;
+                --am: #4D9FE8;
+                --pm: #00C2A8;
+                --tag-am-bg: #0B1E3A;
+                --tag-am-fg: #7DC5F8;
+                --tag-pm-bg: #0B2520;
+                --tag-pm-fg: #55DFC8;
+                --step-num: #4D9FE8;
+                --code-bg: #060D18;
+                --code-fg: #7FC8FF;
+                --code-border: #1C3050;
+                --out-bg: #0A201C;
+                --out-border: #1A5E52;
+                --out-label: #55DFC8;
+                --gate-bg: #181200;
+                --gate-border: #B89000;
+                --gate-text: #F0CA40;
+                --gate-chip: #B89000;
+                --gate-chip-fg: #000;
+                --break-line: #1C3050
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --bg: #090F18;
+            --surface: #101C2C;
+            --surface-alt: #152030;
+            --border: #1C3050;
+            --accent: #00C2A8;
+            --accent2: #4D9FE8;
+            --text-primary: #DDE8F5;
+            --text-sec: #6D9ABE;
+            --text-muted: #3D5E7A;
+            --am: #4D9FE8;
+            --pm: #00C2A8;
+            --tag-am-bg: #0B1E3A;
+            --tag-am-fg: #7DC5F8;
+            --tag-pm-bg: #0B2520;
+            --tag-pm-fg: #55DFC8;
+            --step-num: #4D9FE8;
+            --code-bg: #060D18;
+            --code-fg: #7FC8FF;
+            --code-border: #1C3050;
+            --out-bg: #0A201C;
+            --out-border: #1A5E52;
+            --out-label: #55DFC8;
+            --gate-bg: #181200;
+            --gate-border: #B89000;
+            --gate-text: #F0CA40;
+            --gate-chip: #B89000;
+            --gate-chip-fg: #000;
+            --break-line: #1C3050
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text-primary);
+            font: 15px/1.6 system-ui, sans-serif
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: Georgia, serif
+        }
+
+        code {
+            font-family: ui-monospace, Consolas, monospace;
+            font-size: .87em;
+            color: var(--accent2);
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: .04em .38em
+        }
+
+        .code code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: inherit
+        }
+
+        .header {
+            background: #101C2C;
+            color: #DDE8F5;
+            padding: 2rem
+        }
+
+        .header-inner,
+        .main {
+            max-width: 1100px;
+            margin: auto
+        }
+
+        .eyebrow {
+            font: 12px monospace;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #6D9ABE;
+            margin-bottom: .3rem
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            margin: .4rem 0
+        }
+
+        .header h1 em {
+            font-style: normal;
+            color: #00C2A8
+        }
+
+        .header-sub {
+            max-width: 78ch;
+            color: #6D9ABE;
+            margin-bottom: 1rem
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        .stat {
+            font: 12px monospace;
+            background: #152030;
+            border: 1px solid #1C3050;
+            border-radius: 6px;
+            padding: .3rem .6rem;
+            color: #6D9ABE
+        }
+
+        .stat strong {
+            color: #DDE8F5
+        }
+
+        .main {
+            padding: 1.8rem 1.25rem 3rem
+        }
+
+        .section-label {
+            display: flex;
+            gap: .7rem;
+            align-items: center;
+            margin: 1.4rem 0 .9rem;
+            font: 12px monospace;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #6D9ABE
+        }
+
+        .section-label:after {
+            content: '';
+            height: 1px;
+            background: var(--border);
+            flex: 1
+        }
+
+        .session,
+        .gate {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative
+        }
+
+        .session::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 12px 0 0 12px
+        }
+
+        .session.am::before {
+            background: var(--am)
+        }
+
+        .session.pm::before {
+            background: var(--pm)
+        }
+
+        .s-head {
+            padding: 1.15rem 1.5rem 1rem 1.7rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem
+        }
+
+        .time-col {
+            min-width: 68px;
+            padding-top: .1rem;
+            font: 12px monospace;
+            color: var(--text-muted)
+        }
+
+        .t-start {
+            font-size: .98rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: block;
+            line-height: 1
+        }
+
+        .t-end {
+            font-size: .7rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: .15rem
+        }
+
+        .s-meta {
+            flex: 1;
+            min-width: 0
+        }
+
+        .s-tag {
+            display: inline-block;
+            font: 11px monospace;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            padding: .13rem .46rem;
+            margin-bottom: .28rem;
+            background: #E0ECFA;
+            color: #0F4A90
+        }
+
+        .am .s-tag {
+            background: var(--tag-am-bg);
+            color: var(--tag-am-fg)
+        }
+
+        .pm .s-tag {
+            background: var(--tag-pm-bg);
+            color: var(--tag-pm-fg)
+        }
+
+        .s-title {
+            font-size: 1.08rem;
+            margin: 0 0 .22rem
+        }
+
+        .s-obj {
+            font-size: .81rem;
+            color: var(--text-sec);
+            font-style: italic
+        }
+
+        .dur {
+            font: 12px monospace;
+            color: var(--text-muted);
+            padding-top: .1rem
+        }
+
+        .panels {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 0
+        }
+
+        .panel {
+            padding: 1.25rem 1.3rem;
+            border-right: 1px solid var(--border)
+        }
+
+        .panel:last-child {
+            border-right: none
+        }
+
+        .out-panel {
+            grid-column: 1/-1;
+            border-top: 1px solid var(--out-border);
+            border-right: none;
+            background: var(--out-bg)
+        }
+
+        .panel-label {
+            font: 11px monospace;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: .8rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .panel-label .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .mat-dot {
+            background: var(--accent2)
+        }
+
+        .step-dot {
+            background: var(--text-muted)
+        }
+
+        .out-dot {
+            background: var(--accent)
+        }
+
+        .mat-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+            padding: 0;
+            margin: 0
+        }
+
+        .mat-list li {
+            font-size: .79rem;
+            color: var(--text-sec);
+            line-height: 1.4;
+            position: relative;
+            padding-left: 1.05rem
+        }
+
+        .mat-list li::before {
+            content: '☐';
+            color: var(--text-muted);
+            font-size: .72rem;
+            position: absolute;
+            left: 0;
+            top: .1rem
+        }
+
+        .mat-note {
+            font-size: .72rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: .65rem;
+            line-height: 1.4
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        .step {
+            display: flex;
+            gap: .75rem;
+            align-items: flex-start
+        }
+
+        .step-num {
+            font: 12px monospace;
+            font-weight: 500;
+            color: var(--step-num);
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: .12rem .42rem;
+            min-width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+            margin-top: .1rem
+        }
+
+        .step-body {
+            flex: 1;
+            min-width: 0
+        }
+
+        .step-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: .2rem;
+            font-family: Georgia, serif
+        }
+
+        .step-desc {
+            font-size: .79rem;
+            color: var(--text-sec);
+            line-height: 1.5;
+            margin: .25rem 0
+        }
+
+        .step-desc strong {
+            color: var(--text-primary)
+        }
+
+        .code {
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border: 1px solid var(--code-border);
+            padding: 2rem .7rem .7rem;
+            border-radius: 6px;
+            font: 12px/1.5 ui-monospace, Consolas, monospace;
+            margin: .4rem 0;
+            max-height: 380px;
+            width: 100%;
+            max-width: 730px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative
+        }
+
+        .code pre {
+            margin: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere
+        }
+
+        .code-copy {
+            position: absolute;
+            top: .5rem;
+            right: .6rem;
+            font: 11px monospace;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--surface-alt);
+            border: 1px solid var(--code-border);
+            border-radius: 4px;
+            padding: .2rem .55rem;
+            cursor: pointer
+        }
+
+        .code-copy:hover {
+            color: var(--accent2);
+            border-color: var(--accent2)
+        }
+
+        .code-copy.copied {
+            color: var(--accent);
+            border-color: var(--accent)
+        }
+
+        .out-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: .42rem;
+            padding: 0;
+            margin: 0
+        }
+
+        .out-list li {
+            font-size: .8rem;
+            color: var(--text-sec);
+            line-height: 1.45;
+            position: relative;
+            padding-left: 1.1rem
+        }
+
+        .out-list li::before {
+            content: '✓';
+            color: var(--accent);
+            font-size: .72rem;
+            position: absolute;
+            left: 0;
+            top: .12rem;
+            font-weight: 700
+        }
+
+        .out-key {
+            font: 12px monospace;
+            color: var(--out-label);
+            font-weight: 600;
+            display: block;
+            margin-bottom: .35rem
+        }
+
+        .break {
+            display: flex;
+            gap: .6rem;
+            align-items: center;
+            color: var(--text-muted);
+            font: 12px monospace;
+            margin: 1rem 0
+        }
+
+        .break:before,
+        .break:after {
+            content: '';
+            height: 1px;
+            background: var(--break-line);
+            flex: 1
+        }
+
+        .gate {
+            border-color: var(--gate-border);
+            background: var(--gate-bg)
+        }
+
+        .gate-head {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--gate-border);
+            display: flex;
+            align-items: center;
+            gap: .85rem;
+            flex-wrap: wrap
+        }
+
+        .gate-chip {
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            background: var(--gate-chip);
+            color: var(--gate-chip-fg);
+            padding: .2rem .58rem;
+            border-radius: 5px
+        }
+
+        .gate-title {
+            font-size: .95rem;
+            color: var(--gate-text);
+            margin: 0
+        }
+
+        .gate-body {
+            padding: 1.2rem 1.5rem
+        }
+
+        .gate-desc {
+            font-size: .83rem;
+            color: var(--text-sec);
+            margin-bottom: 1rem;
+            max-width: 65ch
+        }
+
+        .rubric {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: .55rem;
+            margin-bottom: .9rem
+        }
+
+        .r-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .7rem .55rem;
+            text-align: center
+        }
+
+        .r-pct {
+            font: 16px monospace;
+            font-weight: 600;
+            color: var(--accent);
+            display: block;
+            margin-bottom: .28rem
+        }
+
+        .r-label {
+            font-size: .69rem;
+            color: var(--text-sec);
+            line-height: 1.35
+        }
+
+        .gate-thr {
+            font: 12px monospace;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .gate-thr strong {
+            color: var(--gate-text)
+        }
+
+        @media(max-width:760px) {
+            .panels {
+                grid-template-columns: 1fr
+            }
+
+            .panel {
+                border-right: none;
+                border-bottom: 1px solid var(--border)
+            }
+
+            .panel:last-child {
+                border-bottom: none
+            }
+        }
+
+        @media(max-width:750px) {
+            .rubric {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .s-head {
+                flex-wrap: wrap
+            }
+        }
+
+        @media(max-width:520px) {
+            .rubric {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <p class="eyebrow">NTT DATA · Train-the-Trainers IA · Dia 2</p>
+            <h1>Guia de <em>Laboratorio</em> - Paso a Paso</h1>
+            <p class="header-sub">Laboratorio para lideres tecnicos, arquitectos, chapter leads, QE y DevOps. El
+                objetivo es diseñar capacidades reutilizables y gobernadas, no solo producir archivos.</p>
+            <div class="stats"><span class="stat"><strong>09:30-18:00</strong> · 3 sesiones + W1</span><span
+                    class="stat">Workspace de 3 repos</span><span class="stat">Skills · Tools · MCP</span><span
+                    class="stat">Gate W1 · &gt;= 80%</span></div>
+        </div>
+    </header>
+    <main class="main">
+        <p class="section-label">Antes de empezar</p>
+        <div class="session am" style="margin-bottom:1.8rem">
+            <div class="panels" style="grid-template-columns: 1fr 1fr;">
+                <div class="panel">
+                    <div class="panel-label"><span class="dot mat-dot"></span>Workspace y entrada del dia</div>
+                    <ul class="mat-list">
+                        <li>Trabajas en tu <code>reqflow-workspace/</code> del Dia 1, con tus tres repos propios:
+                            <code>workshop-auth-backend</code>, <code>workshop-login-frontend</code> y
+                            <code>workshop-requirements-api</code>. Clona este laboratorio <strong>al lado</strong> del workspace, no dentro, y abre VS Code sobre <code>reqflow-workspace/</code>.</li>
+                        <li>Del Dia 1 necesitas <code>HALLAZGOS.md</code> (filas "Pendiente" con Id <code>H-xx</code>), <code>prompts/</code>, <code>docs/ENDPOINTS.md</code> y <code>docs/TESTING.md</code>.</li>
+                        <li>Verifica la entrada desde la carpeta del laboratorio (al menos 1 repo en <code>[OK]</code>):
+                            <code>python tools/check_handoff.py --day 1 ../reqflow-workspace</code></li>
+                        <li>Si el chequeo falla, parte de la rama <code>checkpoint/day1</code> que entrega el instructor.</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <div class="panel-label"><span class="dot step-dot"></span>Prerrequisitos</div>
+                    <ul class="mat-list">
+                        <li>GitHub CLI, Copilot y acceso concedido.</li>
+                        <li>Python, Node.js y Maven instalados.</li>
+                        <li>Docker disponible si el issue lo requiere.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p class="section-label">Laboratorios</p>
+        <div class="session am">
+            <div class="s-head">
+                <div class="time-col"><span class="t-start">09:30</span><span class="t-end">11:30</span></div>
+                <div class="s-meta">
+                    <span class="s-tag">Laboratorio S1</span>
+                    <h2 class="s-title">Skill básico</h2>
+                    <p class="s-obj">Crear un Skill reutilizable que convierta una feature request en un paquete
+                        minimo trazable. Usando: Metadata, I/O y constraints.</p>
+                </div>
+                <span class="dur">2 h</span>
+            </div>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+                    <ul class="mat-list">
+                        <li>Skill: <code>feature-intake-spec-checklist</code>, version <code>0.1.0</code></li>
+                        <li>Ruta estandar del repositorio: <code>.github/skills/</code></li>
+                        <li><code>reqflow-workspace/</code> del Dia 1 abierto en VS Code, con Copilot Chat. S1 se trabaja dentro de <code>workshop-auth-backend/</code>: las rutas relativas parten de ahi.</li>
+                        <li>Git y un IDE con soporte Markdown</li>
+                    </ul>
+                    <p class="mat-note">Usarlo antes de crear tareas de implementacion o abrir un PR significativo.</p>
+                </div>
+                <div class="panel">
+                    <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-num">01</span>
+                            <div class="step-body">
+                                <div class="step-title">Crear estructura del Skill</div>
+                                <div class="step-desc">Tiempo estimado: 5 minutos. Crea el Skill en la ruta estandar
+                                    <code>.github/skills/</code> de <code>workshop-auth-backend</code>.
+                                </div>
+                                <div class="code">
+                                    <pre># Bash
+mkdir -p .github/skills/feature-intake-spec-checklist/examples
+touch .github/skills/feature-intake-spec-checklist/SKILL.md
+touch .github/skills/feature-intake-spec-checklist/examples/input.sample.md
+touch .github/skills/feature-intake-spec-checklist/examples/output.sample.md
+
+# PowerShell
+New-Item -ItemType Directory -Force .github\skills\feature-intake-spec-checklist\examples
+New-Item -ItemType File -Force .github\skills\feature-intake-spec-checklist\SKILL.md
+New-Item -ItemType File -Force .github\skills\feature-intake-spec-checklist\examples\input.sample.md
+New-Item -ItemType File -Force .github\skills\feature-intake-spec-checklist\examples\output.sample.md</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> tres archivos existen bajo
+                                    <code>.github/skills/feature-intake-spec-checklist/</code> -
+                                    <code>SKILL.md</code>, <code>examples/input.sample.md</code>,
+                                    <code>examples/output.sample.md</code> - sin que su contenido este completo
+                                    aun.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">02</span>
+                            <div class="step-body">
+                                <div class="step-title">Completar el contrato</div>
+                                <div class="step-desc">Tiempo estimado: 30-40 minutos. Abre <code>SKILL.md</code>,
+                                    elimina su contenido y pega la plantilla; reemplaza los <code>[EDITAR]</code> o
+                                    marca "Pendiente de confirmar".</div>
+                                <div class="code">
+                                                <pre>---
+name: feature-intake-spec-checklist
+description: Estandariza la definición de funcionalidades antes de la implementación generando un paquete mínimo trazable que cubra alcance, decisiones, riesgos, criterios de aceptación y planes de validación.
+---
+
+# Skill: Feature Intake -&gt; Spec Checklist
+
+## 1) Metadata
+- **Skill ID:** feature-intake-spec-checklist
+- **Version:** 0.1.0
+- **Purpose:** Estandarizar la definición de funcionalidades antes de la implementación generando un paquete mínimo trazable que cubra alcance, decisiones, riesgos, aceptación y validación.
+- **Audience (roles):** Chapter/PO, Tech Lead, Backend, Frontend, QA, Cyber
+- **When to use:** Antes de crear tareas de implementación o abrir un PR significativo.
+- **When NOT to use:** Incidentes P1 de producción, cambios triviales como typos o tareas sin impacto funcional.
+- **Sensitive inputs:** No incluyas datos reales de clientes, credenciales, secretos, tokens ni URLs internas no autorizadas.
+- **Expected output:** Markdown estructurado mediante la sección Output a continuación.
+
+## 2) Inputs
+Proporciona la información en este formato:
+
+- **Business context (brief):**
+- **Feature request / user story:**
+- **Expected impact (metric or outcome):**
+- **Scope (in/out):**
+- **Known technical constraints:** (stack, standards, performance, availability)
+- **Known risks:** (security, compliance, stability)
+- **Dependencies:** (services, teams, data)
+- **Team Definition of Done (DoD):** (if available)
+
+## 3) Output
+Devuelve **solo** un documento Markdown con estas secciones y bullets:
+
+1. **Summary**
+2. **Scope**
+    - Dentro del alcance
+    - Fuera del alcance
+3. **Supuestos**
+4. **Decisiones técnicas por tomar (pendientes o resueltas)**
+5. **Riesgos y mitigaciones**
+6. **Criterios de aceptación (medibles)**
+7. **Plan de validación**
+    - Pruebas unitarias
+    - Pruebas funcionales
+    - Seguridad (comprobaciones mínimas)
+    - Evidencia requerida (qué adjuntar)
+8. **Tareas sugeridas por rol**
+    - Chapter/PO
+    - Tech Lead
+    - Backend
+    - Frontend
+    - QA
+    - Cyber
+9. **Preguntas abiertas**
+
+## 4) Constraints
+- No inventes requisitos: si falta información, inclúyela bajo **Preguntas abiertas**.
+- No propongas herramientas fuera del stack permitido.
+- No incluyas datos sensibles ni secretos.
+- Los criterios de aceptación deben ser verificables; no escribas “mejorar el rendimiento” sin una métrica.
+- El plan de validación debe incluir al menos un elemento de evidencia concreto, como salida de pruebas, un checklist o un archivo actualizado.
+- Mantén la salida en un máximo de 1-2 páginas para que siga siendo usable.
+
+## 5) Validation Rules
+La salida es válida si:
+- Incluye todas las secciones definidas en Output.
+- Tiene al menos 3 criterios de aceptación medibles.
+- Tiene al menos 3 tareas para cada rol central: Tech Lead, Backend y QA, o explica por qué un rol no aplica.
+- Incluye al menos 2 riesgos con mitigaciones.
+- No contiene datos sensibles ni secretos.
+- No contiene supuestos no declarados.
+
+## 6) Evidence
+Adjunta o referencia estos elementos en el PR o entrega:
+- `SKILL.md` versionado.
+- `examples/input.sample.md`.
+- `examples/output.sample.md`.
+- Tag de versión para el Skill, como `skill-feature-intake-v0.1.0`.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> otro rol debe poder leer
+                                    el archivo y saber que activa el Skill, que informacion recibe, que devuelve, que
+                                    limites respeta y como se valida.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">03</span>
+                            <div class="step-body">
+                                <div class="step-title">Crear entrada</div>
+                                <div class="step-desc">Tiempo estimado: 5-10 minutos. Pega el caso de ejemplo en
+                                    <code>examples/input.sample.md</code>; puedes adaptar contexto, impacto o
+                                    dependencias, conservando los ocho encabezados.
+                                </div>
+                                <div class="code">
+                                    <pre>## Business context (brief)
+Reduce complaints caused by duplicate transfers.
+
+## Feature request / user story
+As a user, I want to confirm a transfer before sending it
+so that I can avoid duplicates.
+
+## Expected impact
+Reduce duplicate-transfer complaints by 20% in one month.
+
+## Scope (in/out)
+In: pre-send confirmation, summary message, data validation.
+Out: infrastructure changes and a complete UI redesign.
+
+## Known technical constraints
+Existing REST API, web frontend, standardized logging.
+
+## Known risks
+Sensitive data exposure in logs; amount-validation errors.
+
+## Dependencies
+Accounts service and transfers service.
+
+## Team Definition of Done (DoD)
+Unit tests, brief documentation, and reviewed PR.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> la entrada es
+                                    suficientemente concreta para generar una especificacion sin inventar requisitos;
+                                    lo no confirmado queda como pregunta abierta.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">04</span>
+                            <div class="step-body">
+                                <div class="step-title">Crear salida</div>
+                                <div class="step-desc">Tiempo estimado: 10-15 minutos. Genera
+                                    <code>examples/output.sample.md</code> a partir de la entrada; puedes cambiar
+                                    decisiones, riesgos o tareas pero no elimines secciones.
+                                </div>
+                                <div class="code">
+                                    <pre># Feature Intake -&gt; Spec Checklist
+
+## 1. Summary
+Add a pre-send transfer confirmation with a concise summary
+and validation of transfer data. Target: 20% reduction in
+duplicate-transfer complaints in one month.
+
+## 6. Acceptance criteria (measurable)
+- 95%+ of valid attempts show confirmation before submission.
+- Invalid data blocks submission with a validation message.
+- Duplicate complaints drop 20% within one month.
+- No sensitive values appear in confirmation event logs.
+
+## 9. Open questions
+- What baseline measures the 20% reduction?
+- Which API version owns the confirmation contract?</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> documento Markdown de 1-2
+                                    paginas, accionable, sin decisiones no sustentadas por la entrada o una decision
+                                    humana.</div>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <span class="step-num">05</span>
+                            <div class="step-body">
+                                <div class="step-title">Demostrar y versionar el Skill</div>
+                                <div class="step-desc">Tiempo estimado: 15-20 minutos. Demuestra que el Skill es
+                                    descubrible y ejecutable antes de versionarlo.</div>
+                                <div class="step-desc"><strong>1. Listar los skills configurados:</strong></div>
+                                <div class="code">
+                                    <pre># Bash
+find .github/skills -maxdepth 2 -type f
+
+# PowerShell
+Get-ChildItem -Recurse .github\skills | Select-Object FullName</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> el listado muestra
+                                    <code>feature-intake-spec-checklist/SKILL.md</code> y sus dos ejemplos; esto
+                                    confirma que el Skill esta en la ruta que Copilot descubre automaticamente en el
+                                    repositorio.
+                                </div>
+                                <div class="step-desc"><strong>2. Prompt para ejecutar el Skill (Copilot
+                                        Chat):</strong></div>
+                                <div class="code">
+                                    <pre>Actua como el Skill feature-intake-spec-checklist
+(.github/skills/feature-intake-spec-checklist/SKILL.md).
+Usa como entrada el contenido de examples/input.sample.md y genera
+UNICAMENTE el documento Output definido en el contrato del Skill.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> Copilot Chat responde con un
+                                    unico documento Markdown con las nueve secciones del contrato (Summary, Scope,
+                                    Assumptions ... Open questions), coherente con
+                                    <code>examples/output.sample.md</code> y sin inventar datos fuera de la
+                                    entrada.
+                                </div>
+                                <div class="step-desc"><strong>3. Commit y tag:</strong></div>
+                                <div class="code">
+                                    <pre>git add .github/skills/feature-intake-spec-checklist
+git commit -m "Add basic skill: feature intake to spec checklist (v0.1.0)"
+git tag skill-feature-intake-v0.1.0</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> el Skill es descubrible en
+                                    <code>.github/skills/</code>, produce el documento esperado al invocarlo desde
+                                    Copilot Chat y queda versionado con
+                                    commit y tag.
+                                </div>
+                            </div>
+                        </div>
+                            <div class="step">
+                                <span class="step-num">06</span>
+                                <div class="step-body">
+                                    <div class="step-title">Aplicar el Skill a la HU-01</div>
+                                    <div class="step-desc">Tiempo estimado: 15-20 minutos. <code>HU-01.md</code> no se copia: se genera desde el <code>HALLAZGOS.md</code> de tu <code>workshop-auth-backend</code> del Dia 1 (filas "Pendiente" sobre el token).</div>
+                                    <div class="code"><pre>CONTEXTO
+workshop-auth-backend/HALLAZGOS.md es la matriz de hallazgos del Dia 1.
+
+OBJETIVO
+Generar workshop-auth-backend/HU-01.md a partir de las filas "Pendiente"
+de HALLAZGOS.md relacionadas con el token de autenticacion.
+
+RESTRICCIONES
+No inventes hallazgos que no esten en HALLAZGOS.md. No incluyas valores de
+tokens, secretos ni credenciales.
+
+CRITERIOS DE ACEPTACION
+HU-01.md tiene las secciones Origen, Contexto, Ajustes necesarios, Criterios de
+aceptacion y Evidencia esperada. Origen lista los Id (H-xx) y la evidencia
+archivo:linea de cada hallazgo usado. Cada criterio de aceptacion es
+verificable con una prueba.
+
+FORMATO DE RESPUESTA
+Solo el archivo HU-01.md.</pre></div>
+                                    <div class="step-desc">Solo si tu <code>HALLAZGOS.md</code> no tiene hallazgos de token en estado "Pendiente", crea <code>HU-01.md</code> y pega esta version de referencia:</div>
+                                    <div class="code"><pre># HU-01 - Token firmado con expiracion y claims minimos
+
+## Veredicto
+**Usable con ajustes.** La historia conecta seguridad, configuracion, testing y evidencia.
+
+## Contexto
+El servicio de autenticacion expone `POST /auth/login` y devuelve `token`, `expiresIn` y `user`. La implementacion usa firma HMAC y lee `AUTH_TOKEN_SECRET`.
+
+## Ajustes necesarios
+- Exigir los claims `sub`, `client`, `iat` y `exp`.
+- Obtener `client` desde la solicitud, validarlo y reflejarlo en el token.
+- Comprobar que `expiresIn` coincide con `exp - now` usando una tolerancia documentada.
+- Eliminar el secreto por defecto fuera del sandbox o documentarlo como exclusivo de laboratorio.
+- Evitar logs del token y del secreto.
+- Mantener como decision tecnica si se conserva HMAC o se adopta una libreria JWT.
+
+## Criterios de aceptacion
+- Un token valido contiene `sub`, `client`, `iat` y `exp`.
+- `expiresIn` es coherente con `exp - now` dentro de la tolerancia definida.
+- Login valido, credenciales invalidas y token expirado tienen pruebas.
+- No se registran tokens, secretos ni valores sensibles.
+- La decision sobre HMAC frente a una libreria JWT queda documentada.
+
+## Evidencia esperada
+- Documento generado por los Skills a partir de este archivo.
+- Pruebas de claims, expiracion y errores de autenticacion.
+- Configuracion documentada de `AUTH_TOKEN_SECRET`.
+- Evidencia de logs redactados.</pre></div>
+                                <div class="step-desc"><strong>Comprobacion:</strong> confirma que el archivo existe y que Copilot Chat puede leerlo desde la raiz del repositorio.</div>
+                                <div class="code">
+                                    <pre># Bash
+test -f HU-01.md &amp;&amp; cat HU-01.md
+
+# PowerShell
+Test-Path .\HU-01.md
+Get-Content .\HU-01.md</pre>
+                                </div>
+                                <div class="step-desc"><strong>Prueba:</strong> Genera tu Prompt para usar este skill con el archivo 
+                                    creado (HU-01.md). Puedes tambien usar el siguiente Prompt:</div>
+                                <div class="code">
+                                    <pre>Actua como el Skill feature-intake-spec-checklist
+(.github/skills/feature-intake-spec-checklist/SKILL.md).
+
+Lee workshop-auth-backend/HU-01.md y usa el archivo como unica entrada.
+Genera UNICAMENTE el documento Output definido en el contrato del Skill,
+con sus nueve secciones: Summary, Scope (in/out), Assumptions,
+Technical decisions to make, Risks and mitigations, Acceptance criteria,
+Validation plan, Suggested tasks by role y Open questions.
+
+No inventes requisitos. Marca como pregunta abierta toda decision que la HU
+no confirme. No incluyas valores de tokens, secretos ni credenciales.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Revisar el resultado:</strong> verifica que la respuesta cubra los claims <code>sub</code>, <code>client</code>, <code>iat</code> y <code>exp</code>; la relacion entre <code>expiresIn</code> y <code>exp</code>; la configuracion segura de <code>AUTH_TOKEN_SECRET</code>; ausencia de logs sensibles; pruebas de token, expiracion y claims; y tareas para Tech Lead, Backend y QA. La decision HMAC frente a una libreria JWT debe quedar como una decision tecnica o pregunta abierta, no como un hecho inventado.</div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> <code>HU-01.md</code> esta versionado en la raiz, el Skill lee el archivo como entrada y produce un documento trazable, sin secretos, con criterios de aceptacion verificables y preguntas abiertas donde falte confirmacion.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">07</span>
+                            <div class="step-body">
+                                <div class="step-title">Versionar el laboratorio</div>
+                                <div class="step-desc">Tiempo estimado: 5 minutos. Sube todo lo trabajado en S1
+                                    (Skill y HU-01.md) y marca el laboratorio con un tag.</div>
+                                <div class="code">
+                                    <pre>git add -A
+git commit -m "lab02-s1: skill basico feature-intake-spec-checklist + HU-01"
+git push origin HEAD
+git push origin skill-feature-intake-v0.1.0
+git tag lab02-s1
+git push origin lab02-s1</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> el repositorio remoto
+                                    contiene <code>.github/skills/feature-intake-spec-checklist/</code>,
+                                    <code>HU-01.md</code> y el tag <code>lab02-s1</code> apunta al commit final del
+                                    laboratorio (ademas de <code>skill-feature-intake-v0.1.0</code>).</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel out-panel">
+                    <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+                    <ul class="out-list">
+                        <li><code>.github/skills/feature-intake-spec-checklist/</code> con <code>SKILL.md</code>,
+                            <code>examples/input.sample.md</code>, <code>examples/output.sample.md</code>
+                        </li>
+                        <li>Demostracion de descubrimiento y ejecucion del Skill desde Copilot Chat</li>
+                        <li><code>HU-01.md</code> revisada por el Skill y un resultado trazable de contrato y seguridad</li>
+                        <li>Commit y tag <code>skill-feature-intake-v0.1.0</code></li>
+                        <li>Commit y tag <code>lab02-s1</code> con todo el laboratorio versionado</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="session am">
+            <div class="s-head">
+                <div class="time-col"><span class="t-start">11:45</span><span class="t-end">13:00</span></div>
+                <div class="s-meta">
+                    <span class="s-tag">Laboratorio S2</span>
+                    <h2 class="s-title">Skills desde el catalogo (onboarding + ciclo SDLC)</h2>
+                    <p class="s-obj">Registrar tu repositorio en el catalogo central <code>skills-catalog</code>,
+                        instalar 6 Skills via ISSUE y simular un ciclo SDLC (API, Backend, Frontend, Test, docs y
+                        Review) sobre los tres workshops.</p>
+                </div>
+                <span class="dur">1 h 15</span>
+            </div>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+                    <ul class="mat-list">
+                        <li><code>reqflow-workspace/</code> del Dia 1 con tus 3 repos propios (los comandos de S2 se ejecutan desde ahi):
+                            <code>workshop-auth-backend</code>,
+                            <code>workshop-login-frontend</code>,
+                            <code>workshop-requirements-api</code>
+                        </li>
+                        <li><code>workshop-auth-backend/.github/skills/feature-intake-spec-checklist</code> ya creado en S1</li>
+                        <li>Acceso para crear ISSUES en <code>NTTData-Academy/bcp-ai-skill-catalog</code> (plantillas
+                            <code>repo-onboarding</code> y <code>skills-install</code>)</li>
+                        <li>HU-01 local: <code>workshop-auth-backend/HU-01.md</code> ya existe; la generaste en S1 desde tu <code>HALLAZGOS.md</code> del backend.</li>
+                        <li>HU-05 local: genérala con el mismo prompt de S1, leyendo <code>workshop-login-frontend/HALLAZGOS.md</code> (hallazgo de <code>innerHTML</code> en estado "Pendiente").</li>
+                        <li>Los Skills de S2 reciben tambien <code>docs/ENDPOINTS.md</code> y <code>docs/TESTING.md</code> del Dia 1 como punto de partida.</li>
+                        <li>Solo si tu <code>HALLAZGOS.md</code> no tiene esos hallazgos "Pendiente", crea los archivos y pega las versiones de referencia de abajo.</li>
+                        <div class="code"><pre># PowerShell
+New-Item -ItemType File -Force .\HU-01.md
+New-Item -ItemType File -Force .\HU-05.md</pre></div>
+                        <div class="code"><pre># HU-01.md
+# HU-01 - Token firmado con expiracion y claims minimos
+
+## Origen
+- Hallazgos de token del backend en `HALLAZGOS.md` (Id `H-xx` de tu Dia 1).
+
+## Veredicto
+**Usable con ajustes.** La historia conecta seguridad, configuracion, testing y evidencia.
+
+## Contexto
+El servicio de autenticacion expone `POST /auth/login` y devuelve `token`, `expiresIn` y `user`. La implementacion usa firma HMAC y lee `AUTH_TOKEN_SECRET`.
+
+## Ajustes necesarios
+- Exigir los claims `sub`, `client`, `iat` y `exp`.
+- Obtener `client` desde la solicitud, validarlo y reflejarlo en el token.
+- Comprobar que `expiresIn` coincide con `exp - now` usando una tolerancia documentada.
+- Eliminar el secreto por defecto fuera del sandbox o documentarlo como exclusivo de laboratorio.
+- Evitar logs del token y del secreto.
+- Mantener como decision tecnica si se conserva HMAC o se adopta una libreria JWT.
+
+## Criterios de aceptacion
+- Un token valido contiene `sub`, `client`, `iat` y `exp`.
+- `expiresIn` es coherente con `exp - now` dentro de la tolerancia definida.
+- Login valido, credenciales invalidas y token expirado tienen pruebas.
+- No se registran tokens, secretos ni valores sensibles.
+- La decision sobre HMAC frente a una libreria JWT queda documentada.
+
+## Evidencia esperada
+- Documento generado por los Skills a partir de este archivo.
+- Pruebas de claims, expiracion y errores de autenticacion.
+- Configuracion documentada de `AUTH_TOKEN_SECRET`.
+- Evidencia de logs redactados.</pre></div>
+                        <div class="code"><pre># HU-05.md
+# HU-05 - Eliminar `innerHTML` en mensajes de login
+
+## Origen
+- Hallazgo de `innerHTML` del frontend en `HALLAZGOS.md` (Id `H-xx` de tu Dia 1).
+
+## Veredicto
+**Usable directamente.** El hallazgo existe y el cambio es acotado, observable y facil de probar.
+
+## Estado actual
+`login.component.html` usa `[innerHTML]` para renderizar `message`, y `login.component.ts` construye mensajes con etiquetas HTML.
+
+## Ajustes recomendados
+- Cambiar el mensaje a texto plano.
+- Usar interpolacion Angular: `{{ message }}`.
+- Eliminar `<strong>` y `<br>` de los valores dinamicos.
+- Mapear 400, 401 y 500 a mensajes genericos.
+- Mantener detalles tecnicos solo en logs controlados, sin credenciales.
+
+## Criterios de aceptacion
+- No existe `[innerHTML]` en el flujo de login.
+- Los mensajes se muestran como texto plano.
+- Errores backend se convierten a mensajes genericos.
+- Hay al menos una prueba para el mapeo de errores.
+- El login valido y el logout no se rompen.
+
+## Uso en el Dia 2
+- S1: Skill de seguridad frontend.
+- S2: template de cambio y pruebas.
+- S3: tool de busqueda de patrones inseguros.
+- W1: evidencia de diff, test y comportamiento.</pre></div>
+                        <li>Skills del catalogo a instalar (set base ReqFlow; se reutiliza en el Dia 3):
+                            <code>discovery-analysis</code> (quality),
+                            <code>spec-writing</code> (specification),
+                            <code>architecture-decision</code> (architecture),
+                            <code>issue-implementation</code> (quality),
+                            <code>reqflow-definition-of-done</code> (review)
+                        </li>
+                    </ul>
+                    <p class="mat-note">A diferencia de S1, aqui los Skills no se escriben a mano: se solicitan
+                        mediante ISSUES al catalogo central (<code>skills-catalog</code>) y un workflow los copia
+                        automaticamente a <code>.github/skills/</code> de tu repositorio, registrando ademas el
+                        repositorio y sus dominios en <code>subscribers.json</code>.</p>
+                </div>
+                <div class="panel">
+                    <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-num">01</span>
+                            <div class="step-body">
+                                <div class="step-title">Verificar prerrequisitos: workshops y Skill de S1</div>
+                                <div class="step-desc">Tiempo: 5 minutos. Desde <code>reqflow-workspace/</code>, confirma que los tres
+                                    repos y el Skill de S1 existen antes de continuar.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre># Bash
+test -d workshop-auth-backend && echo "OK: workshop-auth-backend"
+test -d workshop-login-frontend && echo "OK: workshop-login-frontend"
+test -d workshop-requirements-api && echo "OK: workshop-requirements-api"
+test -d workshop-auth-backend/.github/skills/feature-intake-spec-checklist && echo "OK: skill de S1"
+
+# PowerShell
+Test-Path .\workshop-auth-backend
+Test-Path .\workshop-login-frontend
+Test-Path .\workshop-requirements-api
+Test-Path .\workshop-auth-backend\.github\skills\feature-intake-spec-checklist</pre>
+                                </div>
+                                <div class="step-desc">Si falta alguno de los repos, no clones la plantilla limpia: créalo
+                                    como repo propio con el paso 1 del README del Dia 1, o parte de la rama
+                                    <code>checkpoint/day1</code>.</div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> los cuatro <code>test</code>
+                                    (o <code>Test-Path</code>) confirman presencia.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">02</span>
+                            <div class="step-body">
+                                <div class="step-title">Onboarding del repositorio en el catalogo</div>
+                                <div class="step-desc">Tiempo: 10-15 minutos. Antes de instalar Skills, tu
+                                    repositorio debe existir en <code>subscribers.json</code> del catalogo. Crea el
+                                    ISSUE desde el navegador, sin marcar ningun dominio: eso se registrara solo mas
+                                    adelante, cuando instales los Skills en el paso 04.</div>
+                                <div class="step-desc"><strong>1.</strong> Abre tu navegador de preferencia y ve a:
+                                    <code>https://github.com/NTTData-Academy/bcp-ai-skill-catalog/issues</code></div>
+                                <div class="step-desc"><strong>2.</strong> Haz clic en <strong>New issue</strong> y
+                                    selecciona la plantilla <strong>Onboarding de nuevo repositorio</strong>.</div>
+                                <div class="step-desc"><strong>3.</strong> Revisa que el label
+                                    <code>repo-onboarding</code> quede preseleccionado (campo <strong>Labels</strong>
+                                    en la barra lateral del ISSUE).</div>
+                                <div class="step-desc"><strong>4.</strong> En el campo <strong>Repositorios
+                                    destinos</strong> escribe tus tres repos, sin el owner y uno por linea:
+                                    <code>workshop-auth-backend</code>, <code>workshop-login-frontend</code>,
+                                    <code>workshop-requirements-api</code>.</div>
+                                <div class="step-desc"><strong>5.</strong> En <strong>Dominios iniciales
+                                    (Opcional)</strong> no marques ninguna casilla: para este laboratorio los
+                                    dominios se registran automaticamente al instalar los Skills en el paso 04.</div>
+                                <div class="step-desc"><strong>6.</strong> Haz clic en <strong>Submit new
+                                    issue</strong>.</div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> el workflow
+                                    <code>onboard-repo-on-issue.yml</code> se ejecuta, agrega
+                                    <code>.github/workflows/sync-skills.yml</code> a tu repositorio, registra tu
+                                    repositorio (con dominios <code>[]</code>) en <code>subscribers.json</code>,
+                                    comenta el resultado en el ISSUE y lo cierra automaticamente si todo fue
+                                    correcto.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">03</span>
+                            <div class="step-body">
+                                <div class="step-title">Explorar el catalogo de Skills disponibles</div>
+                                <div class="step-desc">Tiempo: 5-10 minutos. Consulta
+                                    <code>SKILLS-MANIFEST.json</code> filtrando los dominios que usaras en este
+                                    laboratorio: api, backend, frontend, test, governance y review.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre># Bash
+curl -s https://raw.githubusercontent.com/NTTData-Academy/bcp-ai-skill-catalog/main/SKILLS-MANIFEST.json \
+  | jq -r '.skills[] | select(.domain=="api" or .domain=="backend" or .domain=="frontend" or .domain=="test" or .domain=="governance" or .domain=="review") | "\(.domain) -> \(.identifier): \(.description)"'</pre>
+                                </div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre># PowerShell
+$manifest = Invoke-RestMethod https://raw.githubusercontent.com/NTTData-Academy/bcp-ai-skill-catalog/main/SKILLS-MANIFEST.json
+$manifest.skills |
+  Where-Object { $_.domain -in @('api','backend','frontend','test','governance','review') } |
+  Select-Object domain, identifier, description</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> identificas, entre otros,
+                                    <code>discovery-analysis</code>, <code>spec-writing</code>,
+                                    <code>architecture-decision</code>, <code>issue-implementation</code> y
+                                    <code>reqflow-definition-of-done</code>, que son los que instalaras en el siguiente paso.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">04</span>
+                            <div class="step-body">
+                                <div class="step-title">Solicitar la instalacion de los Skills base de ReqFlow (los mismos del Dia 3)</div>
+                                <div class="step-desc">Tiempo: 10-15 minutos. Crea el ISSUE desde el navegador y
+                                    marca exactamente los Skills del set base.</div>
+                                <div class="step-desc"><strong>1.</strong> En
+                                    <code>https://github.com/NTTData-Academy/bcp-ai-skill-catalog/issues</code>, haz clic
+                                    en <strong>New issue</strong> y selecciona la plantilla <strong>Instalar /
+                                    actualizar Skills en un repositorio</strong>.</div>
+                                <div class="step-desc"><strong>2.</strong> Revisa que el label
+                                    <code>skills-install</code> quede preseleccionado.</div>
+                                <div class="step-desc"><strong>3.</strong> En <strong>Repositorios destinos</strong>
+                                    escribe los mismos tres repos usados en el paso 02.</div>
+                                <div class="step-desc"><strong>4.</strong> Marca solo estas casillas:</div>
+                                <div class="mat-list" style="margin: 0 0 .6rem 0;">
+                                    <li><strong>Dominio: architecture</strong> &rarr; <code>architecture-decision</code></li>
+                                    <li><strong>Dominio: quality</strong> &rarr; <code>discovery-analysis</code> y <code>issue-implementation</code></li>
+                                    <li><strong>Dominio: review</strong> &rarr; <code>reqflow-definition-of-done</code></li>
+                                    <li><strong>Dominio: specification</strong> &rarr; <code>spec-writing</code></li>
+                                </div>
+                                <div class="step-desc">Deja sin marcar el resto de casillas y secciones de dominio.
+                                    Haz clic en <strong>Submit new issue</strong>.</div>
+                                <div class="step-desc">Si por algun motivo tu repositorio no quedo registrado en el
+                                    paso 02, el workflow lo detecta y dispara el onboarding automaticamente antes de
+                                    instalar los Skills.</div>
+                                <div class="step-desc"><strong>Salida esperada:</strong>
+                                    <code>install-skills-on-issue.yml</code> crea un commit por Skill y hace push a
+                                    la rama por defecto de tu repositorio, actualiza los dominios en
+                                    <code>subscribers.json</code>, comenta el resultado en el ISSUE y lo cierra si
+                                    todo fue correcto.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">05</span>
+                            <div class="step-body">
+                                <div class="step-title">Sincronizar los Skills instalados en tu equipo</div>
+                                <div class="step-desc">Tiempo: 5 minutos. Los commits los crea el bot del catalogo
+                                    directamente en tu repositorio remoto; trae esos cambios a tu clon local.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre># Bash, desde reqflow-workspace/
+for r in workshop-auth-backend workshop-login-frontend workshop-requirements-api; do
+  git -C "$r" pull origin main
+  find "$r/.github/skills" -maxdepth 1 -type d
+done
+
+# PowerShell, desde reqflow-workspace/
+foreach ($r in "workshop-auth-backend", "workshop-login-frontend", "workshop-requirements-api") {
+    git -C $r pull origin main
+    Get-ChildItem "$r\.github\skills"
+}</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> junto a
+                                    <code>feature-intake-spec-checklist</code> (S1), ahora ves 5 carpetas nuevas:
+                                    <code>discovery-analysis</code>, <code>spec-writing</code>,
+                                    <code>architecture-decision</code>, <code>issue-implementation</code> y
+                                    <code>reqflow-definition-of-done</code>.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">06</span>
+                            <div class="step-body">
+                                <div class="step-title">Discovery - Encontrar hallazgos y seleccionar un issue candidato</div>
+                                <div class="step-desc">Tiempo: 10-15 minutos. Usa <code>discovery-analysis</code> para analizar el producto ReqFlow (multi-repo) y producir una lista corta de hallazgos con evidencia. No modifiques codigo.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>Actua como el Skill discovery-analysis
+(.github/skills/discovery-analysis/SKILL.md).
+
+Contexto: estas en reqflow-workspace/ con los tres repos:
+- workshop-auth-backend
+- workshop-login-frontend
+- workshop-requirements-api
+
+Objetivo: produce 3-5 hallazgos con evidencia concreta (archivo:linea o comando),
+impacto, prioridad propuesta, contrato potencialmente afectado y como validarlo.
+
+Restricciones:
+- no modificar codigo;
+- no crear issues automaticamente;
+- marca todo como CANDIDATO y detente para revision humana.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> 3-5 hallazgos con evidencia (Estado: CANDIDATO) listos para convertir en Issue tras gate humano.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">07</span>
+                            <div class="step-body">
+                                <div class="step-title">Spec - Especificar el cambio aprobado</div>
+                                <div class="step-desc">Tiempo: 10-15 minutos. Usa <code>spec-writing</code> para convertir el hallazgo/Issue aprobado en una spec verificable (sin diseno ni implementacion).</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>Actua como el Skill spec-writing
+(.github/skills/spec-writing/SKILL.md).
+
+Fuente: usa como entrada el hallazgo/Issue aprobado (titulo + evidencia + impacto).
+Incluye contratos protegidos de ReqFlow cuando aplique.
+
+Entrega solo la spec en el formato sugerido por el Skill y detente para
+revision humana.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> spec verificable con alcance, fuera de alcance, criterios de aceptacion y contratos protegidos.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">08</span>
+                            <div class="step-body">
+                                <div class="step-title">Architecture - Decidir estrategia y pruebas a proteger</div>
+                                <div class="step-desc">Tiempo: 10-15 minutos. Usa <code>architecture-decision</code> para evaluar impacto, estrategia incremental y pruebas necesarias antes de implementar.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>Actua como el Skill architecture-decision
+(.github/skills/architecture-decision/SKILL.md).
+
+Entrada: spec aprobada.
+Salida: impacto, componentes, contratos protegidos, estrategia incremental,
+pruebas necesarias, riesgos/trade-offs y decisiones abiertas.
+
+Detente para revision humana antes de implementar.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> plan tecnico incremental y testeable (sin reescrituras ni cambios fuera de alcance).</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">09</span>
+                            <div class="step-body">
+                                <div class="step-title">Implementation - Implementar un issue aprobado con evidencia</div>
+                                <div class="step-desc">Tiempo: 15-20 minutos. Usa <code>issue-implementation</code> para guiar la implementacion incremental del Issue aprobado, con pruebas y PR auditable.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>Actua como el Skill issue-implementation
+(.github/skills/issue-implementation/SKILL.md).
+
+Precondiciones:
+- issue aprobado
+- spec aprobada
+- impacto/arquitectura aprobada
+
+Implementa el cambio minimo necesario, ejecuta pruebas relevantes y prepara
+un PR con evidencia real.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> implementacion acotada + evidencia de pruebas/validaciones, lista para PR.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">10</span>
+                            <div class="step-body">
+                                <div class="step-title">Review - Evaluar el cambio con DoD de ReqFlow</div>
+                                <div class="step-desc">Tiempo: 8-10 minutos. Usa <code>reqflow-definition-of-done</code> como evaluator final basado en evidencia.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>Actua como el Skill reqflow-definition-of-done
+(.github/skills/reqflow-definition-of-done/SKILL.md).
+
+Evalua el cambio propuesto/implementado para el Issue trabajado en S2.
+
+Para cada criterio responde solo con:
+- CUMPLIDO (citar evidencia)
+- FALTA EVIDENCIA (decir que falta)
+- BLOQUEADO (explicar causa)
+- NO APLICA AL ALCANCE (justificar)
+- PENDIENTE DE OTRO GATE (indicar cual)
+
+No inventes ejecuciones de CI ni cobertura.</pre>
+                                </div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> evaluacion DoD con evidencia/citas y una decision explicita de si el cambio puede avanzar a PR.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">11</span>
+                            <div class="step-body">
+                                <div class="step-title">Versionar el laboratorio</div>
+                                <div class="step-desc">Tiempo: 5 minutos. Sube todo lo trabajado en S2 (Skills
+                                    instalados, cambios de HU-01/HU-05, matriz de pruebas y evidencia) y marca el
+                                    laboratorio con un tag.</div>
+                                <div class="code" style="max-width: 730px;">
+                                    <pre>git add -A
+git commit -m "lab02-s2: skills catalog onboarding + ciclo SDLC (HU-01, HU-05)"
+git push origin HEAD
+git tag lab02-s2
+git push origin lab02-s2</pre>
+                                </div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> el repositorio remoto
+                                    contiene los 6 Skills instalados, los cambios de HU-01 y HU-05,
+                                    <code>SDLC-EVIDENCE.md</code>, y el tag <code>lab02-s2</code> apunta al commit
+                                    final del laboratorio.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel out-panel">
+                    <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+                    <ul class="out-list">
+                        <li>Repositorio registrado en <code>subscribers.json</code> del catalogo, con
+                            <code>.github/workflows/sync-skills.yml</code> instalado</li>
+                        <li><code>.github/skills/</code> con 6 Skills del catalogo (api, backend, frontend, test,
+                            governance, review) junto al de S1</li>
+                        <li>Contrato API, ajuste de backend (HU-01) y ajuste de frontend (HU-05) generados con sus
+                            respectivos Skills</li>
+                        <li>Matriz de pruebas y <code>SDLC-EVIDENCE.md</code> con la revision final</li>
+                        <li>Commit y tag <code>lab02-s2</code> con todo el laboratorio versionado</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="break">Almuerzo · 13:00-14:00</div>
+        <div class="session pm">
+            <div class="s-head">
+                <div class="time-col"><span class="t-start">14:00</span><span class="t-end">15:20</span></div>
+                <div class="s-meta">
+                    <span class="s-tag">Laboratorio S3</span>
+                    <h2 class="s-title">MCP con permisos explicitos</h2>
+                    <p class="s-obj">Exponer recursos con permisos, logs y decision humana.</p>
+                </div>
+                <span class="dur">1 h 20</span>
+            </div>
+            <div class="panels">
+                <div class="panel">
+                    <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+                    <ul class="mat-list">
+                        <li>GitHub CLI autenticado y acceso a un repositorio de laboratorio.</li>
+                        <li>Podman y PowerShell para levantar el MCP local.</li>
+                        <li>VS Code con Copilot Chat en modo <strong>Agent</strong>.</li>
+                        <li>Repositorio de practica donde crear <code>.vscode/mcp.json</code>.</li>
+                        <li>No uses repositorios productivos ni muestres tokens en capturas.</li>
+                    </ul>
+                    <div class="code"><pre>git --version
+gh --version
+podman --version
+$PSVersionTable.PSVersion
+gh auth status</pre></div>
+                    <p class="mat-note">Si GitHub Projects requiere permisos adicionales, ejecuta <code>gh auth refresh -s project</code>. Los permisos efectivos dependen de la cuenta, los scopes, la organizacion y el repositorio.</p>
+                </div>
+                <div class="panel">
+                    <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+                    <div class="steps">
+                        <div class="step">
+                            <span class="step-num">01</span>
+                            <div class="step-body">
+                                <div class="step-title">Levantar el MCP local</div>
+                                <div class="step-desc">Tiempo: 20-30 minutos. Clona y construye la imagen base; despues el wrapper HTTP de <code>tools/mcp-local/</code> la expondra en <code>http://localhost:8081/mcp</code>. El servidor original usa <code>stdio</code>; <code>mcp-proxy</code> solo transforma el transporte a HTTP.</div>
+                                <div class="code"><pre>git clone https://github.com/kunwarVivek/mcp-github-project-manager.git
+cd mcp-github-project-manager
+podman build -t localhost/mcp-github-project-manager:latest .
+podman images localhost/mcp-github-project-manager
+
+# Desde bcp-ai-lab-day-02/s3_mcp/tools/mcp-local
+./start-mcp.ps1 -Owner "TU_OWNER" -Repo "TU_REPO_DE_PRUEBA"
+
+# En otra consola
+curl.exe -i http://localhost:8081/mcp
+podman ps</pre></div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> imagen base creada, contenedor en ejecucion, puerto 8081 publicado y respuesta HTTP. Antes de inicializar una sesion MCP, un <code>400 Bad Request</code> por ausencia de <code>sessionId</code> es valido: el endpoint existe. No copies tokens al YAML ni crees Custom Agents o Skills.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">02</span>
+                            <div class="step-body">
+                                <div class="step-title">Conectar VS Code y descubrir tools</div>
+                                <div class="step-desc">Tiempo: 15-20 minutos. En la raíz de <code>reqflow-workspace/</code> (no dentro de un repo) crea <code>.vscode/mcp.json</code>, abre Copilot Chat en modo <strong>Agent</strong> estandar y habilita el servidor local.</div>
+                                <div class="code"><pre>{
+  "servers": {
+    "github-local": {
+      "type": "http",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}</pre></div>
+                                <div class="step-desc">En <strong>Configure Tools</strong>, verifica que aparezca <code>github-local</code> (o el nombre derivado del servidor) y habilita <code>discover_tools</code> y <code>manage_issues</code>. Para la primera prueba deshabilita temporalmente las Built-in <code>agent</code>, <code>browser</code>, <code>edit</code>, <code>execute</code>, <code>search</code>, <code>todo</code>, <code>vscode</code> y <code>web</code>. Mantén <code>read</code> habilitada: solo puede procesar resultados MCP grandes almacenados por VS Code, no obtiene datos de GitHub.</div>
+                                <div class="code"><pre>Usa exclusivamente la herramienta MCP discover_tools.
+
+Busca que herramienta y que accion permiten listar issues de un repositorio.
+No uses terminal, archivos locales, web ni ninguna otra herramienta.</pre></div>
+                                <div class="step-desc"><strong>Salida esperada:</strong> identificar <code>manage_issues</code> con <code>action = list</code>.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">03</span>
+                            <div class="step-body">
+                                <div class="step-title">Consultar issues y comprobar permisos locales</div>
+                                <div class="step-desc">Tiempo: 20 minutos. Los repos de laboratorio aun no tienen issues (los del backlog, uno por HU, se crean en el paso 04): primero crea un issue temporal con una escritura controlada y despues léelo. Sustituye <code>&lt;OWNER&gt;</code> y <code>&lt;REPO&gt;</code> por el repositorio configurado. Revisa la llamada propuesta antes de autorizar la escritura.</div>
+                                <div class="code"><pre>Usa la herramienta MCP manage_issues.
+
+Ejecuta la accion "create" con estos parametros:
+owner: &lt;OWNER&gt;
+repo: &lt;REPO&gt;
+title: MCP local - write permission test
+body: Issue temporal creado para validar permisos del laboratorio MCP.
+
+No uses terminal, GitHub CLI, web ni archivos del workspace.
+Antes de ejecutar, muestrame la tool MCP y los parametros que vas a enviar.</pre></div>
+                                <div class="step-desc">Ahora que existe al menos un issue, léelo y observa la invocacion MCP y sus parametros como evidencia de que GitHub se consulto mediante el servidor local.</div>
+                                <div class="code"><pre>Usa la herramienta MCP manage_issues.
+
+Ejecuta la accion "list" con estos parametros:
+owner: &lt;OWNER&gt;
+repo: &lt;REPO&gt;
+state: open
+
+No uses terminal, GitHub CLI, web, archivos locales ni ninguna otra herramienta.
+Resume numero, titulo y estado de cada issue.</pre></div>
+                                <div class="step-desc"><strong>Evidencia esperada:</strong> una llamada equivalente a <code>Ran Manage Issues</code> con <code>action: list</code>, <code>owner</code>, <code>repo</code> y <code>state: open</code> que devuelve el issue temporal. Luego inicia un chat nuevo y prueba: <code>Usando el MCP local, consulta los issues abiertos de &lt;OWNER&gt;/&lt;REPO&gt; y resume numero, titulo y estado.</code> Compara la seleccion automatica de la tool con la invocacion explicita.</div>
+                                <div class="step-desc">Cierra o elimina el issue temporal. Explica donde se aplica una restriccion: tool expuesta, configuracion del servidor, scope del token, permiso de la cuenta o GitHub. La conclusion es: <strong>tool visible != permiso efectivo</strong>.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">04</span>
+                            <div class="step-body">
+                                <div class="step-title">Conectar GitHub MCP oficial y comparar</div>
+                                <div class="step-desc">Tiempo: 20-25 minutos. Agrega el servidor remoto oficial al mismo <code>.vscode/mcp.json</code>. Completa el flujo de autenticacion soportado por tu organizacion; no incluyas tokens en archivos versionados.</div>
+                                <div class="code"><pre>{
+  "servers": {
+    "github-official": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "github-official-readonly": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "X-MCP-Toolsets": "issues,repos,pull_requests",
+        "X-MCP-Readonly": "true"
+      }
+    }
+  }
+}</pre></div>
+                                <div class="code"><pre>Que tools MCP tienes disponibles en github-official?
+No ejecutes ninguna; agrupelas por proposito.
+
+Usando exclusivamente github-official, consulta los issues abiertos de OWNER/REPO y resume numero, titulo 
+y estado.
+No uses terminal, GitHub CLI, busquedas del workspace ni archivos locales.</pre></div>
+                                <div class="step-desc">Registra que tool oficial resolvio la lectura y compárala con <code>manage_issues</code> del MCP local. Despues crea el backlog que reutilizan los Dias 3 y 4: <strong>un issue por cada HU del dia, en el repo donde vive cada HU</strong> (<code>&lt;OWNER&gt;/workshop-auth-backend</code> para HU-01, <code>&lt;OWNER&gt;/workshop-login-frontend</code> para HU-05). Titulo: el titulo de la HU. Cuerpo: la seccion Origen (Id <code>H-xx</code> y evidencia archivo:linea), los Criterios de aceptacion como checklist y el enlace al PR de S2 si existe. Revisa la tool MCP antes de autorizar cada creacion. Si la escritura es rechazada, conserva el rechazo como evidencia de permisos y crea los issues desde la interfaz web: el Dia 3 los necesita igual.</div>
+                                <div class="step-desc">Crea el Project <strong>ReqFlow</strong> bajo tu owner (una sola vez; los Dias 3 y 4 lo reutilizan), agrega cada issue y completa el campo <code>Hallazgo origen</code> con el Id <code>H-xx</code>:</div>
+                                <div class="code"><pre>gh project create --owner &lt;OWNER&gt; --title ReqFlow
+gh project field-create &lt;NUMERO_PROJECT&gt; --owner &lt;OWNER&gt; --name "Hallazgo origen" --data-type TEXT
+gh project item-add &lt;NUMERO_PROJECT&gt; --owner &lt;OWNER&gt; --url &lt;URL_DEL_ISSUE&gt;</pre></div>
+                                <div class="step-desc">En <strong>Configure Tools</strong>, comprueba que <code>github-official-readonly</code> solo expone lectura y ejecuta una consulta real. Opcionalmente solicita una creacion; si no existe tool de escritura, indícalo y no busques otro mecanismo.</div>
+                                <div class="step-desc"><strong>Cierre:</strong> <code>mcp.json</code>, toolsets y read-only reducen capacidades del cliente, pero no son la unica frontera de seguridad. Aplica scopes minimos, permisos GitHub minimos, rulesets/policies y solo las tools necesarias.</div>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <span class="step-num">05</span>
+                            <div class="step-body">
+                                <div class="step-title">Versionar el laboratorio</div>
+                                <div class="step-desc">Tiempo estimado: 5 minutos. <code>reqflow-workspace/</code> no es un repo git: versiona <strong>dentro de cada repo que tocaste</strong>. Guarda la evidencia en <code>docs/mcp-evidence/</code> más una <strong>copia</strong> de tu <code>.vscode/mcp.json</code> sin tokens; el original se queda en la raíz del workspace.</div>
+                                <div class="code"><pre># Desde reqflow-workspace/, en cada repo que cambiaste
+cd workshop-auth-backend
+New-Item -ItemType Directory -Force docs\mcp-evidence
+Copy-Item ..\.vscode\mcp.json docs\mcp-evidence\mcp.json
+git add -A
+git commit -m "lab02-s3: mcp local + github mcp oficial con permisos explicitos"
+git push origin HEAD
+git tag lab02-s3
+git push origin lab02-s3</pre></div>
+                                <div class="step-desc">Cierra además el día (igual que el Día 1), en cada repo que cambiaste: <code>git tag day2-done</code>, <code>git push --follow-tags</code>.</div>
+                                <div class="step-desc"><strong>Criterio de salida:</strong> cada repo remoto que cambiaste
+                                    contiene <code>docs/mcp-evidence/</code> (con la copia de <code>mcp.json</code> sin tokens ni
+                                    secretos), el tag <code>lab02-s3</code> apunta al commit final del laboratorio y existe el tag <code>day2-done</code>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel out-panel">
+                    <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+                    <ul class="out-list">
+                        <li>MCP local levantado con Podman y endpoint HTTP accesible.</li>
+                        <li>Servidor local y GitHub MCP oficial visibles y usados desde VS Code.</li>
+                        <li>Evidencia de <code>discover_tools</code>, consulta real de issues y una prueba de permisos o restriccion.</li>
+                        <li>Validacion de lectura con el servidor oficial y su configuracion read-only.</li>
+                        <li>Comparacion documentada: mantenimiento, ejecucion, transporte, capacidades, configuracion y autorizacion.</li>
+                        <li>Explicacion demostrable del flujo <code>Modelo -&gt; MCP -&gt; GitHub</code>, sin Custom Agents, Skills ni SDD.</li>
+                        <li>Commit y tag <code>lab02-s3</code> con todo el laboratorio versionado</li>
+                    </ul>
+                    <p class="mat-note">Criterio de salida: el participante distingue entre capacidades expuestas por un servidor MCP, seleccion de tools por el modelo y autorizacion efectiva de GitHub.</p>
+                </div>
+            </div>
+        </div>
+        <div class="break">Descanso · 15:20-15:30</div>
+        <div class="gate">
+            <div class="gate-head">
+                <span class="gate-chip">HANDOFF · cierre del día</span>
+                <span class="gate-title">Checklist para iniciar el Día 3</span>
+            </div>
+            <div class="gate-body">
+                <p class="gate-desc">Desde <code>reqflow-workspace/</code>, ejecuta el chequeo. Si falla, no continúes al Día 3.</p>
+                <div class="code"><pre>python tools/check_handoff.py --day 2 ../reqflow-workspace</pre></div>
+            </div>
+        </div>
+        <div class="gate">
+            <div class="gate-head">
+                <span class="gate-chip">W1 · 15:30-18:00</span>
+                <span class="gate-title">Evaluacion practica sobre ReqFlow</span>
+            </div>
+            <div class="gate-body">
+                <p class="gate-desc">Cada asistente recibe un requisito diferente y trabaja en su repositorio
+                    individual.</p>
+                <div class="rubric">
+                    <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Requisito + SDD</span>
+                    </div>
+                    <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Skill</span></div>
+                    <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Implementacion</span></div>
+                    <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Tools + MCP</span></div>
+                    <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Tests + review</span></div>
+                </div>
+                <p class="gate-thr">Umbral: <strong>&gt;= 80 %</strong> · Issue, PR, prompts y evidencia
+                    obligatorios.</p>
+            </div>
+        </div>
+        <p class="section-label">Cierre del dia: handoff al Dia 3</p>
+        <div class="session pm" style="margin-bottom:1.8rem">
+            <div class="panels" style="grid-template-columns: 1fr 1fr;">
+                <div class="panel">
+                    <div class="panel-label"><span class="dot mat-dot"></span>Verifica que existan</div>
+                    <ul class="mat-list">
+                        <li><code>HU-*.md</code> en la raiz de su repo, cada una con su seccion Origen (<code>H-xx</code>).</li>
+                        <li>Un issue por HU, en el repo de la HU, agregado al Project ReqFlow con el campo <code>Hallazgo origen</code>.</li>
+                        <li><code>.github/skills/</code> en cada repo, y <code>reqflow-workspace/.vscode/mcp.json</code>.</li>
+                        <li><code>docs/mcp-evidence/mcp.json</code> (copia sin tokens) en cada repo que cambiaste.</li>
+                        <li>El tag <code>day2-done</code> en cada repo que cambiaste (se crea en el paso 05 de S3, junto al tag <code>lab02-s3</code>).</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <div class="panel-label"><span class="dot step-dot"></span>Chequeo de salida</div>
+                    <ul class="mat-list">
+                        <li>Verifica desde la carpeta del laboratorio (al menos 1 repo en <code>[OK]</code> y <code>mcp.json</code> presente):
+                            <code>python tools/check_handoff.py --day 2 ../reqflow-workspace</code></li>
+                        <li>Si el chequeo falla, el Dia 3 parte de la rama <code>checkpoint/day2</code> que entrega el instructor.</li>
+                        <li>El Dia 3 no crea backlog nuevo: trabaja sobre tu Project <strong>ReqFlow</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

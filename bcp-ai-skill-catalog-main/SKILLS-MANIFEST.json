@@ -1,0 +1,277 @@
+{
+  "manifest_version": "1.0",
+  "generated_from": "capacitacion-empresarial/agent-skills/skills",
+  "root": "domains",
+  "domains": [
+    "api",
+    "architecture",
+    "backend",
+    "database",
+    "frontend",
+    "governance",
+    "platform",
+    "quality",
+    "review",
+    "security",
+    "specification",
+    "test"
+  ],
+  "skills": [
+    {
+      "identifier": "api-contract-generation",
+      "domain": "api",
+      "path": "domains/api/api-contract-generation/SKILL.md",
+      "description": "Genera contratos OpenAPI trazables desde historias de usuario y los valida con sus consumidores.",
+      "source": "agent-skills/skills/api-contract-generation",
+      "status": "ok"
+    },
+    {
+      "identifier": "api-contract-review",
+      "domain": "architecture",
+      "path": "domains/architecture/api-contract-review/SKILL.md",
+      "description": "Revisa compatibilidad de endpoints, schemas, errores y cambios contractuales.",
+      "source": "agent-skills/skills/api-contract-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "architecture-decision",
+      "domain": "architecture",
+      "path": "domains/architecture/architecture-decision/SKILL.md",
+      "description": "Evalua impacto tecnico y registra decisiones incrementales (brownfield) con estrategia y pruebas necesarias.",
+      "source": "bcp-ai-lab-day-03/templates/skills/architecture-decision",
+      "status": "ok"
+    },
+    {
+      "identifier": "discovery-analysis",
+      "domain": "quality",
+      "path": "domains/quality/discovery-analysis/SKILL.md",
+      "description": "Investiga un sistema existente y produce hallazgos con evidencia sin modificar codigo.",
+      "source": "bcp-ai-lab-day-03/templates/skills/discovery-analysis",
+      "status": "ok"
+    },
+    {
+      "identifier": "issue-implementation",
+      "domain": "quality",
+      "path": "domains/quality/issue-implementation/SKILL.md",
+      "description": "Implementa un issue aprobado de forma incremental, con pruebas, validaciones y PR auditable.",
+      "source": "bcp-ai-lab-day-03/templates/skills/issue-implementation",
+      "status": "ok"
+    },
+    {
+      "identifier": "reqflow-definition-of-done",
+      "domain": "review",
+      "path": "domains/review/reqflow-definition-of-done/SKILL.md",
+      "description": "Evalua criterios transversales de ReqFlow: contratos, CI, seguridad, evidencia y PR auditable.",
+      "source": "bcp-ai-lab-day-03/templates/skills/reqflow-definition-of-done",
+      "status": "ok"
+    },
+    {
+      "identifier": "spec-writing",
+      "domain": "specification",
+      "path": "domains/specification/spec-writing/SKILL.md",
+      "description": "Convierte un hallazgo o necesidad aprobada en una spec verificable, con alcance, contratos y criterios de aceptacion.",
+      "source": "bcp-ai-lab-day-03/templates/skills/spec-writing",
+      "status": "ok"
+    },
+    {
+      "identifier": "senior-architect",
+      "domain": "architecture",
+      "path": "domains/architecture/senior-architect/SKILL.md",
+      "description": "Comprehensive software architecture skill for designing scalable systems: trade-offs, ADRs, service decomposition and integration patterns.",
+      "source": "agent-skills/skills/senior-architect",
+      "status": "ok"
+    },
+    {
+      "identifier": "code-generation",
+      "domain": "backend",
+      "path": "domains/backend/code-generation/SKILL.md",
+      "description": "Generates complete Java 21/Spring Boot modules (entity+repo+service+controller+DTOs).",
+      "source": "agent-skills/skills/code-generation",
+      "status": "ok"
+    },
+    {
+      "identifier": "code-generation-henry",
+      "domain": "backend",
+      "path": "domains/backend/code-generation-henry/SKILL.md",
+      "description": "Variante de code-generation para modulos Java 21/Spring Boot.",
+      "source": "agent-skills/skills/code-generation-henry",
+      "status": "duplicate-of:code-generation"
+    },
+    {
+      "identifier": "code-generator-nodejs",
+      "domain": "backend",
+      "path": "domains/backend/code-generator-nodejs/SKILL.md",
+      "description": "Genera un backend NestJS 10 y TypeScript desde OpenAPI 3.0 o una implementation spec.",
+      "source": "agent-skills/skills/code-generator-nodejs",
+      "status": "missing-frontmatter"
+    },
+    {
+      "identifier": "scaffold-microservice",
+      "domain": "backend",
+      "path": "domains/backend/scaffold-microservice/SKILL.md",
+      "description": "Andamia un microservicio nuevo en Spring Boot o Quarkus con health check, observabilidad y test base (estandar BCP).",
+      "source": "agent-skills/skills/scaffold-microservice",
+      "status": "ok"
+    },
+    {
+      "identifier": "quarkus-secure-endpoint",
+      "domain": "backend",
+      "path": "domains/backend/quarkus-secure-endpoint/SKILL.md",
+      "description": "Crea o modifica endpoints REST en Quarkus siguiendo estandares de autenticacion, validacion y manejo de errores.",
+      "source": "skills-catalog/domains/backend (existente)",
+      "status": "ok"
+    },
+    {
+      "identifier": "database-migration-review",
+      "domain": "database",
+      "path": "domains/database/database-migration-review/SKILL.md",
+      "description": "Revisa migraciones de base de datos para compatibilidad, rollback, datos y seguridad.",
+      "source": "agent-skills/skills/database-migration-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "frontend-feature-generation",
+      "domain": "frontend",
+      "path": "domains/frontend/frontend-feature-generation/SKILL.md",
+      "description": "Genera funcionalidades frontend con componente, servicio, rutas, estados, accesibilidad y pruebas.",
+      "source": "agent-skills/skills/frontend-feature-generation",
+      "status": "ok"
+    },
+    {
+      "identifier": "frontend-session-safety",
+      "domain": "frontend",
+      "path": "domains/frontend/frontend-session-safety/SKILL.md",
+      "description": "Extrae y prueba el manejo seguro de sesion, evitando persistencia innecesaria de tokens.",
+      "source": "agent-skills/skills/frontend-session-safety",
+      "status": "ok"
+    },
+    {
+      "identifier": "safe-ui-messages",
+      "domain": "frontend",
+      "path": "domains/frontend/safe-ui-messages/SKILL.md",
+      "description": "Elimina HTML dinamico inseguro y normaliza mensajes de error del frontend.",
+      "source": "agent-skills/skills/safe-ui-messages",
+      "status": "ok"
+    },
+    {
+      "identifier": "angular-accessible-form",
+      "domain": "frontend",
+      "path": "domains/frontend/angular-accessible-form/SKILL.md",
+      "description": "Crea o modifica formularios Angular con validacion reactiva, mensajes de error accesibles y buenas practicas de UX.",
+      "source": "skills-catalog/domains/frontend (existente)",
+      "status": "ok"
+    },
+    {
+      "identifier": "sdlc-documentation",
+      "domain": "governance",
+      "path": "domains/governance/sdlc-documentation/SKILL.md",
+      "description": "Genera y mantiene documentacion trazable de requisitos, decisiones, cambios, pruebas y evidencia.",
+      "source": "agent-skills/skills/sdlc-documentation",
+      "status": "ok"
+    },
+    {
+      "identifier": "versioning-quality-gate",
+      "domain": "governance",
+      "path": "domains/governance/versioning-quality-gate/SKILL.md",
+      "description": "Revisa versionado, changelog, commit, tag y trazabilidad de un cambio.",
+      "source": "agent-skills/skills/versioning-quality-gate",
+      "status": "ok"
+    },
+    {
+      "identifier": "configuration-externalization",
+      "domain": "platform",
+      "path": "domains/platform/configuration-externalization/SKILL.md",
+      "description": "Detecta y corrige configuracion hardcodeada, separando defaults de laboratorio y secretos por entorno.",
+      "source": "agent-skills/skills/configuration-externalization",
+      "status": "ok"
+    },
+    {
+      "identifier": "quality-lint-validation",
+      "domain": "quality",
+      "path": "domains/quality/quality-lint-validation/SKILL.md",
+      "description": "Selecciona y ejecuta lint, typecheck y pruebas segun el stack del repositorio.",
+      "source": "agent-skills/skills/quality-lint-validation",
+      "status": "ok"
+    },
+    {
+      "identifier": "pull-request-review",
+      "domain": "review",
+      "path": "domains/review/pull-request-review/SKILL.md",
+      "description": "Revisa pull requests con checklist de alcance, contrato, seguridad, calidad, pruebas, documentacion y versionamiento.",
+      "source": "agent-skills/skills/pull-request-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "credential-hashing-migration",
+      "domain": "security",
+      "path": "domains/security/credential-hashing-migration/SKILL.md",
+      "description": "Revisa y migra credenciales de laboratorio a hash lento con salt y seed reproducible.",
+      "source": "agent-skills/skills/credential-hashing-migration",
+      "status": "ok"
+    },
+    {
+      "identifier": "dependency-review",
+      "domain": "security",
+      "path": "domains/security/dependency-review/SKILL.md",
+      "description": "Revisa dependencias, CVEs, licencias, actualizaciones y evidencia de impacto.",
+      "source": "agent-skills/skills/dependency-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "parameterized-query-review",
+      "domain": "security",
+      "path": "domains/security/parameterized-query-review/SKILL.md",
+      "description": "Revisa consultas de autenticacion y persistencia para evitar concatenacion de entradas.",
+      "source": "agent-skills/skills/parameterized-query-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "security-review",
+      "domain": "security",
+      "path": "domains/security/security-review/SKILL.md",
+      "description": "Revisa cambios de seguridad, secretos, validacion, errores, sesiones y evidencia sin modificar codigo.",
+      "source": "agent-skills/skills/security-review",
+      "status": "ok"
+    },
+    {
+      "identifier": "signed-token-security",
+      "domain": "security",
+      "path": "domains/security/signed-token-security/SKILL.md",
+      "description": "Diseña o revisa tokens firmados con expiracion, claims minimos, secreto externalizado y evidencia.",
+      "source": "agent-skills/skills/signed-token-security",
+      "status": "ok"
+    },
+    {
+      "identifier": "secure-secrets-handling",
+      "domain": "security",
+      "path": "domains/security/secure-secrets-handling/SKILL.md",
+      "description": "Evita que credenciales, tokens y secretos queden hardcodeados en codigo, configuracion o pipelines CI/CD.",
+      "source": "skills-catalog/domains/security (existente)",
+      "status": "ok"
+    },
+    {
+      "identifier": "spec-initial-definition",
+      "domain": "specification",
+      "path": "domains/specification/spec-initial-definition/SKILL.md",
+      "description": "Convierte historias de usuario y requisitos en una especificacion tecnica BDD completa (spec.md).",
+      "source": "agent-skills/skills/spec-initial-definition",
+      "status": "ok"
+    },
+    {
+      "identifier": "test-strategy",
+      "domain": "test",
+      "path": "domains/test/test-strategy/SKILL.md",
+      "description": "Convierte requisitos y criterios de aceptacion en una estrategia de pruebas ejecutable y trazable.",
+      "source": "agent-skills/skills/test-strategy",
+      "status": "ok"
+    },
+    {
+      "identifier": "grill-me-bcp",
+      "domain": "specification",
+      "path": "domains/specification/grill-me-bcp/SKILL.md",
+      "description": "Construye prompts con los cinco ejes BCP mediante una entrevista crítica, una pregunta por turno.",
+      "source": "domains/specification/grill-me-bcp",
+      "status": "ok"
+    }
+  ]
+}

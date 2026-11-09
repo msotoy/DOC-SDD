@@ -1,0 +1,2487 @@
+<title>Día 4 — Guía de Laboratorio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap">
+
+<style>
+/* ── Tokens light ──────────────────────────────── */
+:root {
+  --bg:           #EBF0F7;
+  --surface:      #FFFFFF;
+  --surface-alt:  #F4F7FB;
+  --border:       #CDD8E8;
+  --accent:       #007F6E;
+  --accent2:      #1A65B8;
+  --text-primary: #0C1A28;
+  --text-sec:     #3D5670;
+  --text-muted:   #7A93A8;
+  --am:           #1A65B8;
+  --pm:           #007F6E;
+  --tag-am-bg:    #E0ECFA;  --tag-am-fg:   #0F4A90;
+  --tag-pm-bg:    #DDF4F0;  --tag-pm-fg:   #005348;
+  --step-num:     #1A65B8;
+  --code-bg:      #0C1A28;
+  --code-fg:      #A8D5FF;
+  --code-border:  #1C3050;
+  --mat-bg:       #F4F7FB;
+  --out-bg:       #ECF8F6;
+  --out-border:   #9ECFC7;
+  --out-label:    #005A4D;
+  --gate-bg:      #FFFBEC;
+  --gate-border:  #D4A800;
+  --gate-text:    #6B4D00;
+  --gate-chip:    #D4A800;
+  --gate-chip-fg: #FFFFFF;
+  --break-line:   #CDD8E8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:           #090F18;
+    --surface:      #101C2C;
+    --surface-alt:  #152030;
+    --border:       #1C3050;
+    --accent:       #00C2A8;
+    --accent2:      #4D9FE8;
+    --text-primary: #DDE8F5;
+    --text-sec:     #6D9ABE;
+    --text-muted:   #3D5E7A;
+    --am:           #4D9FE8;
+    --pm:           #00C2A8;
+    --tag-am-bg:    #0B1E3A;  --tag-am-fg:   #7DC5F8;
+    --tag-pm-bg:    #0B2520;  --tag-pm-fg:   #55DFC8;
+    --step-num:     #4D9FE8;
+    --code-bg:      #060D18;
+    --code-fg:      #7FC8FF;
+    --code-border:  #1C3050;
+    --mat-bg:       #0C1828;
+    --out-bg:       #0A201C;
+    --out-border:   #1A5E52;
+    --out-label:    #55DFC8;
+    --gate-bg:      #181200;
+    --gate-border:  #B89000;
+    --gate-text:    #F0CA40;
+    --gate-chip:    #B89000;
+    --gate-chip-fg: #000;
+    --break-line:   #1C3050;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg:           #090F18;
+  --surface:      #101C2C;
+  --surface-alt:  #152030;
+  --border:       #1C3050;
+  --accent:       #00C2A8;
+  --accent2:      #4D9FE8;
+  --text-primary: #DDE8F5;
+  --text-sec:     #6D9ABE;
+  --text-muted:   #3D5E7A;
+  --am:           #4D9FE8;
+  --pm:           #00C2A8;
+  --tag-am-bg:    #0B1E3A;  --tag-am-fg:   #7DC5F8;
+  --tag-pm-bg:    #0B2520;  --tag-pm-fg:   #55DFC8;
+  --step-num:     #4D9FE8;
+  --code-bg:      #060D18;
+  --code-fg:      #7FC8FF;
+  --code-border:  #1C3050;
+  --mat-bg:       #0C1828;
+  --out-bg:       #0A201C;
+  --out-border:   #1A5E52;
+  --out-label:    #55DFC8;
+  --gate-bg:      #181200;
+  --gate-border:  #B89000;
+  --gate-text:    #F0CA40;
+  --gate-chip:    #B89000;
+  --gate-chip-fg: #000;
+  --break-line:   #1C3050;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ──────────────────────────────────── */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 2rem 1.6rem;
+}
+.header-inner { max-width: 1600px; width: 100%; margin: 0 auto; }
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 800; color: var(--text-primary);
+  text-wrap: balance; line-height: 1.15; margin-bottom: 0.45rem;
+}
+.header h1 em { font-style: normal; color: var(--accent); }
+.header-sub {
+  color: var(--text-sec); font-size: 0.87rem;
+  max-width: 64ch; margin-bottom: 1.1rem; line-height: 1.55;
+}
+.stats-row { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.stat {
+  font-family: 'DM Mono', monospace; font-size: 0.71rem;
+  color: var(--text-sec); background: var(--surface-alt);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 0.27rem 0.62rem;
+}
+.stat strong { color: var(--text-primary); }
+
+/* ── Main ─────────────────────────────────────── */
+.main { max-width: calc(1600px + 3rem); width: 100%; margin: 1.8rem auto; padding: 0 1.5rem 3.5rem; }
+@media (max-width: 600px) { .main { padding: 0 0.75rem 2.5rem; } .header { padding: 1.5rem 1rem 1.3rem; } }
+
+/* ── Section label ───────────────────────────── */
+.sec-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.66rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-muted);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Session block ───────────────────────────── */
+.session {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  position: relative;
+}
+.session::before {
+  content: ''; position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  border-radius: 12px 0 0 12px;
+}
+.session.am::before { background: var(--am); }
+.session.pm::before { background: var(--pm); }
+
+/* Session header */
+.s-head {
+  padding: 1.15rem 1.5rem 1rem 1.7rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.time-col { min-width: 68px; padding-top: 0.1rem; }
+.t-start {
+  font-family: 'DM Mono', monospace; font-size: 0.98rem;
+  font-weight: 500; color: var(--text-primary); display: block; line-height: 1;
+}
+.t-end {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem;
+  color: var(--text-muted); display: block; margin-top: 0.15rem;
+}
+.s-meta { flex: 1; min-width: 0; }
+.s-tag {
+  display: inline-block; font-family: 'DM Mono', monospace;
+  font-size: 0.61rem; letter-spacing: 0.08em;
+  text-transform: uppercase; border-radius: 4px;
+  padding: 0.13rem 0.46rem; margin-bottom: 0.28rem;
+}
+.am .s-tag { background: var(--tag-am-bg); color: var(--tag-am-fg); }
+.pm .s-tag { background: var(--tag-pm-bg); color: var(--tag-pm-fg); }
+.s-title {
+  font-family: 'Syne', sans-serif; font-size: 1.08rem;
+  font-weight: 700; color: var(--text-primary);
+  text-wrap: balance; line-height: 1.2; margin-bottom: 0.22rem;
+  overflow-wrap: anywhere;
+}
+.s-obj { font-size: 0.81rem; color: var(--text-sec); font-style: italic; }
+.dur { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); padding-top: 0.1rem; }
+
+/* Three panel layout */
+.panels {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 0;
+}
+@media (max-width: 760px) { .panels { grid-template-columns: 1fr; } }
+
+.panel {
+  padding: 1.25rem 1.3rem;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+}
+.panel:last-child { border-right: none; }
+@media (max-width: 760px) {
+  .panel { border-right: none; border-bottom: 1px solid var(--border); }
+  .panel:last-child { border-bottom: none; }
+}
+
+/* Qué obtengo: fila completa debajo de Materiales + Pasos */
+.out-panel {
+  grid-column: 1 / -1 !important;
+  border-top: 1px solid var(--out-border);
+  border-right: none !important;
+  border-left: none !important;
+  display: block;
+}
+.out-panel .panel-label {
+  margin-bottom: 0.75rem;
+}
+/* En pantalla pequeña: todo en una columna */
+@media (max-width: 760px) {
+  .out-panel { grid-column: 1 !important; grid-template-columns: 1fr; }
+  .out-panel .panel-label { grid-column: 1; }
+}
+
+.panel-label {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.panel-label .dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.mat-dot  { background: var(--accent2); }
+.step-dot { background: var(--text-muted); }
+.out-dot  { background: var(--accent); }
+
+/* Materials */
+.mat-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+.mat-list li {
+  font-size: 0.79rem; color: var(--text-sec);
+  line-height: 1.4; position: relative; padding-left: 1.1rem;
+  overflow-wrap: anywhere;
+}
+.mat-list li::before {
+  content: '☐'; color: var(--text-muted);
+  font-size: 0.72rem; position: absolute; left: 0; top: 0.05rem;
+}
+.mat-note {
+  font-size: 0.72rem; color: var(--text-muted);
+  font-style: italic; margin-top: 0.65rem; line-height: 1.4;
+}
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 1rem; }
+.step { display: flex; gap: 0.75rem; align-items: flex-start; }
+.step-num {
+  font-family: 'DM Mono', monospace; font-size: 0.75rem;
+  font-weight: 500; color: var(--step-num);
+  background: var(--surface-alt); border: 1px solid var(--border);
+  border-radius: 5px; padding: 0.12rem 0.42rem;
+  min-width: 32px; text-align: center; flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.step-body { flex: 1; min-width: 0; }
+.step-title {
+  font-size: 0.84rem; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 0.18rem; line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.step-desc { font-size: 0.78rem; color: var(--text-sec); line-height: 1.45; overflow-wrap: anywhere; }
+
+/* Code block */
+.code {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+  margin-top: 0.35rem;
+  overflow-x: auto;
+  max-width: 100%;
+}
+.code pre {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem; color: var(--code-fg);
+  line-height: 1.55; white-space: pre;
+}
+.code-comment { color: #4A6A88; }
+.code-key { color: #A8D5FF; }
+
+/* Outcomes */
+.out-panel { background: var(--out-bg); border-left: 1px solid var(--out-border) !important; }
+@media (max-width: 760px) {
+  .out-panel { border-left: none !important; border-top: 1px solid var(--out-border) !important; }
+}
+.out-list { list-style: none; display: flex; flex-direction: column; gap: 0.42rem; }
+.out-list li {
+  font-size: 0.8rem; color: var(--text-sec);
+  line-height: 1.45; position: relative; padding-left: 1.15rem;
+  overflow-wrap: anywhere;
+}
+.out-list li::before {
+  content: '✓'; color: var(--accent);
+  font-size: 0.72rem; position: absolute; left: 0; top: 0.1rem; font-weight: 700;
+}
+.out-key {
+  font-size: 0.73rem; color: var(--out-label);
+  font-family: 'DM Mono', monospace; font-weight: 500;
+  display: block; margin-bottom: 0.35rem;
+}
+/* Árbol de archivos y snippet de output */
+.out-tree, .out-log {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; line-height: 1.6;
+  background: var(--code-bg); color: var(--code-fg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px; padding: 0.65rem 0.8rem;
+  margin-bottom: 0.6rem; white-space: pre;
+  overflow-x: auto;
+}
+.out-tree { color: #a8d5ff; }
+.out-tree .dim { color: #3D5670; }
+.out-log  { color: #86e8be; }
+.out-log  .ok  { color: #00cfa8; }
+.out-log  .key { color: #f4c87a; }
+
+/* Break */
+.break-row {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.4rem 0; margin-bottom: 1.25rem;
+  color: var(--text-muted); font-family: 'DM Mono', monospace;
+  font-size: 0.67rem; letter-spacing: 0.06em;
+}
+.break-row::before, .break-row::after {
+  content: ''; flex: 1; height: 1px; background: var(--break-line);
+}
+
+/* Gate */
+.gate {
+  background: var(--gate-bg); border: 1px solid var(--gate-border);
+  border-radius: 12px; overflow: hidden; margin-top: 1.8rem;
+}
+.gate-head {
+  padding: 1rem 1.5rem; border-bottom: 1px solid var(--gate-border);
+  display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap;
+}
+.gate-chip {
+  font-family: 'Syne', sans-serif; font-size: 0.67rem;
+  font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--gate-chip); color: var(--gate-chip-fg);
+  padding: 0.2rem 0.58rem; border-radius: 5px;
+}
+.gate-title {
+  font-family: 'Syne', sans-serif; font-size: 0.92rem;
+  font-weight: 700; color: var(--gate-text); text-wrap: balance;
+}
+.gate-body { padding: 1.2rem 1.5rem; }
+.gate-desc { font-size: 0.83rem; color: var(--text-sec); margin-bottom: 1rem; max-width: 65ch; }
+.rubric { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.55rem; margin-bottom: 0.9rem; }
+@media (max-width: 620px) { .rubric { grid-template-columns: repeat(2, 1fr); } }
+.r-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.7rem 0.55rem; text-align: center;
+}
+.r-pct {
+  font-family: 'DM Mono', monospace; font-size: 1.05rem;
+  font-weight: 500; color: var(--accent); display: block;
+  margin-bottom: 0.28rem; font-variant-numeric: tabular-nums;
+}
+.r-label { font-size: 0.69rem; color: var(--text-sec); line-height: 1.35; }
+.gate-thr {
+  font-family: 'DM Mono', monospace; font-size: 0.72rem;
+  color: var(--text-muted); display: flex; flex-wrap: wrap;
+  align-items: center; gap: 0.5rem;
+}
+.gate-thr strong { color: var(--gate-text); }
+
+/* ── Paths grid ──────────────────────────────── */
+.paths-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+@media (max-width: 700px) { .paths-grid { grid-template-columns: 1fr; } }
+
+.path-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem 1.1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.path-badge {
+  display: inline-block;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  border-radius: 5px;
+  padding: 0.17rem 0.5rem;
+  color: #fff;
+  align-self: flex-start;
+  margin-bottom: 0.1rem;
+}
+.badge-a { background: #1A65B8; }
+.badge-b { background: #007F6E; }
+.badge-c { background: #C07000; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .badge-a { background: #2A7ED8; }
+  :root:not([data-theme="light"]) .badge-b { background: #00A88E; }
+  :root:not([data-theme="light"]) .badge-c { background: #D08010; }
+}
+:root[data-theme="dark"] .badge-a { background: #2A7ED8; }
+:root[data-theme="dark"] .badge-b { background: #00A88E; }
+:root[data-theme="dark"] .badge-c { background: #D08010; }
+
+.path-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--text-primary); line-height: 1.25;
+}
+
+.path-desc {
+  font-size: 0.78rem; color: var(--text-sec); line-height: 1.45;
+}
+
+.path-code {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  overflow-x: auto;
+}
+.path-code pre {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem; color: var(--code-fg);
+  line-height: 1.5; white-space: pre;
+}
+
+.path-note {
+  font-size: 0.72rem; color: var(--text-muted);
+  font-style: italic; line-height: 1.4;
+}
+
+.paths-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  color: var(--text-primary); margin-bottom: 0.65rem;
+}
+
+/* ── Output panel: horizontal layout ─────────────────────────────── */
+.out-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 0.75rem 0 1rem;
+}
+@media (max-width: 820px) { .out-columns { grid-template-columns: 1fr; } }
+.out-col-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--step-num);
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--out-border);
+}
+.out-col { min-width: 0; }
+.out-col .out-tree,
+.out-col .out-log  { margin: 0; max-height: 360px; overflow: auto; }
+.flows-link-row {
+  border-top: 1px solid var(--out-border);
+  padding-top: 0.65rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.flows-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem 0.5rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 35%, transparent);
+  transition: opacity .15s, transform .12s;
+  white-space: nowrap;
+}
+.flows-btn::before { content: "▶"; font-size: 0.7rem; opacity: 0.85; }
+.flows-btn:hover { opacity: .88; transform: translateY(-1px); }
+.flows-hint {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+</style>
+
+<!-- ── HEADER ─────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <p class="eyebrow">BCP · NTT DATA · Train-the-Trainers IA · Día 4</p>
+    <h1>Guía de <em>Laboratorio</em> — Paso a paso</h1>
+    <p class="header-sub"><strong>S1 y S2 — generación:</strong> leen un feature del backlog vía MCP y construyen el módulo <strong>Web con Login</strong> (Backend Java Quarkus · Frontend Angular · SQLite). Roles: Designer → Backend Dev → Frontend Dev → Tech Lead Reviewer. El issue manda el alcance: solo corren y generan los agentes de los stacks involucrados, SOBRE los repos de <code style="font-family:'DM Mono',monospace">reqflow-workspace</code> en rama local <code style="font-family:'DM Mono',monospace">agent/&lt;slug&gt;</code> (sin push). <strong>S3 y S4 — refactorización:</strong> clonan un repositorio real, lo analizan y abren un Pull Request. El hilo conductor no es el artefacto, sino la capa de ingeniería de agentes que se agrega en cada sesión.</p>
+    <div class="stats-row">
+      <span class="stat"><strong>4</strong> sesiones</span>
+      <span class="stat"><strong>8 h</strong> netas</span>
+      <span class="stat">Flujo progresivo — cada sesión consume el artefacto de la anterior</span>
+      <span class="stat">Gate <strong>G2</strong> al cierre · ≥ 80 %</span>
+    </div>
+    <div class="stats-row" style="margin-top:0.55rem">
+      <span class="stat" style="border-color:var(--accent);color:var(--accent)">LLM <strong>Copilot SDK</strong> · sesión autenticada</span>
+      <span class="stat">Modelo: <strong>gpt-6-luna</strong> · esfuerzo <strong>high</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ── Punto de partida ─────────────────────────── -->
+  <p class="paths-heading">Antes de empezar: un solo LLM, tu workspace de siempre</p>
+  <div class="paths-grid">
+
+    <!-- Paso 1: LLM -->
+    <div class="path-card">
+      <span class="path-badge badge-b">Paso 1 · LLM — Copilot SDK</span>
+      <div class="path-title">Copilot autenticado</div>
+      <div class="path-desc"><strong>Pre-req:</strong> Copilot CLI instalado y autenticado con <code style="font-family:'DM Mono',monospace">/login</code>. El laboratorio usa Copilot SDK con GPT-6 Luna y esfuerzo <code style="font-family:'DM Mono',monospace">high</code>.</div>
+      <div class="path-code"><pre><span class="code-comment"># Autenticar Copilot CLI (una sola vez)</span>
+copilot
+/login
+
+COPILOT_MODEL=gpt-6-luna
+COPILOT_REASONING_EFFORT=high
+COPILOT_USE_LOGGED_IN_USER=true</pre></div>
+      <div class="path-note">Se trabaja sobre tu <code style="font-family:'DM Mono',monospace">reqflow-workspace/</code> de los Días 1–3 (nada que clonar) — los pasos de cada sesión se ejecutan directo con <code style="font-family:'DM Mono',monospace">python main.py</code>. Detalle en <a href="GUIA_ESTUDIANTE.md" style="color:var(--accent2)">GUIA_ESTUDIANTE.md</a>.</div>
+    </div>
+
+    <!-- Paso 2: Terminal 1 -->
+    <div class="path-card">
+      <span class="path-badge badge-b">Paso 2 · Terminal 1 obligatoria</span>
+      <div class="path-title">Servidor MCP Local (Podman o Docker)</div>
+      <div class="path-desc">S1 y S2 leen el backlog en vivo: mantén esta terminal de fondo. Pre-req: <code style="font-family:'DM Mono',monospace">gh auth login</code> vigente (el servidor toma el token de ahí).</div>
+      <div class="path-code"><pre><span class="code-comment"># PowerShell — Ejecutar en 00_support/mcp-local</span>
+cd 00_support\mcp-local
+
+<span class="code-comment"># Con Podman (entorno oficial del lab):</span>
+.\start-mcp.ps1 -Owner "&lt;OWNER&gt;" -Repo "workshop-requirements-api"
+
+<span class="code-comment"># O con Docker Desktop (máquina personal):</span>
+.\start-mcp.ps1 -Owner "&lt;OWNER&gt;" -Repo "workshop-requirements-api" -Engine docker</pre></div>
+      <div class="path-note">Expone <strong>http://localhost:8081</strong> (Tareas — S1/S2) y <strong>http://localhost:8083</strong> (Proyectos). Paso 3 (<code style="font-family:'DM Mono',monospace">.env</code> + <code style="font-family:'DM Mono',monospace">.venv</code> por sesión) en <a href="GUIA_ESTUDIANTE.md" style="color:var(--accent2)">GUIA_ESTUDIANTE.md</a>.</div>
+    </div>
+
+  </div>
+
+  <p class="sec-label">Mañana</p>
+
+  <!-- ═══════════════════════════════════════════════
+       S1 AM — CrewAI
+  ════════════════════════════════════════════════ -->
+  <div class="session am">
+    <div class="s-head">
+      <div class="time-col"><span class="t-start">08:00</span><span class="t-end">10:00</span></div>
+      <div class="s-meta">
+        <span class="s-tag">S1 AM</span>
+        <h2 class="s-title">CrewAI — Agentes por roles</h2>
+        <p class="s-obj">Instanciar un crew de 5 agentes (Designer, Backend Quarkus, API FastAPI, Frontend Angular, Líder Técnico) que colaboran sobre los repos reales de <code>reqflow-workspace</code> (rama local, sin push) para implementar el feature del backlog.</p>
+      </div>
+      <span class="dur">2 h</span>
+    </div>
+
+    <div class="panels">
+      <!-- Materiales -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+        <ul class="mat-list">
+          <li>Python 3.11+ instalado</li>
+          <li>uv o pip disponible en terminal</li>
+          <li>VS Code + Copilot Enterprise activo</li>
+          <li>Copilot CLI instalado y autenticado con el modelo <code style="font-family:'DM Mono',monospace">gpt-6-luna</code> y esfuerzo <code style="font-family:'DM Mono',monospace">high</code></li>
+          <li>Variables de entorno configuradas en <code style="font-family:'DM Mono',monospace">.env</code> (ver paso 3)</li>
+          <li><code style="font-family:'DM Mono',monospace">reqflow-workspace/</code> de los Días 1–3 al lado del lab (nada que clonar)</li>
+          <li>Rama de trabajo <code style="font-family:'DM Mono',monospace;font-size:0.74rem">agent/&lt;slug&gt;</code> — la crea el pipeline en cada repo involucrado (local, sin push)</li>
+        </ul>
+        <p class="mat-note">El LLM es Copilot SDK — mismo runtime compartido en las 4 sesiones.</p>
+      </div>
+
+      <!-- Pasos -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+        <div class="steps">
+
+          <div class="step">
+            <span class="step-num">00</span>
+            <div class="step-body">
+              <div class="step-title">Elegir camino e instalar dependencias</div>
+              <div class="step-desc">Según el camino elegido en la sección superior:</div>
+              <div class="code"><pre><span class="code-comment"># 🌟 Opción 1 (Recomendada): Un solo .venv en la raíz para las 4 sesiones</span>
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements-all.txt
+
+<span class="code-comment"># Opción 2: Entorno virtual aislado solo para S1</span>
+cd s1_crewai
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt</pre></div>
+              <div class="step-desc" style="margin-top:0.4rem;font-style:italic;color:var(--accent);">💡 Con el repositorio clonado, los archivos ya están creados: configura <code style="font-family:'DM Mono',monospace">.env</code> y ejecuta.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <div class="step-title">Activar el entorno virtual en tu terminal</div>
+              <div class="step-desc">En la terminal integrada de VS Code:</div>
+              <div class="code"><pre><span class="code-comment"># Windows (PowerShell)</span>
+.\.venv\Scripts\activate
+<span class="code-comment"># macOS / Linux</span>
+<span class="code-comment"># source .venv/bin/activate</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <div class="step-title">Instalar CrewAI y el conector LLM (si no usaste requirements-all.txt)</div>
+              <div class="code"><pre>pip install crewai github-copilot-sdk</pre></div>
+              <div class="step-desc">Verificar con <code style="font-family:'DM Mono',monospace">pip show crewai</code>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <div class="step-title">Configurar el endpoint LLM en <code style="font-family:'DM Mono',monospace">.env</code></div>
+              <div class="step-desc">Crear <code style="font-family:'DM Mono',monospace">.env</code> en la raíz del repo con la configuración de Copilot SDK:</div>
+              <div class="code"><pre><span class="code-comment"># ── LLM: GitHub Copilot SDK ──────────────────</span>
+COPILOT_MODEL=gpt-6-luna
+COPILOT_REASONING_EFFORT=high
+COPILOT_USE_LOGGED_IN_USER=true
+
+<span class="code-comment"># ── MCP Gestión de Proyectos (GitHub Projects → backlog) ──</span>
+PROJECTS_MCP_URL=http://localhost:8081
+PROJECTS_MCP_API_KEY=prj-xxxxxxxxxxxxxxxxxxxx
+GITHUB_OWNER=bcp-enterprise
+GITHUB_REPO=ai-lab-day04
+
+<span class="code-comment"># ── MCP Git/Backend (commits, push, PRs) ─────────────</span>
+GIT_MCP_URL=http://localhost:8082
+GIT_MCP_API_KEY=git-xxxxxxxxxxxxxxxxxxxx
+
+<span class="code-comment"># El .env.example ya está en s1_crewai/ ─</span>
+<span class="code-comment"># copy .env.example .env   (y completar con los valores de Copilot)</span></pre></div>
+              <div class="step-desc">Agregar <code style="font-family:'DM Mono',monospace">.env</code> al <code style="font-family:'DM Mono',monospace">.gitignore</code> — la key nunca va al repo.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">mcp_projects.py</code> dentro de la sesión — cliente MCP con Streamable HTTP</div>
+              <div class="step-desc">S1 sólo necesita el <strong>MCP Proyectos</strong> (puerto 8081), que lista proyectos, backlog e issues desde GitHub Projects — el pipeline termina en disco, sin PR. El <strong>MCP Git</strong> (puerto 8082) aparece en S3, que sí abre el Pull Request. Ambos usan <strong>Streamable HTTP</strong> — JSON-RPC 2.0 enviado como POST a <code style="font-family:'DM Mono',monospace">/mcp</code>, con la respuesta llegando como SSE en el mismo cuerpo. El cliente hace primero un handshake <code style="font-family:'DM Mono',monospace">initialize</code>, recibe el <code style="font-family:'DM Mono',monospace">Mcp-Session-Id</code>, y luego llama <code style="font-family:'DM Mono',monospace">tools/call</code>. Los errores de ejecución de una tool vienen como <code style="font-family:'DM Mono',monospace">isError: true</code> dentro de la respuesta exitosa — no como el campo <code style="font-family:'DM Mono',monospace">error</code> de JSON-RPC. <strong>Importante:</strong> estos módulos van dentro de <code style="font-family:'DM Mono',monospace">s1_crewai/</code>, no en la raíz del repo.</div>
+              <div class="code"><pre><span class="code-comment"># s1_crewai/mcp_projects.py — cliente MCP de proyectos · Streamable HTTP</span>
+import os, re, json, threading, requests
+
+_URL = os.getenv("PROJECTS_MCP_URL", "http://localhost:8081")
+_KEY = os.getenv("PROJECTS_MCP_API_KEY", "")
+_rpc_id = 0; _id_lock = threading.Lock()
+_session_id = None; _initialized = False; _init_lock = threading.Lock()
+
+def _next_id():
+    global _rpc_id
+    with _id_lock: _rpc_id += 1; return _rpc_id
+
+def _headers():
+    hdrs = {"Authorization": f"Bearer {_KEY}",
+            "Content-Type": "application/json",
+            "Accept": "application/json, text/event-stream"}
+    if _session_id: hdrs["Mcp-Session-Id"] = _session_id
+    return hdrs
+
+def _parse_sse_body(resp, msg_id):
+    <span class="code-comment">"""Lee el stream SSE del POST y retorna el mensaje JSON-RPC que coincide con msg_id."""</span>
+    data_buf = []
+    for raw in resp.iter_lines(decode_unicode=True):
+        if raw is None: continue
+        if raw.startswith("data:"): data_buf.append(raw[5:].strip())
+        elif raw == "":
+            if not data_buf: continue
+            payload = json.loads("\n".join(data_buf)); data_buf = []
+            if isinstance(payload, dict) and payload.get("id") == msg_id:
+                return payload
+    raise RuntimeError("[MCP Proyectos] Stream SSE cerrado sin respuesta")
+
+def _post_mcp(payload, timeout):
+    resp = requests.post(f"{_URL}/mcp", headers=_headers(),
+                         json=payload, stream=True, timeout=timeout)
+    resp.raise_for_status()
+    sid = resp.headers.get("Mcp-Session-Id")
+    if "text/event-stream" in resp.headers.get("Content-Type", ""):
+        result = _parse_sse_body(resp, payload.get("id"))
+    elif resp.content: result = resp.json()
+    else: result = {}
+    return result, sid
+
+def _ensure_session(timeout=20):
+    <span class="code-comment">"""Handshake MCP: initialize → notifications/initialized (una sola vez)."""</span>
+    global _session_id, _initialized
+    with _init_lock:
+        if _initialized: return
+        init = {"jsonrpc": "2.0", "id": _next_id(), "method": "initialize",
+                "params": {"protocolVersion": "2025-03-26", "capabilities": {},
+                            "clientInfo": {"name": "s1-crewai", "version": "1.0.0"}}}
+        result, sid = _post_mcp(init, timeout)
+        if sid: _session_id = sid
+        try: _post_mcp({"jsonrpc":"2.0","method":"notifications/initialized","params":{}}, timeout)
+        except: pass
+        _initialized = True
+
+def _sse_call(method, params, timeout=20):
+    _ensure_session(timeout)
+    msg_id = _next_id()
+    result, sid = _post_mcp({"jsonrpc":"2.0","id":msg_id,"method":method,"params":params}, timeout)
+    if sid: global _session_id; _session_id = sid
+    if "error" in result: raise RuntimeError(f"[MCP Proyectos] Error RPC: {result['error']}")
+    return result.get("result", {})
+
+def call_tool(tool, params):
+    <span class="code-comment">"""Llama una herramienta del MCP. Detecta isError dentro de la respuesta exitosa."""</span>
+    result  = _sse_call("tools/call", {"name": tool, "arguments": params})
+    content = result.get("content", [])
+    text = content[0]["text"] if content and content[0].get("type") == "text" else None
+    if result.get("isError"): raise RuntimeError(f"[MCP Proyectos] Tool '{tool}' falló: {text or result}")
+    if text is not None:
+        try: return json.loads(text)
+        except: return {"raw": text}
+    return result
+
+_OWNER = os.getenv("GITHUB_OWNER", "")
+_REPO  = os.getenv("GITHUB_REPO",  "")
+
+def list_tools(): return _sse_call("tools/list", {}).get("tools", [])
+
+def list_projects():
+    <span class="code-comment">"""Lista GitHub Projects (v2) visibles para el MCP."""</span>
+    result = call_tool("manage_project", {"action":"list","status":"all","limit":20})
+    raw = result if isinstance(result, list) else result.get("projects", result.get("items", []))
+    return [{"id": p.get("id"), "title": p.get("title","(sin título)"),
+             "closed": bool(p.get("closed"))} for p in raw]
+
+def list_project_items(project_id, limit=100):
+    <span class="code-comment">"""Lista el backlog de un GitHub Project — intenta filter_items, cae a list_items."""</span>
+    for params in [{"action":"filter_items","projectId":project_id,"filter":{}},
+                   {"action":"filter_items","projectId":project_id,"filterQuery":""},
+                   {"action":"list_items",  "projectId":project_id,"limit":limit}]:
+        try:
+            result = call_tool("manage_project", params)
+            raw = (result if isinstance(result, list)
+                   else result.get("structuredContent",{}).get("items")
+                   or result.get("items", []))
+            return [_normalize_project_item(it) for it in raw]
+        except RuntimeError: continue
+    raise RuntimeError("[MCP Proyectos] No se pudo listar items del proyecto")
+
+def get_feature_from_item(item):
+    <span class="code-comment">"""Resuelve el feature brief completo a partir de un item del backlog.</span>
+    <span class="code-comment">   Si el item es un Draft Issue sin número, usa los datos del propio item."""</span>
+    number = item.get("number")
+    if number:
+        r = call_tool("manage_issues", {"action":"get","owner":_OWNER,
+                                         "repo":_REPO,"issueNumber":number})
+        issue = r.get("issue", r) if isinstance(r, dict) else r
+        body  = issue.get("body") or ""
+        return {"title": issue.get("title",""), "description": body,
+                "acceptance_criteria": _extract_acceptance_criteria(body)}
+    return {"title": item.get("title","(sin título)"),
+            "description": item.get("description",""),
+            "acceptance_criteria": item.get("acceptance_criteria", [])}</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">05</span>
+            <div class="step-body">
+              <div class="step-title">Seleccionar proyecto y feature del backlog — MCP lee GitHub Projects en tiempo real</div>
+              <div class="step-desc">Al arrancar, <code style="font-family:'DM Mono',monospace">main.py</code> llama <code style="font-family:'DM Mono',monospace">list_projects()</code> para listar los GitHub Projects disponibles. Si hay más de uno, presenta un menú y espera selección. Luego llama <code style="font-family:'DM Mono',monospace">list_project_items(project_id)</code> para obtener el backlog real, muestra otro menú, y al elegir llama <code style="font-family:'DM Mono',monospace">get_feature_from_item(item)</code> para obtener título, descripción y criterios de aceptación del issue o draft. Después propone el alcance (<code style="font-family:'DM Mono',monospace">infer_scope</code>: repo del issue + palabras clave) y lo confirma con el humano antes de generar — solo corren los agentes de los stacks involucrados. Nota: el <code style="font-family:'DM Mono',monospace">list</code> del servidor solo trae proyectos vinculados a un repo; si sale vacío, el pipeline enumera solo los del owner (uno → directo, varios → menú) y como último recurso pide el node id. <code style="font-family:'DM Mono',monospace">link_to_repo</code> queda como alternativa opcional (ver README, Paso 3).</div>
+              <div class="code"><pre><span class="code-comment"># s1_crewai/main.py — selección de proyecto y feature (extracto)</span>
+from mcp_projects import list_tools as proj_tools, list_projects, list_project_items, get_feature_from_item
+
+<span class="code-comment"># 1. Autenticación MCP y descubrimiento de herramientas</span>
+print("[MCP Proyectos] Autenticando...")
+proj_tools()   <span class="code-comment"># dispara el handshake initialize → session</span>
+print("[MCP Proyectos] Herramientas cargadas correctamente.")
+
+<span class="code-comment"># 2. Listar proyectos y pedir selección</span>
+projects = list_projects()
+if len(projects) == 1:
+    selected_project = projects[0]
+else:
+    for i, p in enumerate(projects, 1):
+        icon = "⚫" if p.get("closed") else "🟢"
+        print(f"  {i}. {icon} {p['title']}")
+    sel = input(f"Selecciona el número de proyecto [1-{len(projects)}]: ")
+    selected_project = projects[int(sel) - 1]
+
+<span class="code-comment"># 3. Listar backlog del proyecto seleccionado</span>
+backlog = list_project_items(selected_project["id"])
+for i, item in enumerate(backlog, 1):
+    icon = "⚫" if item.get("state","").lower() == "closed" else "🟢"
+    num  = f"#{item['number']} — " if item.get("number") else ""
+    print(f"  {i}. {icon} {num}{item['title']}")
+
+sel = input(f"Selecciona el número de feature [1-{len(backlog)}]: ")
+selected_item = backlog[int(sel) - 1]
+
+<span class="code-comment"># 4. Cargar el brief completo del feature</span>
+feature = get_feature_from_item(selected_item)
+print(f"[MCP Proyectos] Feature cargado: {feature['title']}")
+print(f"[MCP Proyectos] Criterios: {feature['acceptance_criteria']}")
+
+<span class="code-comment"># 5. Inyectar brief + HEX_PROMPT_PREFIX en el backstory del Designer</span>
+from hex_archetype import HEX_PROMPT_PREFIX
+designer.backstory += HEX_PROMPT_PREFIX + (
+    f"\n\n## Feature brief\n**{feature['title']}**\n\n"
+    f"{feature['description']}\n\n"
+    f"**Criterios:** {', '.join(feature['acceptance_criteria'])}"
+)
+<span class="code-comment"># Nota: chapter_agent = designer es un alias disponible por compatibilidad</span></pre></div>
+              <div class="step-desc">Verificar conectividad: <code style="font-family:'DM Mono',monospace">curl -s -X POST http://localhost:8081/mcp -H "Content-Type: application/json" -d "{}"</code> debe responder con SSE o JSON-RPC. Si falla, revisar que el contenedor Docker/Podman del MCP esté corriendo.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">06</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">crew/agents.py</code> — definir los 5 agentes del caso</div>
+              <div class="step-desc">Los cinco roles se mapean a agentes CrewAI: Technical Designer define la especificación técnica, Backend Developer modifica el repo Quarkus, API Developer genera el scaffolding FastAPI, Frontend Developer modifica el repo Angular 17, y el Tech Lead Reviewer revisa el diff real y emite el veredicto final. Archivo en <code style="font-family:'DM Mono',monospace">s1_crewai/crew/agents.py</code>.</div>
+              <div class="code"><pre><span class="code-comment"># crew/agents.py</span>
+from crewai import Agent
+from crew.llm_config import llm   <span class="code-comment"># LLM ya configurado con .env</span>
+
+<span class="code-comment"># ── Agente 1: Technical Designer (Chapter) ───────────────</span>
+designer = Agent(
+    role="Technical Designer",
+    goal=(
+        "Analizar el feature brief recibido y producir una especificación "
+        "técnica completa: arquitectura, componentes, contrato de API y "
+        "criterios de aceptación medibles — todo alineado a los estándares "
+        "de seguridad y calidad del BCP."
+    ),
+    backstory=(
+        "Eres un arquitecto de software senior con 10 años de experiencia en "
+        "banca digital peruana. Conoces los estándares PCI-DSS y las normas "
+        "de la SBS, y aplicas los patrones de diseño más robustos."
+    ),
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+<span class="code-comment"># ── Agente 2: Backend Developer (Java Quarkus) ───────────</span>
+backend_dev = Agent(
+    role="Backend Developer",
+    goal=(
+        "Implementar el backend del feature siguiendo la especificación del "
+        "Designer. Entregar código limpio, tipado, con manejo de errores y "
+        "comentarios que el Frontend y el Reviewer puedan entender y validar."
+    ),
+    backstory=(
+        "Eres un desarrollador backend senior especializado en Java Quarkus 3.x "
+        "y microservicios bancarios. Aplicas principios SOLID, implementas "
+        "seguridad con BCrypt (salt factor ≥ 12) y JWT."
+    ),
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+<span class="code-comment"># ── Agente 3: Frontend Developer (Angular 17) ────────────</span>
+frontend_dev = Agent(
+    role="Frontend Developer",
+    goal=(
+        "Diseñar e implementar la interfaz Angular 17 del feature para los "
+        "usuarios finales del BCP. Entregar componentes, servicios y guards "
+        "listos para producción, con UX clara y segura."
+    ),
+    backstory=(
+        "Eres un desarrollador frontend Angular 17 especializado en "
+        "aplicaciones financieras del BCP. Priorizas seguridad (AuthGuard, "
+        "interceptors de token), accesibilidad y claridad de la información."
+    ),
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+<span class="code-comment"># ── Agente 4: Tech Lead Reviewer ─────────────────────────</span>
+reviewer = Agent(
+    role="Tech Lead Reviewer",
+    goal=(
+        "Validar que los outputs del Designer, Backend y Frontend son "
+        "coherentes entre sí, cumplen los criterios de aceptación y no "
+        "presentan riesgos de seguridad. Emitir un veredicto claro: "
+        "VEREDICTO: APROBADO o VEREDICTO: RECHAZADO con observaciones accionables."
+    ),
+    backstory=(
+        "Eres el tech lead del equipo BCP con experiencia en auditorías de "
+        "código en entornos regulados. Revisas que la arquitectura propuesta "
+        "se refleje en el código y que todo cumpla con las políticas del banco."
+    ),
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+<span class="code-comment"># Aliases para compatibilidad: chapter_agent = designer, backend_agent = backend_dev, etc.</span></pre></div>
+              <div class="step-desc">Verificar conectividad: <code style="font-family:'DM Mono',monospace">curl -s -X POST http://localhost:8081/mcp -H "Content-Type: application/json" -d "{}"</code> debe responder con SSE o JSON-RPC. Si falla, revisar que el contenedor Docker del MCP de proyectos esté corriendo.</div>
+            </div>
+          </div>
+
+
+          <div class="step">
+            <span class="step-num">07</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">crew/tasks.py</code> — una task por agente (5)</div>
+              <div class="step-desc">Cada <code style="font-family:'DM Mono',monospace">Task</code> tiene <code style="font-family:'DM Mono',monospace">description</code> (qué hacer), <code style="font-family:'DM Mono',monospace">expected_output</code> (contrato del output) y el agente asignado. Las tasks se ejecutan en orden — el output de cada una alimenta a la siguiente. El archivo ya viene listo en <code style="font-family:'DM Mono',monospace">s1_crewai/crew/tasks.py</code>.</div>
+              <div class="code"><pre><span class="code-comment"># crew/tasks.py</span>
+from crewai import Task
+from crew.agents import designer, backend_dev, api_dev, frontend_dev, reviewer
+
+FEATURE_BRIEF = (
+    "Web BCP con módulo de Login. "
+    "Stack: Backend Java Quarkus · Frontend Angular · DB SQLite. "
+    "Endpoint principal: POST /api/auth/login "
+    "Body: {username, password} → Response: {token, expires_in, role}. "
+    "Seguridad obligatoria: hash bcrypt (factor 12), JWT firmado (exp 8h), "
+    "rate-limiting 5 intentos/min, HTTPS en todos los endpoints."
+)
+
+t_story = Task(
+    description=(
+        f"Analiza el brief:\n{FEATURE_BRIEF}\n\n"
+        "Produce el user story con: título, descripción como usuario, "
+        "y ≥ 3 criterios de aceptación en formato Dado/Cuando/Entonces."
+    ),
+    expected_output=(
+        "User story completo: título + como [rol] quiero [acción] para [beneficio]. "
+        "Mínimo 3 criterios de aceptación Dado/Cuando/Entonces. "
+        "Incluir criterio de seguridad explícito."
+    ),
+    agent=chapter_agent,
+)
+
+t_backend = Task(
+    description=(
+        "Basándote en el user story del Chapter, diseña la spec técnica "
+        "del backend Quarkus: estructura del proyecto, contrato JSON del endpoint, "
+        "esquema SQLite de la tabla users, y pseudocódigo del AuthService."
+    ),
+    expected_output=(
+        "Spec con: estructura de carpetas Quarkus, contrato JSON del POST /api/auth/login, "
+        "DDL de la tabla users (con columna password_hash), "
+        "y pseudocódigo del método authenticate() con bcrypt."
+    ),
+    agent=backend_agent,
+)
+
+t_frontend = Task(
+    description=(
+        "Basándote en la spec del backend, especifica el módulo Angular: "
+        "LoginComponent (reactive form), AuthService (HttpClient + JWT), "
+        "AuthGuard (CanActivate) e HttpInterceptor (Bearer token)."
+    ),
+    expected_output=(
+        "Spec de 4 artefactos Angular con interfaces TypeScript: "
+        "LoginComponent (FormGroup + validadores), AuthService (login/logout), "
+        "AuthGuard (canActivate → boolean), AuthInterceptor (headers)."
+    ),
+    agent=frontend_agent,
+)
+
+t_review = Task(
+    description=(
+        "Revisa los 3 outputs anteriores: cobertura de criterios del user story, "
+        "coherencia entre contrato JSON y el AuthService Angular, "
+        "y riesgos de seguridad (passwords en texto plano, JWT sin expiración). "
+        "Emitir: VEREDICTO: APROBADO / RECHAZADO con observaciones."
+    ),
+    expected_output=(
+        "Reporte con: VEREDICTO explícito, tabla de cobertura de criterios (✓/✗), "
+        "lista de riesgos encontrados y descripción del PR lista para GitHub."
+    ),
+    agent=lt_agent,
+)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">08</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">main.py</code> — HITL loop con checkpoint por paso</div>
+              <div class="code"><pre><span class="code-comment"># s1_crewai/main.py — loop HITL por paso con checkpoint (extracto)</span>
+from crewai import Crew, Process
+
+STEPS = [
+    ("designer",    "Designer — Especificación técnica",    chapter_agent,  "user_story.md",    False),
+    ("backend_dev", "Backend Dev — Implementación Java",    backend_agent,  "backend_spec.md",  True),
+    ("frontend_dev","Frontend Dev — Componentes Angular",   frontend_agent, "frontend_spec.md", True),
+    ("reviewer",    "Líder Técnico — Revisión y veredicto", lt_agent,       "lt_review.md",     True),
+]
+
+checkpoint  = load_checkpoint()    <span class="code-comment"># carga output/.checkpoint.json</span>
+steps_state = checkpoint.get("steps", {})
+
+for step_key, step_label, agent, spec_file, do_code in STEPS:
+
+    if steps_state.get(step_key, {}).get("status") == "approved":
+        print(f"✅ [{step_label}] ya aprobado (checkpoint). Omitiendo.")
+        continue
+
+    while True:                     <span class="code-comment"># bucle de reintentos</span>
+        t_story, t_backend, t_frontend, t_review = build_tasks(feature)
+        task = {"designer":t_story,"backend_dev":t_backend,
+                "frontend_dev":t_frontend,"reviewer":t_review}[step_key]
+
+        ctx = build_context_note(approved_outputs)
+        if ctx: task.description += ctx
+
+        output = run_step(agent, task)   <span class="code-comment"># mini-Crew de un solo agente</span>
+
+        decision = hitl_approve(step_label, output)  <span class="code-comment"># s / n / r</span>
+
+        if decision == "s":
+            save_spec(spec_file, output)        <span class="code-comment"># guarda specs/*.md</span>
+            if do_code: extract_and_save_code(output)  <span class="code-comment"># extrae .java / .ts</span>
+            approved_outputs[step_key] = output
+            steps_state[step_key] = {"status": "approved", "output": output}
+            save_checkpoint({"steps": steps_state, "feature_title": feature["title"]})
+            break
+        elif decision == "n":
+            steps_state[step_key] = {"status": "rejected"}
+            save_checkpoint({"steps": steps_state, "feature_title": feature["title"]})
+            raise SystemExit(0)     <span class="code-comment"># abortar — el checkpoint permite retomar</span>
+        <span class="code-comment"># "r" → reintentar sin break</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">09</span>
+            <div class="step-body">
+              <div class="step-title">Ejecutar el crew con HITL</div>
+              <div class="code"><pre>cd s1_crewai
+python main.py</pre></div>
+              <div class="step-desc">El script presenta menús de selección de proyecto y feature, luego ejecuta cada agente uno por uno mostrando un preview del output y pidiendo aprobación <code style="font-family:'DM Mono',monospace">[s / n / r]</code>. Si se interrumpe, al volver a correr retoma desde el último paso sin aprobar gracias al checkpoint en <code style="font-family:'DM Mono',monospace">output/.checkpoint.json</code>. Si hay error de LLM, verificar las variables de entorno del paso 3.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Qué obtengo -->
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <div class="out-columns">
+          <div class="out-col">
+            <div class="out-col-label">▶ Terminal — output en consola</div>
+            <pre class="out-log">[MCP Proyectos] Autenticando...
+[MCP Proyectos] Herramientas cargadas correctamente.
+
+[MCP Proyectos] Proyectos disponibles:
+  1. 🟢 BCP Login Module — Sprint 1
+
+[MCP Proyectos] Backlog de 'BCP Login Module — Sprint 1':
+  1. 🟢 #12 — Login web con autenticación JWT
+  2. 🟢 Mejoras de seguridad (Draft)
+
+Selecciona el número de feature [1-2]: 1
+[MCP Proyectos] Feature cargado: Login web con autenticación JWT
+[MCP Proyectos] Criterios: ['token JWT devuelto', 'bloqueo tras 5 intentos', ...]
+
+════════════════════════════════════════════════════════════
+S1 CrewAI — HITL — Feature: Login web con autenticación JWT
+Pasos: Designer → Backend → Frontend → Líder Técnico
+════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────
+▶ PASO: Designer — Especificación técnica
+────────────────────────────────────────────────────────────
+[Agente Chapter corre mini-Crew...]
+
+────────────────────────────────────────────────────────────
+▶ OUTPUT — Designer — Especificación técnica
+────────────────────────────────────────────────────────────
+Como usuario BCP quiero iniciar sesión con mis credenciales...
+Criterio 1 — Dado credenciales válidas: token JWT devuelto
+Criterio 2 — Dado 5 intentos fallidos: cuenta bloqueada 15 min
+────────────────────────────────────────────────────────────
+
+¿Aprobar el paso 'Designer — Especificación técnica'? [s=sí / n=rechazar / r=reintentar]: s
+✅ Designer — Especificación técnica aprobado. Guardando artefactos...
+  ✅ specs/user_story.md
+
+▶ PASO: Backend Dev — Implementación Java
+...
+✅ Backend Dev aprobado.
+  ✅ specs/backend_spec.md
+  💾 workshop-auth-backend/src/main/java/.../AuthService.java
+
+▶ PASO: Frontend Dev — Componentes Angular
+...
+✅ Frontend Dev aprobado.
+  ✅ specs/frontend_spec.md
+  💾 workshop-login-frontend/src/app/.../login.component.ts
+
+▶ PASO: Líder Técnico — Revisión y veredicto
+...
+  ✓ Cobertura: 3/3 criterios cubiertos
+  ✓ VEREDICTO: APROBADO
+  ✅ specs/lt_review.md
+
+════════════════════════════════════════════════════════════
+✅ TODOS LOS PASOS APROBADOS
+════════════════════════════════════════════════════════════
+  output/specs/  → user_story.md · *_spec.md · lt_review.md
+  workshop-auth-backend/ (rama agent/..., local sin push) → archivos modificados
+  workshop-login-frontend/ (rama agent/..., local sin push) → archivos modificados</pre>
+          </div>
+          <div class="out-col">
+            <div class="out-col-label">📁 Estructura generada</div>
+            <pre class="out-tree">s1_crewai/
+├── crew/
+│   ├── llm_config.py    ← CopilotLLM + .env (Copilot SDK)
+│   ├── agents.py        ← designer, backend_dev, api_dev, frontend_dev, reviewer
+│   └── tasks.py         ← build_tasks(feature, repo_ctx) → Task × 5 dinámicas
+├── main.py              ← HITL loop: MCP → alcance → repos + rama → mini-Crews → checkpoint
+├── mcp_projects.py      ← Streamable HTTP → MCP Proyectos :8081 (+ alcance y repos)
+├── output/
+│   ├── .checkpoint.json ← estado de cada paso (approved / rejected) + scope
+│   └── specs/           ← user_story.md · *_spec.md · lt_review.md
+├── .env.example         ← plantilla versionada (incluye REQFLOW_WORKSPACE)
+└── requirements.txt</pre>
+          </div>
+        </div>
+        <span class="out-key">Conceptos demostrados</span>
+        <ul class="out-list">
+          <li><strong>MCP Streamable HTTP</strong> — JSON-RPC 2.0 en un único POST a <code style="font-family:'DM Mono',monospace">/mcp</code>; la respuesta llega como SSE en el mismo body. El handshake <code style="font-family:'DM Mono',monospace">initialize</code> se hace una sola vez; los errores de tool vienen como <code style="font-family:'DM Mono',monospace">isError: true</code> y no como error JSON-RPC.</li>
+          <li><strong>Mini-Crew por paso</strong> — en lugar de un crew monolítico, cada agente corre en su propio <code style="font-family:'DM Mono',monospace">Crew([agent], [task])</code>. Esto permite pausar y pedir aprobación humana entre pasos sin perder el contexto.</li>
+          <li><strong>HITL loop</strong> — tras cada paso el humano puede aprobar (<code style="font-family:'DM Mono',monospace">s</code>), rechazar (<code style="font-family:'DM Mono',monospace">n</code>) o reintentar (<code style="font-family:'DM Mono',monospace">r</code>). Solo al aprobar se persisten los artefactos y el checkpoint.</li>
+          <li><strong>Checkpoint</strong> — <code style="font-family:'DM Mono',monospace">output/.checkpoint.json</code> registra el estado de cada paso. Al volver a correr el script, los pasos ya aprobados se omiten inyectando su output como contexto para los restantes.</li>
+          <li><code style="font-family:'DM Mono',monospace">extract_and_save_code()</code>: regex extrae bloques <code style="font-family:'DM Mono',monospace">```java / ```ts / ```sql</code> del output del LLM → los guarda como archivos reales en <code style="font-family:'DM Mono',monospace">output/</code></li>
+          <li>Evidencia: screenshot del log en consola mostrando selección de feature + aprobaciones HITL + link al PR <code style="font-family:'DM Mono',monospace">feature/login → main</code> en GitHub</li>
+        </ul>
+        <div class="flows-link-row">
+          <a class="flows-btn" href="laboratory-flows.html#s1" target="_blank">Ver de manera interactiva · S1 CrewAI</a>
+          <span class="flows-hint">Visualizador interactivo del pipeline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       S2 AM — LangGraph
+  ════════════════════════════════════════════════ -->
+  <div class="session am">
+    <div class="s-head">
+      <div class="time-col"><span class="t-start">10:15</span><span class="t-end">12:15</span></div>
+      <div class="s-meta">
+        <span class="s-tag">S2 AM</span>
+        <h2 class="s-title">LangGraph — Workflow stateful</h2>
+        <p class="s-obj">Convertir el flujo en un <code style="font-family:'DM Mono',monospace">StateGraph</code> de 5 nodos (designer → backend_dev → api_dev → frontend_dev → reviewer) con <code style="font-family:'DM Mono',monospace">interrupt_before</code> en <strong>cada uno</strong>: el grafo se pausa antes de ejecutar cada nodo y espera la decisión del humano. Solo corren los nodos del alcance, sobre los repos reales (rama local, sin push). Al cerrar, verifica manifiestos y cambios en <code style="font-family:'DM Mono',monospace">output/repo_report.md</code>.</p>
+      </div>
+      <span class="dur">2 h</span>
+    </div>
+
+    <div class="panels">
+      <!-- Materiales -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+        <ul class="mat-list">
+          <li>LangGraph + conector LLM (instalar en el paso 1)</li>
+          <li>Mismo <code style="font-family:'DM Mono',monospace">.env</code> de S1 — Copilot SDK</li>
+          <li>Crew de S1 funcionando como referencia</li>
+          <li>Diagrama del graph (provisto por el trainer)</li>
+        </ul>
+        <p class="mat-note">El crew de S1 no se reemplaza — el graph es una capa distinta sobre la misma lógica.</p>
+      </div>
+
+      <!-- Pasos -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+        <div class="steps">
+
+          <div class="step">
+            <span class="step-num">00</span>
+            <div class="step-body">
+              <div class="step-title">Leer feature brief desde GitHub Project MCP</div>
+              <div class="step-desc">El estado inicial del graph se puebla con el brief del issue en vez de estar hardcodeado. Mismo módulo <code style="font-family:'DM Mono',monospace">mcp_projects.py</code> creado en S1.</div>
+              <div class="code"><pre><span class="code-comment"># s2_langgraph/main.py — al inicio, antes de compilar el graph</span>
+import os
+from mcp_projects import list_tools, list_projects, list_project_items, get_feature_from_item
+
+<span class="code-comment"># 1. Autenticación MCP y descubrimiento de tools</span>
+tools = list_tools()
+print("[MCP Proyectos] Herramientas cargadas correctamente.")
+
+<span class="code-comment"># 2. Selección de proyecto y feature desde GitHub Projects</span>
+projects = list_projects()
+selected_project = projects[0]  <span class="code-comment"># O mediante menú interactivo</span>
+backlog = list_project_items(selected_project["id"])
+feature = get_feature_from_item(backlog[0])
+print(f"[MCP Proyectos] Feature cargado: {feature['title']}")
+
+<span class="code-comment"># 3. El estado inicial del graph cumple con WorkflowState</span>
+initial_state = {
+    "feature_title":   feature["title"],
+    "feature_brief":   feature["description"],
+    "acceptance":      feature["acceptance_criteria"],
+    "designer_output": "",
+    "backend_output":  "",
+    "frontend_output": "",
+    "reviewer_output": "",
+}</pre></div>
+              <div class="step-desc">El nodo <em>designer</em> del graph recibirá <code style="font-family:'DM Mono',monospace">state["feature_brief"]</code> y <code style="font-family:'DM Mono',monospace">state["acceptance"]</code> como contexto dinámico del backlog.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <div class="step-title">Activar entorno e instalar dependencias de S2</div>
+              <div class="code"><pre><span class="code-comment"># Si usas el .venv global de la raíz, solo actívalo:</span>
+.\.venv\Scripts\activate
+
+<span class="code-comment"># Si usas venv aislado para S2:</span>
+cd s2_langgraph
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+<span class="code-comment"># El graph ya está en graph/ — ir directo al Step 05 para ejecutar</span></pre></div>
+              <div class="step-desc">💡 En este repositorio, todos los archivos de S2 ya están creados. Configura tu <code style="font-family:'DM Mono',monospace">.env</code> y pasa directo a ejecutar.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">graph/state.py</code> — definir el State</div>
+              <div class="code"><pre><span class="code-comment"># graph/state.py</span>
+from typing import TypedDict
+
+class WorkflowState(TypedDict):
+    <span class="code-comment"># Datos del feature leido del backlog (MCP Proyectos)</span>
+    feature_title:   str
+    feature_brief:   str
+    acceptance:      list
+
+    <span class="code-comment"># Outputs acumulados de cada agente</span>
+    designer_output: str
+    backend_output:  str
+    frontend_output: str
+    reviewer_output: str</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">graph/nodes.py</code> — un nodo por rol</div>
+              <div class="step-desc">Cada función recibe el <code style="font-family:'DM Mono',monospace">state</code> y retorna un dict con el campo actualizado. Inicializar el LLM con el mismo <code style="font-family:'DM Mono',monospace">.env</code>:</div>
+              <div class="code"><pre><span class="code-comment"># graph/nodes.py  — un nodo por rol</span>
+import time
+from langchain_core.messages import SystemMessage, HumanMessage
+from config.llm import llm
+
+_MAX_RETRIES = 5
+_CTX_LIMIT   = 3000   <span class="code-comment"># chars de contexto entre nodos</span>
+
+def _invoke(system: str, user: str) -&gt; str:
+    <span class="code-comment"># Retry exponencial ante 502/503/504/timeout del endpoint LLM</span>
+    for attempt in range(_MAX_RETRIES):
+        try:
+            r = llm.invoke([SystemMessage(content=system),
+                            HumanMessage(content=user)])
+            return r.content
+        except Exception as e:
+            retriable = any(c in str(e).lower() for c in
+                            ["504", "503", "502", "500", "timeout", "connection"])
+            if not retriable or attempt == _MAX_RETRIES - 1:
+                raise
+            time.sleep(12.0 * (2 ** attempt))
+
+def _ctx(text: str, max_chars: int = _CTX_LIMIT) -&gt; str:
+    <span class="code-comment"># Trunca conservando inicio y fin para no inflar el prompt</span>
+    if not text or len(text) &lt;= max_chars:
+        return text
+    half = max_chars // 2
+    return text[:half] + "
+[... omitido ...]
+" + text[-half:]
+
+def designer_node(state: dict) -&gt; dict:
+    <span class="code-comment"># Lee el feature del state, NO un brief hardcodeado</span>
+    user = (f"Feature: **{state['feature_title']}**
+{state['feature_brief']}
+
+"
+            f"Criterios:
+{_ac_text(state['acceptance'])}
+
+"
+            "Especificación técnica: resumen, componentes, contrato de API, "
+            "reglas de negocio y criterios Dado/Cuando/Entonces. Máx 600 palabras.")
+    return {"designer_output": _invoke(SYS_DESIGNER, user)}
+
+def backend_dev_node(state: dict) -&gt; dict:
+    ctx  = _ctx(state.get("designer_output", ""), max_chars=2000)
+    user = (f"Especificación del Designer:
+{ctx}
+
+---
+
+"
+            f"Implementa el backend Quarkus 3.x para **{state['feature_title']}**.
+"
+            "Entrega cada archivo bajo su propio encabezado:
+"
+            "### `AuthResource.java`, `AuthService.java`, `User.java`,
+"
+            "### `LoginRequest.java`, `AuthResponse.java`, `schema.sql`")
+    return {"backend_output": _invoke(SYS_BACKEND, user)}
+
+def frontend_dev_node(state: dict) -&gt; dict:
+    <span class="code-comment"># Recibe contexto del Designer Y del Backend</span>
+    ctx = "
+
+---
+
+".join(filter(None, [
+        _ctx(state.get("designer_output", ""), 1500),
+        _ctx(state.get("backend_output",  ""), 2000)]))
+    user = (f"{ctx}
+
+---
+
+Implementa Angular 17 para "
+            f"**{state['feature_title']}**: `models.ts`, `auth.service.ts`, "
+            "`auth.guard.ts`, `login.component.ts/.html`, `auth.interceptor.ts`")
+    return {"frontend_output": _invoke(SYS_FRONTEND, user)}
+
+def reviewer_node(state: dict) -&gt; dict:
+    ctx = "
+
+---
+
+".join(filter(None, [
+        _ctx(state.get("designer_output", ""), 1000),
+        _ctx(state.get("backend_output",  ""), 1500),
+        _ctx(state.get("frontend_output", ""), 1500)]))
+    user = (f"{ctx}
+
+Revisa los outputs. Checklist SÍ/NO:
+"
+            "1. Backend implementa las reglas del Designer
+"
+            "2. Contrato de API consistente entre los tres
+"
+            f"3. Criterios cubiertos:
+{_ac_text(state['acceptance'])}
+"
+            "4. Sin riesgos de seguridad evidentes
+"
+            "5. Compatible con Quarkus 3.x y Angular 17
+
+"
+            "Concluye con **VEREDICTO: APROBADO** o **VEREDICTO: RECHAZADO**.")
+    return {"reviewer_output": _invoke(SYS_REVIEWER, user)}</pre></div>
+              <div class="step-desc">Cada nodo lee el feature desde el <code style="font-family:'DM Mono',monospace">state</code> — nada hardcodeado. El contexto se encadena: Designer → Backend → Frontend → Reviewer, truncado a <code style="font-family:'DM Mono',monospace">_CTX_LIMIT</code> para no desbordar el prompt. El mismo código funciona contra Copilot SDK — solo cambia el <code style="font-family:'DM Mono',monospace">.env</code> por sesión.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <div class="step-title">Crear <code style="font-family:'DM Mono',monospace">graph/graph.py</code> — ensamblar el graph</div>
+              <div class="code"><pre><span class="code-comment"># graph/graph.py  — 5 nodos, flujo lineal</span>
+import sqlite3
+from pathlib import Path
+from langgraph.graph import StateGraph, END
+from graph.state import WorkflowState
+from graph.nodes import (designer_node, backend_dev_node, api_dev_node,
+                         frontend_dev_node, reviewer_node)
+
+<span class="code-comment"># Checkpointer: SqliteSaver si esta disponible, sino MemorySaver</span>
+_DB = Path(__file__).parent.parent / ".langgraph_checkpoint.db"
+try:
+    from langgraph_checkpoint_sqlite import SqliteSaver
+    checkpointer = SqliteSaver(sqlite3.connect(str(_DB), check_same_thread=False))
+    USING_SQLITE = True
+except ModuleNotFoundError:
+    from langgraph.checkpoint.memory import MemorySaver
+    checkpointer = MemorySaver()      <span class="code-comment"># main.py persiste en .checkpoint.json</span>
+    USING_SQLITE = False
+
+builder = StateGraph(WorkflowState)
+builder.add_node("designer",     designer_node)
+builder.add_node("backend_dev",  backend_dev_node)
+builder.add_node("frontend_dev", frontend_dev_node)
+builder.add_node("reviewer",     reviewer_node)
+
+builder.set_entry_point("designer")
+builder.add_edge("designer",     "backend_dev")
+builder.add_edge("backend_dev",  "frontend_dev")
+builder.add_edge("frontend_dev", "reviewer")
+builder.add_edge("reviewer",     END)
+
+<span class="code-comment"># HITL: pausa ANTES de ejecutar cada nodo, no solo al final</span>
+graph = builder.compile(
+    checkpointer=checkpointer,
+    interrupt_before=["designer", "backend_dev", "frontend_dev", "reviewer"],
+)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">05</span>
+            <div class="step-body">
+              <div class="step-title">Ejecutar el graph con thread_id fijo</div>
+              <div class="code"><pre>CONFIG = {"configurable": {"thread_id": "s2-langgraph-crew-01"}}
+
+<span class="code-comment"># El state inicial se puebla con el feature leido del MCP</span>
+initial_state = {
+    "feature_title":   feature["title"],
+    "feature_brief":   feature["description"],
+    "acceptance":      feature["acceptance_criteria"],
+    "designer_output": "", "backend_output":  "",
+    "frontend_output": "", "reviewer_output": "",
+}
+
+<span class="code-comment"># Arranca y se detiene ANTES del primer nodo (designer)</span>
+graph.invoke(initial_state, CONFIG)
+
+<span class="code-comment"># Un ciclo por nodo: avanzar, inspeccionar, decidir</span>
+for step in ["designer", "backend_dev", "frontend_dev", "reviewer"]:
+    input(f"¿Ejecutar {step}? [s/n]: ")
+    graph.invoke(None, CONFIG)              <span class="code-comment"># corre ese nodo y vuelve a pausar</span>
+    snap   = graph.get_state(CONFIG)
+    output = snap.values[f"{step.replace('_dev', '')}_output"]
+    print(output[:1000])
+    <span class="code-comment"># [s]=guardar  [r]=reintentar (update_state)  [n]=cancelar</span></pre></div>
+              <div class="step-desc">El graph se pausa antes de <strong>cada</strong> nodo, no solo al final: cada <code style="font-family:'DM Mono',monospace">graph.invoke(None, CONFIG)</code> ejecuta exactamente un nodo y vuelve a interrumpir. El mismo <code style="font-family:'DM Mono',monospace">thread_id</code> reanuda el state guardado. Con <code style="font-family:'DM Mono',monospace">[r]</code> el nodo se re-ejecuta y el resultado se inyecta con <code style="font-family:'DM Mono',monospace">graph.update_state(..., as_node=step)</code>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">06</span>
+            <div class="step-body">
+              <div class="step-title">Verificar el checkpoint</div>
+              <div class="code"><pre><span class="code-comment"># Ver el state guardado</span>
+snapshot = graph.get_state(config)
+print(snapshot.values)</pre></div>
+              <div class="step-desc">El state debe mostrar los outputs de los nodos anteriores sin re-ejecutarlos.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">07</span>
+            <div class="step-body">
+              <div class="step-title">Verificación estructural sobre repos reales</div>
+              <div class="step-desc">S2 no se queda en generar: valida. Al cerrar el flujo verifica que cada repo involucrado conserve sus manifiestos y lista lo cambiado en la rama local:</div>
+              <div class="code"><pre><span class="code-comment"># main.py — cierre del flujo (rama local, sin push)</span>
+output/repo_report.md   <span class="code-comment"># manifiestos por stack + archivos cambiados</span></pre></div>
+              <div class="step-desc">El cierre es determinista sobre los repos reales: verifica que cada repo involucrado conserve sus manifiestos (<code style="font-family:'DM Mono',monospace">pom.xml</code> / <code style="font-family:'DM Mono',monospace">package.json</code> / <code style="font-family:'DM Mono',monospace">requirements.txt</code>) y lista los archivos cambiados en la rama local en <code style="font-family:'DM Mono',monospace">output/repo_report.md</code>. (El diseño hexagonal original queda como referencia en <code style="font-family:'DM Mono',monospace">hex_archetype.py</code>.)</div>
+              <div class="code"><pre><span class="code-comment"># Verificar el workspace sin gastar tokens (no llama al LLM ni al MCP)</span>
+cd s2_langgraph
+python -c "from pathlib import Path; p = Path.cwd().parent.parent / 'reqflow-workspace'; print(p, p.is_dir())"</pre></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Qué obtengo -->
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <div class="out-columns">
+          <div class="out-col">
+            <div class="out-col-label">▶ Terminal — output real de ejecución</div>
+            <pre class="out-log">[MCP Proyectos] Autenticando...
+[MCP Proyectos] Herramientas cargadas correctamente.
+
+[MCP Proyectos] Proyecto asignado: Project Test
+
+[MCP Proyectos] Backlog de 'Project Test':
+  1. 🟢 feature de creación de login
+  2. 🟢 Bloqueo y desbloqueo temporal de tarjeta
+
+Selecciona el número de feature [1-2]: 1
+[MCP Proyectos] Feature seleccionado: feature de creación de login
+
+============================================================
+S2 LangGraph — mismo flujo CrewAI con LangGraph
+Feature: feature de creación de login
+============================================================
+
+────────────────────────────────────────────────────────────
+[CHECKPOINT] Sesión anterior encontrada.
+  Feature:      feature de creación de login
+  Próximo paso: Backend Developer (Implementación Quarkus)
+    ✅ Designer (Especificación técnica)
+    ⏳ Backend Developer (Implementación Quarkus)
+    ⬜ Frontend Developer (Implementación Angular)
+    ⬜ Tech Lead Reviewer (Veredicto)
+────────────────────────────────────────────────────────────
+¿Reanudar desde ese punto? [s/N]: s
+
+[RESUME] Reanudando desde: Backend Developer
+
+[HITL] Próximo paso: Backend Developer (Repo Quarkus real)
+¿Ejecutar Backend Developer? [s/n]: s
+
+[OUTPUT] Backend Developer (Repo Quarkus real):
+### `AuthResource.java` · ### `AuthService.java` · ...
+[Output completo: 14174 caracteres]
+
+¿Qué haces? [s=guardar / r=reintentar / n=cancelar]: s
+  ✅ output/backend_code.md
+  💾 workshop-auth-backend/src/main/java/.../AuthResource.java
+  💾 workshop-auth-backend/src/main/java/.../AuthService.java
+  💾 workshop-auth-backend/src/main/java/.../model/User.java
+  💾 workshop-auth-backend/src/main/java/.../dto/LoginRequest.java
+  💾 workshop-auth-backend/src/main/java/.../dto/AuthResponse.java
+  ✅ 5 archivo(s) escritos en el repo (rama agent/..., sin push).
+
+[HITL] Próximo paso: Frontend Developer (Repo Angular real)
+¿Ejecutar Frontend Developer? [s/n]: s
+
+¿Qué haces? [s=guardar / r=reintentar / n=cancelar]: s
+  ✅ output/frontend_code.md
+  💾 workshop-login-frontend/src/app/.../models.ts
+  💾 workshop-login-frontend/src/app/.../auth.service.ts
+  💾 workshop-login-frontend/src/app/.../auth.guard.ts
+  💾 workshop-login-frontend/src/app/.../login.component.ts
+  💾 workshop-login-frontend/src/app/.../login.component.html
+  💾 workshop-login-frontend/src/app/.../auth.interceptor.ts
+  ✅ 6 archivo(s) escritos en el repo (rama agent/..., sin push).
+
+[HITL] Próximo paso: Tech Lead Reviewer (Veredicto)
+¿Ejecutar Tech Lead Reviewer? [s/n]: s
+
+[OUTPUT] Tech Lead Reviewer:
+1. Backend implementa todas las reglas del Designer: <span class="ok">NO</span>
+2. Contrato de API consistente entre los tres outputs: <span class="ok">NO</span>
+3. Criterios de aceptación cubiertos: <span class="ok">NO</span>
+...
+  ✅ output/reviewer_report.md
+
+============================================================
+✅ Flujo S2 LangGraph completado.
+Archivos guardados en: output/
+============================================================</pre>
+          </div>
+          <div class="out-col">
+            <div class="out-col-label">📁 Estructura generada</div>
+            <pre class="out-tree">s2_langgraph/
+├── output/
+│   ├── backend_code.md
+│   ├── frontend_code.md
+│   ├── reviewer_report.md
+│   ├── .checkpoint.json    ← resume por paso
+│   ├── backend-quarkus/src/main/java/pe/bcp/auth/
+│   │   ├── AuthResource.java
+│   │   ├── AuthService.java
+│   │   ├── model/User.java
+│   │   ├── dto/LoginRequest.java
+│   │   ├── dto/AuthResponse.java
+│   │   └── resources/application.properties
+│   ├── db/
+│   │   └── schema.sql
+│   └── frontend-angular/src/app/
+│       ├── auth/models.ts
+│       ├── auth/auth.service.ts
+│       ├── auth/auth.guard.ts
+│       ├── auth/login.component.ts
+│       ├── auth/login.component.html
+│       └── core/auth.interceptor.ts
+├── graph/
+│   ├── state.py  ← WorkflowState (TypedDict)
+│   ├── nodes.py  ← designer/backend/frontend/reviewer _node()
+│   └── graph.py  ← StateGraph + checkpoint
+├── mcp_projects.py
+├── hex_archetype.py   ← scaffold() + validate()
+├── test_hex_wiring.py
+└── main.py</pre>
+          </div>
+        </div>
+        <span class="out-key">Concepto demostrado</span>
+        <ul class="out-list">
+          <li>Mismo flujo HITL que S1 (s=guardar / r=reintentar / n=cancelar) ahora implementado con <strong>LangGraph StateGraph</strong> — cada nodo es un agente, el state se pasa entre nodos</li>
+          <li><strong>Checkpoint por paso</strong>: <code style="font-family:'DM Mono',monospace">.checkpoint.json</code> persiste el avance; al reiniciar el script el usuario puede reanudar desde el paso pendiente sin repetir los aprobados</li>
+          <li><strong>Extracción de código real</strong>: regex detecta bloques <code style="font-family:'DM Mono',monospace">### path/file.ext</code> en el output del LLM y guarda cada archivo en su ruta correspondiente dentro de <code style="font-family:'DM Mono',monospace">output/</code></li>
+          <li>El <strong>Tech Lead Reviewer</strong> evalúa coherencia Backend + Frontend + Designer; emite veredicto con checklist accionable — el humano decide si reintentar o cancelar con HITL</li>
+        </ul>
+        <div class="flows-link-row">
+          <a class="flows-btn" href="laboratory-flows.html#s2" target="_blank">Ver de manera interactiva · S2 LangGraph</a>
+          <span class="flows-hint">Visualizador interactivo del workflow stateful</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-row">Almuerzo · 12:15 – 13:15</div>
+  <p class="sec-label">Tarde</p>
+
+  <!-- ═══════════════════════════════════════════════
+       S3 PM — Harness Engineering
+  ════════════════════════════════════════════════ -->
+  <div class="session pm">
+    <div class="s-head">
+      <div class="time-col"><span class="t-start">13:15</span><span class="t-end">15:15</span></div>
+      <div class="s-meta">
+        <span class="s-tag">S3 PM</span>
+        <h2 class="s-title">Harness Engineering</h2>
+        <p class="s-obj">Un solo pipeline, tres capas. El <strong>graph</strong> tiene los 5 nodos que hacen el trabajo (analyze → chapter → backend → frontend → reviewer) y es el único lugar donde vive el LLM. El <strong>harness</strong> es su puerta de entrada: carga constitution.md en <code style="font-family:'DM Mono',monospace">state["context"]</code>, entrega el control nodo a nodo y mide compliance. Y <code style="font-family:'DM Mono',monospace">main.py</code> orquesta lo que el graph no hace — clona el repo, pide aprobación humana, extrae archivos y abre el PR. <code style="font-family:'DM Mono',monospace">compare()</code> corre el mismo pipeline SIN y CON constitución para cuantificar la diferencia.</p>
+      </div>
+      <span class="dur">2 h</span>
+    </div>
+
+    <div class="panels">
+      <!-- Materiales -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+        <ul class="mat-list">
+          <li>Python 3.11+ con venv activo</li>
+          <li>VS Code</li>
+          <li>Copilot SDK configurado en <code style="font-family:'DM Mono',monospace">.env</code> (Copilot SDK — mismo de S1/S2)</li>
+          <li>Repositorio GitHub configurado en <code style="font-family:'DM Mono',monospace">.env</code> (<code style="font-family:'DM Mono',monospace">GITHUB_OWNER</code>, <code style="font-family:'DM Mono',monospace">GITHUB_REPO</code>, <code style="font-family:'DM Mono',monospace">GIT_MCP_URL</code>)</li>
+          <li><code style="font-family:'DM Mono',monospace">gh</code> CLI autenticado (<code style="font-family:'DM Mono',monospace">gh auth login</code>) — fallback si el MCP Git no puede crear el PR</li>
+          <li>Usar <code style="font-family:'DM Mono',monospace">s3_harness/</code> del repositorio clonado — ya incluye <code style="font-family:'DM Mono',monospace">graph/</code>, <code style="font-family:'DM Mono',monospace">harness/</code>, <code style="font-family:'DM Mono',monospace">main.py</code> y <code style="font-family:'DM Mono',monospace">constitution.md</code></li>
+        </ul>
+        <p class="mat-note">El harness inyecta <code style="font-family:'DM Mono',monospace">constitution.md</code> como system context enriqueciendo el input del LangGraph graph — sin re-entrenar el modelo, el comportamiento cambia cuantitativamente en los 5 checks de seguridad.</p>
+      </div>
+
+      <!-- Pasos -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+        <div class="steps">
+
+          <div class="step">
+            <span class="step-num">00</span>
+            <div class="step-body">
+              <div class="step-title">Instalar dependencias y revisar estructura</div>
+              <div class="step-desc">S3 usa LangGraph para el pipeline multi-nodo. Instalar y verificar que el graph arranca.</div>
+              <div class="code"><pre><span class="code-comment"># Instalar dependencias de s3_harness</span>
+cd s3_harness
+copy .env.example .env   <span class="code-comment"># completar con creds</span>
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+<span class="code-comment"># requirements.txt incluye:
+# langgraph&gt;=0.2.0
+# langchain-openai&gt;=0.2.0
+# python-dotenv&gt;=1.0.0
+# requests&gt;=2.32.0</span>
+
+<span class="code-comment"># Verificar que el graph importa correctamente</span>
+python -c "from graph.graph import graph; print('Graph OK:', graph)"</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <div class="step-title">¿Qué es un nodo? — el contrato <code style="font-family:'DM Mono',monospace">(state) -&gt; dict</code></div>
+              <div class="step-desc">Un nodo es una función común. Recibe el estado completo del pipeline y devuelve <strong>sólo los campos que modifica</strong>; LangGraph mergea ese dict en el estado y se lo pasa al siguiente. No devuelve el estado entero, no muta el que recibe, y no sabe quién corre antes ni después — por eso se pueden reordenar, saltar o reintentar de a uno.</div>
+              <div class="code"><pre><span class="code-comment"># graph/nodes.py — el LLM vive aca, y en ningun otro lado</span>
+def analyze_node(state: WorkflowState) -&gt; dict:
+    prompt = (
+        f"Eres un Tech Lead senior. Analiza el repo '{state['repo_name']}':"
+        f"{_ctx(state['snapshot'], 8000)}"
+        "Identifica problemas reales de calidad..."
+    )
+    return {"out_analysis": _invoke(prompt)}   <span class="code-comment"># solo el campo que escribe</span>
+
+<span class="code-comment"># Un nodo puede saltarse a si mismo devolviendo un dict vacio</span>
+def frontend_node(state: WorkflowState) -&gt; dict:
+    if state.get("project_type") not in ("frontend", "ambos"):
+        return {}                              <span class="code-comment"># no toca el estado</span>
+    ...</pre></div>
+              <div class="step-desc">Los cinco nodos de S3 son los cinco roles del equipo: <code style="font-family:'DM Mono',monospace">analyze</code> detecta problemas, <code style="font-family:'DM Mono',monospace">chapter</code> arma el plan, <code style="font-family:'DM Mono',monospace">backend</code> y <code style="font-family:'DM Mono',monospace">frontend</code> implementan, <code style="font-family:'DM Mono',monospace">reviewer</code> emite veredicto. Cada uno decide cómo usar <code style="font-family:'DM Mono',monospace">state["context"]</code> (la constitución que carga el harness): analyze la ignora a propósito para no sesgar el diagnóstico, chapter acota el scope, los devs restringen el código, y el reviewer la convierte en checklist.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <div class="step-title">Revisar <code style="font-family:'DM Mono',monospace">graph/graph.py</code> — HITL por nodo + retry automático</div>
+              <div class="step-desc">Dos mecanismos de control que no son lo mismo. <code style="font-family:'DM Mono',monospace">interrupt_before</code> es el <strong>HITL</strong>: el grafo se detiene antes de cada nodo y devuelve el control, así que cada <code style="font-family:'DM Mono',monospace">invoke(None, cfg)</code> ejecuta exactamente uno. <code style="font-family:'DM Mono',monospace">should_retry</code> es el <strong>retry automático</strong>: si el reviewer no aprueba, la arista condicional vuelve a backend sin preguntar. El humano confirma el resultado de cada ronda, pero no decide si hay ronda.</div>
+              <div class="code"><pre><span class="code-comment"># graph/graph.py (extracto)</span>
+MAX_RETRIES = 3
+NODES = ["analyze", "chapter", "backend", "frontend", "reviewer"]
+
+def should_retry(state: WorkflowState) -&gt; str:
+    if not state.get("approved", False) and state.get("retry_count", 0) &lt; MAX_RETRIES:
+        return "backend"   <span class="code-comment"># otra ronda con el feedback del reviewer</span>
+    return END
+
+builder = StateGraph(WorkflowState)
+builder.add_node("analyze",  analyze_node)
+builder.add_node("chapter",  chapter_node)
+builder.add_node("backend",  backend_node)
+builder.add_node("frontend", frontend_node)
+builder.add_node("reviewer", reviewer_node)
+
+builder.set_entry_point("analyze")
+builder.add_edge("analyze",  "chapter")
+builder.add_edge("chapter",  "backend")
+builder.add_edge("backend",  "frontend")
+builder.add_edge("frontend", "reviewer")
+builder.add_conditional_edges("reviewer", should_retry,
+                              {"backend": "backend", END: END})
+
+graph = builder.compile(
+    checkpointer=MemorySaver(),
+    interrupt_before=NODES,   <span class="code-comment"># sin esto se pierde el HITL</span>
+)</pre></div>
+              <div class="step-desc">Verificar sin gastar tokens: <code style="font-family:'DM Mono',monospace">python test_graph_hitl.py</code> comprueba que un invoke ejecute exactamente un nodo, que el retry vuelva a backend, y que <code style="font-family:'DM Mono',monospace">project_type</code> omita el nodo que no corresponde.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <div class="step-title">Revisar <code style="font-family:'DM Mono',monospace">harness/context/constitution.md</code> — las 6 reglas</div>
+              <div class="step-desc">El harness la carga una sola vez y la deja en <code style="font-family:'DM Mono',monospace">state["context"]</code>. No se re-entrena el modelo: cambia el contexto, y con eso el comportamiento.</div>
+              <div class="code"><pre><span class="code-comment"># harness/context/constitution.md</span>
+R1: Contratos preservados (POST /auth/login, /api/tasks, /api/summary, /api/requirements).
+R2: Secretos fuera del codigo (AUTH_TOKEN_SECRET por entorno). Nada sensible en logs.
+R3: SQL parametrizado y contrasenas hasheadas (bcrypt/argon2/PBKDF2).
+R4: Token firmado (HMAC/JWT) con exp real, validado por quien lo recibe.
+R5: Errores genericos sin stack traces. Sin [innerHTML] dinamico en Angular.
+R6: Caracterizacion antes del cambio, cobertura &gt;= 85%, cita #issue y H-xx.
+<span class="code-comment"># + artefactos de TU repo (Dias 1-3): REGLAS.md, docs/ENDPOINTS.md, openspec/specs/...</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <div class="step-title">Revisar <code style="font-family:'DM Mono',monospace">harness/harness.py</code> — la única puerta de entrada</div>
+              <div class="step-desc"><code style="font-family:'DM Mono',monospace">main.py</code> no instancia modelos ni arma prompts: siembra el estado aquí y hace avanzar el pipeline. <code style="font-family:'DM Mono',monospace">run_with_harness()</code> carga instructions + constitution + policies y los deja en <code style="font-family:'DM Mono',monospace">context</code>; <code style="font-family:'DM Mono',monospace">run_without_harness()</code> lo deja vacío — esa es justamente la diferencia que mide <code style="font-family:'DM Mono',monospace">compare()</code>.</div>
+              <div class="code"><pre><span class="code-comment"># harness/harness.py (extracto)</span>
+def run_with_harness(repo_name, snapshot, project_type, thread_id) -&gt; dict:
+    <span class="code-comment"># Siembra el estado. NO ejecuta ningun nodo todavia.</span>
+    return _start(repo_name, snapshot, project_type, thread_id, load_context())
+
+def step(thread_id) -&gt; tuple[str | None, dict]:
+    <span class="code-comment"># Ejecuta EXACTAMENTE un nodo y devuelve (nombre, estado)</span>
+    nodo = next_node(thread_id)
+    if nodo is None:
+        return None, state(thread_id)
+    graph.invoke(None, _config(thread_id))
+    return nodo, state(thread_id)
+
+def retry_node(thread_id, nodo) -&gt; dict:
+    <span class="code-comment"># El [r] del HITL: reejecuta y reinyecta la salida</span>
+    salida = _NODE_FNS[nodo](graph.get_state(cfg).values)
+    graph.update_state(cfg, salida, as_node=nodo)
+    return state(thread_id)</pre></div>
+              <div class="step-desc"><code style="font-family:'DM Mono',monospace">resume_with_harness()</code> resuelve el reinicio: el MemorySaver vive en proceso, así que al volver a arrancar se resiembra el estado y se adelanta con <code style="font-family:'DM Mono',monospace">update_state(as_node=...)</code> usando los artefactos del checkpoint — sin reejecutar ningún nodo ya aprobado.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">05</span>
+            <div class="step-body">
+              <div class="step-title">Revisar <code style="font-family:'DM Mono',monospace">check_security_compliance()</code> — 5 checks deterministas</div>
+              <div class="step-desc">Evalúa el texto generado con cinco patrones verificables. Vive en el harness y <code style="font-family:'DM Mono',monospace">main.py</code> la importa de ahí: antes estaba duplicada byte a byte en los dos archivos. Resultado esperado: SIN harness 1-2/5, CON harness 5/5.</div>
+              <div class="code"><pre><span class="code-comment"># harness/harness.py</span>
+def check_security_compliance(response_text: str) -&gt; dict[str, bool]:
+    t = (response_text or "").lower()
+    return {
+        "bcrypt_factor_12":       ("bcrypt" in t) and any(x in t for x in ("factor 12", " 12")),
+        "jwt_exp_8h":             any(x in t for x in ("jwt", "token")) and "28800" in t,
+        "rate_limit_5_intentos":  any(x in t for x in ("rate", "5 intentos", "429")),
+        "https_enforced":         any(x in t for x in ("https", "tls", "ssl")),
+        "no_plaintext_passwords": "hash" in t and "plaintext" not in t,
+    }</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">06</span>
+            <div class="step-body">
+              <div class="step-title">Revisar <code style="font-family:'DM Mono',monospace">main.py</code> — orquesta, no genera</div>
+              <div class="step-desc">Tras la alineación, <code style="font-family:'DM Mono',monospace">main.py</code> no importa <code style="font-family:'DM Mono',monospace">ChatOpenAI</code> ni arma un solo prompt. Se ocupa de lo que el graph no hace: clonar el repo, leer el snapshot, detectar el tipo de proyecto, pedir aprobación, extraer los archivos del output, commitear y abrir el PR.</div>
+              <div class="code"><pre><span class="code-comment"># main.py — el bucle completo</span>
+run_with_harness(repo_name=f"{GITHUB_OWNER}/{GITHUB_REPO}",
+                 snapshot=snapshot, project_type=project_type,
+                 thread_id=THREAD_ID)
+
+while next_node(THREAD_ID) is not None:
+    nodo_corrido, estado = step(THREAD_ID)     <span class="code-comment"># un nodo por vuelta</span>
+    salida = _hitl_node(nodo_corrido, estado)  <span class="code-comment"># [s/r/n]</span>
+    if not salida:
+        continue                               <span class="code-comment"># omitido por project_type</span>
+    <span class="code-comment"># persistir artefacto, extraer archivos, checkpoint...</span>
+
+final = harness_state(THREAD_ID)
+compliance = check_security_compliance(
+    " ".join([final["out_backend"], final["out_frontend"], final["out_reviewer"]])
+)</pre></div>
+              <div class="step-desc">El <code style="font-family:'DM Mono',monospace">[r]</code> del HITL llama a <code style="font-family:'DM Mono',monospace">retry_node()</code>, que reejecuta ese nodo. Es distinto del retry automático del reviewer: ése lo decide el veredicto dentro del graph. Verificar con <code style="font-family:'DM Mono',monospace">python test_harness_flow.py</code>.</div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">07</span>
+            <div class="step-body">
+              <div class="step-title">Conventional Commits — <code style="font-family:'DM Mono',monospace">_derive_commit_type()</code> y <code style="font-family:'DM Mono',monospace">_branch_name()</code></div>
+              <div class="step-desc">El tipo de commit y el nombre de rama se derivan automáticamente del plan de refactorización — nunca hardcodeados.</div>
+              <div class="code"><pre><span class="code-comment"># main.py — Conventional Commits</span>
+commit_type = _derive_commit_type(plan, review)
+<span class="code-comment"># Analiza keywords en plan + review_out</span>
+<span class="code-comment"># → 'feat' | 'fix' | 'refactor' | 'chore'</span>
+
+branch = _branch_name(commit_type, repo_slug, description)
+<span class="code-comment"># → "refactor/mi-repo/mejorar-auth-20260830"</span>
+
+commit_msg = _commit_message(commit_type, scope, description)
+<span class="code-comment"># → "refactor(auth): mejorar manejo de sesiones JWT"</span>
+
+_git_branch_push(repo_dir, branch, commit_msg)
+<span class="code-comment"># configura git user, crea rama, git add -A, git commit, git push</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">08</span>
+            <div class="step-body">
+              <div class="step-title">Push con git, PR con MCP Git (fallback a <code style="font-family:'DM Mono',monospace">gh</code>)</div>
+              <div class="step-desc">Tres tramos con tecnologías distintas. El <strong>push</strong> es git plano por subprocess: <code style="font-family:'DM Mono',monospace">_git_branch_push()</code> reescribe el remote con <code style="font-family:'DM Mono',monospace">GITHUB_TOKEN</code> para autenticar, crea la rama, commitea con mensaje Conventional y pushea. El <strong>PR</strong> lo intenta primero <code style="font-family:'DM Mono',monospace">mcp_git.create_pr()</code> contra el MCP en <code style="font-family:'DM Mono',monospace">:8082</code>, probando varias tools (<code style="font-family:'DM Mono',monospace">create_pull_request</code>, <code style="font-family:'DM Mono',monospace">open_pull_request</code>…). Si el MCP no expone ninguna, o si falla con el bug GraphQL <em>org-vs-user</em>, cae a <code style="font-family:'DM Mono',monospace">gh pr create</code>. El body del PR incluye el reporte del reviewer, el plan del chapter y el score de compliance. <strong>Ten <code style="font-family:'DM Mono',monospace">gh auth login</code> hecho también para S3</strong>: es lo único que salva el paso si el MCP del lab arrastra ese bug.</div>
+              <div class="code"><pre><span class="code-comment"># main.py — creación de PR vía MCP Git</span>
+from mcp_git import create_pr
+
+pr_url = create_pr(
+    title=f"{commit_type}({scope}): {description}",
+    body=(
+        f"## Plan de refactorización\n{plan[:500]}...\n\n"
+        f"## Reporte del Reviewer\n{review}\n\n"
+        f"## ⚖️ Compliance con Constitución — Score {_state['compliance_score']}\n"
+        f"| Regla | Estado |\n|-------|--------|\n"
+        f"... (generado por check_security_compliance())\n\n"
+        f"> Verificado por `check_security_compliance()` integrado en el harness."
+    ),
+    head=branch,
+    base=os.getenv("GIT_HEAD_BRANCH", "main"),
+)
+print(f"[MCP Git] PR creado: {pr_url}")
+
+<span class="code-comment"># Checkpoint guardado en output/.checkpoint.json</span>
+<span class="code-comment"># Claves: project_type, analysis, plan, backend_out, frontend_out,</span>
+<span class="code-comment">#         head_branch, base_branch, commit_type, commit_msg, next_step</span></pre></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Qué obtengo -->
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <div class="out-columns">
+          <div class="out-col">
+            <div class="out-col-label">▶ Terminal — output real de ejecución (main.py Option C)</div>
+            <pre class="out-log">============================================================
+S3 Harness — Code Refactoring Pipeline
+Repo: NTTData-Academy/workshop-requirements-api-template
+Branch: feature/equipo-01/workshop-refactor → main
+============================================================
+
+[MCP Git] Conectando... Herramientas disponibles.
+
+[HARNESS] Cargando constitución...
+  [HARNESS] Constitución cargada (2823 chars).
+[HARNESS] Pipeline ejecutará CON constitución inyectada.
+
+[REPO] Descargando NTTData-Academy/workshop-requirements-api-template...
+[REPO] Snapshot generado: 37 archivos leídos.
+
+[DETECCIÓN] Tipo de proyecto detectado: BACKEND
+¿Tipo de proyecto? [backend/frontend/ambos] (Enter=backend):
+  → Usando: BACKEND
+
+¿Iniciar pipeline de refactorización? [s/N]: s
+
+[PASO 1/4] Análisis de código...
+  - Secreto JWT hardcodeado en tests/test_api.py
+  - Autenticación inconsistente: base64 vs jwt real
+  - Tests desactualizados respecto al contrato real
+  ✅ output/analysis.md  · 💾 Checkpoint (next_step=chapter)
+
+[PASO 2/4] Chapter Lead — Plan...
+  > Nota de scope BCP: archivos no pertenecen a detection/
+  > Requiere aprobación humana: merge a main/master
+  ✅ output/chapter_plan.md · 💾 Checkpoint (next_step=backend)
+
+[PASO 3/4] Backend Developer...
+  ✅ output/backend_refactor.md (12 archivos extraídos)
+  💾 output/app/config.py · app/security.py · app/api/dependencies.py
+  💾 Checkpoint (next_step=reviewer)
+
+[PASO 4/4] Tech Lead Reviewer...
+  ❌ RECHAZADO — diff truncado, sin tests, frontend vacío
+  [Y] scope respetado   [Y] no PII   [N] regulatorio   [Y] aprobación humana
+  ✅ output/reviewer_report.md
+
+[HARNESS] Verificando compliance con la constitución...
+[HARNESS] Score: 1/5
+  ❌ bcrypt_factor_12
+  ✅ jwt_exp_8h
+  ❌ rate_limit_5_intentos
+  ❌ https_enforced
+  ❌ no_plaintext_passwords
+  ✅ evidence/compliance_report.json · 💾 Checkpoint (next_step=push)
+
+¿Subir código y crear PR? [s/N]: s
+
+[GIT] Tipo  : fix
+[GIT] Rama  : fix/workshop-requirements-api-temp/1-backend-20260911
+[GIT] Commit: fix(workshop-requirements-api): Seguridad / secretos hardcodeados
+  ✅ Push → origin/fix/workshop-requirements-api-temp/1-backend-20260911
+
+[MCP Git] ✅ PR creado:
+  https://github.com/NTTData-Academy/workshop-requirements-api-template/pull/12
+  🗑️  Checkpoint eliminado.
+
+============================================================
+✅ S3 Harness completado.
+  PR: https://github.com/NTTData-Academy/workshop-requirements-api-template/pull/12
+============================================================</pre>
+          </div>
+          <div class="out-col">
+            <div class="out-col-label">📁 Estructura generada</div>
+            <pre class="out-tree">s3_harness/
+├── output/
+│   ├── analysis.md
+│   ├── chapter_plan.md
+│   ├── backend_refactor.md   ← 12 archivos extraídos
+│   ├── reviewer_report.md
+│   ├── .checkpoint.json      ← eliminado tras PR
+│   └── app/                  ← archivos refactorizados
+│       ├── config.py
+│       ├── security.py
+│       ├── api/dependencies.py
+│       ├── api/routes/tasks.py
+│       ├── api/routes/requirements.py
+│       ├── schemas/tasks.py
+│       ├── schemas/requirements.py
+│       ├── repositories/tasks_repository.py
+│       ├── services/tasks_service.py
+│       └── main.py
+├── evidence/
+│   ├── compliance_report.json  ← Score 1/5 (jwt_exp_8h ✅)
+│   ├── run_without_harness.json / .txt
+│   └── run_with_harness.json / .txt
+├── harness/
+│   ├── harness.py
+│   └── context/
+│       └── constitution.md  ← 2823 chars cargados
+├── graph/
+│   ├── graph.py · nodes.py · state.py
+├── main.py
+└── mcp_git.py</pre>
+          </div>
+        </div>
+        <span class="out-key">Conceptos demostrados</span>
+        <ul class="out-list">
+          <li><strong>Harness como puerta de entrada</strong>: <code style="font-family:'DM Mono',monospace">run_with_harness()</code> carga instructions + constitution + policies en <code style="font-family:'DM Mono',monospace">state["context"]</code> y cada nodo decide cómo aplicarlo; el pipeline refactoriza código real del repo NTTData-Academy/workshop-requirements-api-template</li>
+          <li><strong>Compliance score real</strong>: <code style="font-family:'DM Mono',monospace">check_security_compliance()</code> post-reviewer detectó <strong>1/5</strong> reglas cumplidas (jwt_exp_8h ✅) — demostración honesta de que el harness detecta gaps</li>
+          <li>El <strong>Tech Lead Reviewer</strong> emitió <code style="font-family:'DM Mono',monospace">RECHAZADO</code> con checklist de compliance de constitución por regla ([Y]/[N]); el output truncado y la ausencia de tests fueron los motivos concretos</li>
+          <li>Pipeline completo: 37 archivos de snapshot → análisis → plan (con nota de scope BCP) → 12 archivos refactorizados → PR <a href="https://github.com/NTTData-Academy/workshop-requirements-api-template/pull/12" target="_blank" style="color:#FFD54A">#12</a> en rama <code style="font-family:'DM Mono',monospace">fix/workshop-requirements-api-temp/1-backend-20260911</code></li>
+        </ul>
+        <div class="flows-link-row">
+          <a class="flows-btn" href="laboratory-flows.html#s3" target="_blank">Ver de manera interactiva · S3 Harness</a>
+          <span class="flows-hint">Visualizador interactivo del LangGraph + constitution compare()</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-row">Pausa · 15:15 – 15:30</div>
+
+  <!-- ═══════════════════════════════════════════════
+       S4 PM — Guardrails + Review Loop
+  ════════════════════════════════════════════════ -->
+  <div class="session pm">
+    <div class="s-head">
+      <div class="time-col"><span class="t-start">15:30</span><span class="t-end">17:30</span></div>
+      <div class="s-meta">
+        <span class="s-tag">S4 PM</span>
+        <h2 class="s-title">Guardrails + Review Loop multi-agente</h2>
+        <p class="s-obj"><strong>La misma arquitectura de S3, con gobierno encima.</strong> Mismas tres capas (<code style="font-family:'DM Mono',monospace">main.py</code> → <code style="font-family:'DM Mono',monospace">harness/</code> → <code style="font-family:'DM Mono',monospace">graph/</code>), mismos 5 nodos sobre el repositorio clonado. Lo que S4 agrega: un <strong>guardrail de entrada</strong> que valida el snapshot antes de gastar tokens, un <strong>review loop</strong> donde el developer corrige con las observaciones textuales del reviewer, un <strong>guardrail de salida</strong> que impide abrir un PR con un output inválido, y una <strong>suite de 10 evals</strong> deterministas.</p>
+      </div>
+      <span class="dur">2 h</span>
+    </div>
+
+    <div class="panels">
+      <!-- Materiales -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot mat-dot"></span>Materiales</div>
+        <ul class="mat-list">
+          <li>Repositorio GitHub configurado en <code style="font-family:'DM Mono',monospace">.env</code> (<code style="font-family:'DM Mono',monospace">GITHUB_OWNER</code> + <code style="font-family:'DM Mono',monospace">GITHUB_REPO</code>)</li>
+          <li><code style="font-family:'DM Mono',monospace">gh</code> CLI instalado y autenticado (<code style="font-family:'DM Mono',monospace">gh auth login</code>)</li>
+          <li>MCP Git corriendo en <code style="font-family:'DM Mono',monospace">GIT_MCP_URL</code> (Streamable HTTP)</li>
+          <li>Ejecutar <code style="font-family:'DM Mono',monospace">python main.py</code> en <code style="font-family:'DM Mono',monospace">s4_guardrails/</code> — el pipeline completo corre en un solo comando</li>
+        </ul>
+        <p class="mat-note">S4 usa LangGraph igual que S3: <code style="font-family:'DM Mono',monospace">main.py</code> no instancia modelos ni arma prompts — siembra el estado en el harness y avanza nodo a nodo con <code style="font-family:'DM Mono',monospace">step()</code>. El LLM vive sólo en <code style="font-family:'DM Mono',monospace">graph/nodes.py</code>. Retoma desde <code style="font-family:'DM Mono',monospace">output/.checkpoint.json</code> si se interrumpe, restaurando también la ronda de review y el feedback pendiente. No usa mcp_projects: clona el repositorio directamente.</div>
+
+      <!-- Pasos -->
+      <div class="panel">
+        <div class="panel-label"><span class="dot step-dot"></span>Pasos</div>
+        <div class="steps">
+
+          <div class="step">
+            <span class="step-num">00</span>
+            <div class="step-body">
+              <div class="step-title">Configurar variables de entorno</div>
+              <div class="step-desc">Copiar <code style="font-family:'DM Mono',monospace">.env.example</code> a <code style="font-family:'DM Mono',monospace">.env</code> y completar los valores. S4 no usa <code style="font-family:'DM Mono',monospace">PROJECTS_MCP_URL</code> — clona el repo directamente.</div>
+              <div class="code"><pre><span class="code-comment"># s4_guardrails/.env</span>
+COPILOT_MODEL=gpt-6-luna
+COPILOT_REASONING_EFFORT=high
+COPILOT_USE_LOGGED_IN_USER=true
+
+GIT_MCP_URL=http://localhost:8082      <span class="code-comment"># MCP Git Streamable HTTP</span>
+GITHUB_OWNER=bcp-enterprise
+GITHUB_REPO=ai-lab-day04
+GIT_HEAD_BRANCH=feature/guardrails-s4
+GIT_BASE_BRANCH=main
+MAX_REVIEW_ROUNDS=3                    <span class="code-comment"># máx. rondas reviewer→dev</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <div class="step-title">Clone + Snapshot del repositorio</div>
+              <div class="step-desc">El pipeline clona el repo en <code style="font-family:'DM Mono',monospace">output/repo/</code> y genera un snapshot de archivos como contexto para el LLM.</div>
+              <div class="code"><pre><span class="code-comment"># Internamente en main.py — paso CLONE</span>
+import subprocess, pathlib
+
+repo_dir = OUTPUT_DIR / "repo"
+subprocess.run(
+    ["git", "clone",
+     f"https://github.com/{GITHUB_OWNER}/{GITHUB_REPO}.git",
+     str(repo_dir)],
+    check=True
+)
+
+<span class="code-comment"># Paso SNAPSHOT — lista de archivos para el LLM</span>
+files = [str(p.relative_to(repo_dir))
+         for p in repo_dir.rglob("*") if p.is_file()]
+snapshot = "\n".join(files[:200])
+(OUTPUT_DIR / "snapshot.txt").write_text(snapshot)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <div class="step-title">Analyze: Arquitecto analiza el repositorio</div>
+              <div class="step-desc">El LLM actúa como Arquitecto y genera un informe de análisis del repo clonado. El output se guarda en <code style="font-family:'DM Mono',monospace">output/analysis_r1.md</code>.</div>
+              <div class="code"><pre><span class="code-comment"># Paso ANALYZE en main.py</span>
+from lab_copilot.chat import CopilotChat
+
+llm = CopilotChat()
+
+architect_prompt = f"""Eres un Arquitecto de Software Senior.
+Analiza la siguiente lista de archivos del repositorio y genera
+un informe: stack tecnológico detectado, capas del proyecto,
+puntos de mejora y recomendaciones de implementación.
+
+Snapshot del repo:
+{snapshot}
+"""
+analysis = llm.invoke(architect_prompt).content
+(OUTPUT_DIR / "analysis_r1.md").write_text(analysis)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <div class="step-title">Confirm Type + Chapter Leader</div>
+              <div class="step-desc">El usuario confirma si el proyecto es <code style="font-family:'DM Mono',monospace">backend</code>, <code style="font-family:'DM Mono',monospace">frontend</code> o <code style="font-family:'DM Mono',monospace">ambos</code>. El Chapter Leader genera el brief de implementación.</div>
+              <div class="code"><pre><span class="code-comment"># Paso CONFIRM TYPE</span>
+project_type = input(
+    "Tipo de proyecto [backend/frontend/ambos]: "
+).strip().lower() or "ambos"
+
+<span class="code-comment"># Paso CHAPTER</span>
+chapter_prompt = f"""Eres el Chapter Leader técnico.
+Con base en el análisis del repo y el tipo '{project_type}',
+define el brief de implementación: objetivos, criterios de aceptación,
+restricciones técnicas y patrones a aplicar.
+
+Análisis:
+{analysis[:2000]}
+"""
+chapter = llm.invoke(chapter_prompt).content
+(OUTPUT_DIR / "chapter.md").write_text(chapter)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <div class="step-title">Review Loop — Developer ↔ Tech Lead Reviewer</div>
+              <div class="step-desc">El corazón de S4. El developer genera el código; el reviewer lo evalúa. Si hay observaciones, el developer recibe el feedback y reintenta en la siguiente ronda. El loop termina cuando el reviewer aprueba sin observaciones o se alcanza <code style="font-family:'DM Mono',monospace">MAX_REVIEW_ROUNDS</code>.</div>
+              <div class="code"><pre><span class="code-comment"># Review loop en main.py (simplificado)</span>
+review_round   = 0
+review_feedback = ""
+
+while True:
+    review_round += 1
+    rnd = f"Ronda {review_round}/{MAX_REVIEW_ROUNDS}"
+
+    <span class="code-comment"># Backend Developer</span>
+    feedback_section = (
+        f"\nFeedback del reviewer (ronda anterior):\n{review_feedback}"
+        if review_feedback else ""
+    )
+    backend_out = llm.invoke(
+        f"[Backend Dev · {rnd}] Implementa el módulo backend.\n"
+        f"Brief:\n{chapter}\n{feedback_section}"
+    ).content
+    (OUTPUT_DIR / f"backend_refactor_r{review_round}.md").write_text(backend_out)
+
+    <span class="code-comment"># Frontend Developer</span>
+    frontend_out = llm.invoke(
+        f"[Frontend Dev · {rnd}] Implementa el módulo frontend.\n"
+        f"Brief:\n{chapter}\n{feedback_section}"
+    ).content
+    (OUTPUT_DIR / f"frontend_refactor_r{review_round}.md").write_text(frontend_out)
+
+    <span class="code-comment"># Tech Lead Reviewer</span>
+    reviewer_out = llm.invoke(
+        f"[Tech Lead Reviewer · {rnd}] Evalúa el código.\n"
+        f"Backend:\n{backend_out[:1500]}\n"
+        f"Frontend:\n{frontend_out[:1500]}\n"
+        "Responde con APROBADO, APROBADO CON OBSERVACIONES o RECHAZADO."
+    ).content
+    (OUTPUT_DIR / f"reviewer_r{review_round}.md").write_text(reviewer_out)
+
+    verdict = _parse_verdict(reviewer_out)
+
+    if verdict == "aprobado":
+        print(f"  🎉 [{rnd}] APROBADO — sin observaciones")
+        break
+
+    if review_round >= MAX_REVIEW_ROUNDS:
+        opt = input("  ¿Hacer push de todas formas? [s/n]: ")
+        if opt != "s": sys.exit(0)
+        break
+
+    opt = input(f"  Reviewer: {verdict}. ¿Reintentar? [s/n]: ")
+    if opt != "s": break
+    review_feedback = reviewer_out     <span class="code-comment"># pasa a la siguiente ronda</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">05</span>
+            <div class="step-body">
+              <div class="step-title"><code style="font-family:'DM Mono',monospace">_parse_verdict()</code> — lógica de evaluación</div>
+              <div class="step-desc">Función que interpreta la respuesta del reviewer de forma conservadora: si no dice claramente "APROBADO" retorna <code style="font-family:'DM Mono',monospace">observaciones</code>.</div>
+              <div class="code"><pre><span class="code-comment"># En main.py</span>
+def _parse_verdict(reviewer_out: str) -> str:
+    text = reviewer_out.lower()
+    if "rechazado" in text or "rejected" in text:
+        return "rechazado"
+    if ("aprobado con observaciones" in text
+            or "approved with observations" in text
+            or ("aprobado" in text and "observaci" in text)):
+        return "observaciones"
+    if "aprobado" in text or "approved" in text:
+        return "aprobado"
+    return "observaciones"   <span class="code-comment"># conservador por defecto</span></pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">06</span>
+            <div class="step-body">
+              <div class="step-title">Git push + PR vía <code style="font-family:'DM Mono',monospace">gh</code> CLI</div>
+              <div class="step-desc">Una vez aprobado, el pipeline hace push usando <code style="font-family:'DM Mono',monospace">gh auth setup-git</code> (sin exponer el token en la URL) y crea el PR con <code style="font-family:'DM Mono',monospace">gh pr create --body-file</code>.</div>
+              <div class="code"><pre><span class="code-comment"># Paso GIT PUSH en main.py (_git_branch_push)</span>
+subprocess.run(["gh", "auth", "setup-git"], cwd=repo_dir)
+subprocess.run(["git", "checkout", "-b", GIT_HEAD_BRANCH], cwd=repo_dir)
+subprocess.run(["git", "add", "-A"], cwd=repo_dir)
+subprocess.run(["git", "commit", "-m",
+    f"feat(s4): refactor ronda {review_round} — {verdict}"],
+    cwd=repo_dir)
+subprocess.run(["git", "push", "--set-upstream", "origin",
+    GIT_HEAD_BRANCH], cwd=repo_dir)
+
+<span class="code-comment"># Paso PR CREATE en main.py (_gh_create_pr)</span>
+body_file = OUTPUT_DIR / ".pr_body.md"
+body_file.write_text(pr_body)
+subprocess.run([
+    "gh", "pr", "create",
+    "--title", f"feat(s4): refactor guardrails ({review_round} rondas)",
+    "--body-file", str(body_file),
+    "--head",  GIT_HEAD_BRANCH,
+    "--base",  GIT_BASE_BRANCH,
+    "--repo",  f"{GITHUB_OWNER}/{GITHUB_REPO}",
+])
+body_file.unlink(missing_ok=True)</pre></div>
+            </div>
+          </div>
+
+          <div class="step">
+            <span class="step-num">07</span>
+            <div class="step-body">
+              <div class="step-title">Ejecutar el pipeline completo</div>
+              <div class="code"><pre>cd s4_guardrails
+python main.py
+
+<span class="code-comment"># Salida esperada:</span>
+<span class="code-comment"># [CLONE]    Clonando bcp-enterprise/ai-lab-day04 …</span>
+<span class="code-comment"># [SNAPSHOT] 47 archivos indexados → output/snapshot.txt</span>
+<span class="code-comment"># [ANALYZE]  Arquitecto analizando repositorio …</span>
+<span class="code-comment"># [CHAPTER]  Chapter Leader generando brief …</span>
+<span class="code-comment"># [BACKEND Dev · Ronda 1/3]  Implementando backend …</span>
+<span class="code-comment"># [FRONTEND Dev · Ronda 1/3] Implementando frontend …</span>
+<span class="code-comment"># [REVIEWER · Ronda 1/3]     Evaluando …</span>
+<span class="code-comment"># → APROBADO CON OBSERVACIONES  ¿Reintentar? [s/n]: s</span>
+<span class="code-comment"># [BACKEND Dev · Ronda 2/3]  Incorporando feedback …</span>
+<span class="code-comment"># [REVIEWER · Ronda 2/3]     Evaluando …</span>
+<span class="code-comment"># 🎉 APROBADO — sin observaciones</span>
+<span class="code-comment"># [PUSH]     gh auth setup-git → git push origin feature/guardrails-s4</span>
+<span class="code-comment"># [PR]       gh pr create … → https://github.com/…/pull/99</span></pre></div>
+            </div>
+          </div>
+
+
+          <div class="step">
+            <span class="step-num">08</span>
+            <div class="step-body">
+              <div class="step-title">Guardrails de entrada/salida + evals deterministas</div>
+              <div class="step-desc">Dos barreras deterministas alrededor del pipeline. La de <strong>entrada</strong> valida el snapshot del repositorio <strong>antes</strong> del primer nodo: si el código no se pudo leer, o trae secretos, se corta ahí y no se paga ni una llamada al modelo. La de <strong>salida</strong> revisa el estado final antes del push.</div>
+              <div class="code"><pre><span class="code-comment"># guardrails/input_check.py — corta antes de gastar tokens</span>
+MIN_SNAPSHOT_CHARS, MAX_SNAPSHOT_CHARS = 200, 200_000
+
+SECRET_PATTERNS = [
+    (r"sk-[A-Za-z0-9]{20,}",          "API key de OpenAI"),
+    (r"ghp_[A-Za-z0-9]{20,}",         "token de GitHub"),
+    (r"-----BEGIN .*PRIVATE KEY",     "clave privada"),
+]
+
+def validate_snapshot(snapshot) -&gt; ValidationResult:
+    <span class="code-comment"># vacio -&gt; tamano -&gt; secretos -&gt; PII; el primero que falla corta</span>
+    ...
+    return ValidationResult(True, f"OK · {len(snapshot)} chars")</pre></div>
+              <div class="step-desc">Cada regla de salida lleva un <strong>código</strong> para trazabilidad: <code style="font-family:'DM Mono',monospace">OUT-01</code> los campos obligatorios (<code style="font-family:'DM Mono',monospace">out_analysis</code>, <code style="font-family:'DM Mono',monospace">out_plan</code>, <code style="font-family:'DM Mono',monospace">out_reviewer</code>) con al menos 50 chars; <code style="font-family:'DM Mono',monospace">OUT-02</code> el reviewer emitió un veredicto legible; <code style="font-family:'DM Mono',monospace">OUT-03</code> los devs emitieron bloques <code style="font-family:'DM Mono',monospace">### ruta/archivo.ext</code> — sin eso el PR saldría vacío; <code style="font-family:'DM Mono',monospace">OUT-04</code> sin secretos. Aparte, <code style="font-family:'DM Mono',monospace">OUT-HEX</code> no aplica aquí: S4 refactoriza código ajeno, que no tiene por qué ser hexagonal. Esa validación vive en <strong>S2</strong>, que genera desde cero.</div>
+              <div class="code"><pre><span class="code-comment"># Correr la suite completa</span>
+cd s4_guardrails
+python evals/eval_basic.py     <span class="code-comment"># 10 evals sobre el repo real</span>
+
+<span class="code-comment"># Evals de contrato: peticiones HTTP REALES contra los servicios</span>
+<span class="code-comment"># Requiere BACKEND_BASE_URL y API_BASE_URL levantados</span>
+python evals/contract_evals.py <span class="code-comment"># AC-01..AC-06</span></pre></div>
+              <div class="step-desc"><strong>Los guardrails protegen al pipeline real.</strong> <code style="font-family:'DM Mono',monospace">validate_snapshot()</code> corre antes del primer nodo; <code style="font-family:'DM Mono',monospace">validate_output()</code> revisa el estado final antes del push. La regla <code style="font-family:'DM Mono',monospace">OUT-03</code> es la más práctica: si los developers no emiten bloques <code style="font-family:'DM Mono',monospace">### ruta/archivo.ext</code>, no se extrae ningún archivo y el PR saldría vacío — el guardrail lo detecta antes de publicar.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Qué obtengo -->
+      <div class="panel out-panel">
+        <div class="panel-label"><span class="dot out-dot"></span>Qué obtengo</div>
+        <div class="out-columns">
+          <div class="out-col">
+            <div class="out-col-label">▶ Terminal — output real de ejecución (3 rondas)</div>
+            <pre class="out-log">============================================================
+S4 Guardrails — Code Analysis &amp; Refactoring Pipeline
+Repo: NTTData-Academy/workshop-requirements-api-template
+============================================================
+
+[02:48:16] Clonando NTTData-Academy/workshop-requirements-api-template...
+  💾 Checkpoint guardado (next_step=analyze)
+
+[02:48:26] Leyendo código... Snapshot: 15 archivos leídos.
+
+[EJECUTANDO] Analyzer...
+  - Secreto hardcodeado: LEGACY_SECRET = "WORKSHOP_SECRET_2026"
+  - Autenticación Base64 insegura (no JWT real)
+  - SQL por concatenación, uploads sin controles
+  - Lógica mezclada en app/main.py
+  [Output completo: 24095 chars]
+¿Continuar? [s]iguiente / [r]eejecutar / [n]o: s
+  ✅ output/analysis.md · 💾 next_step=confirm_type
+
+  Tipo detectado: BACKEND
+  ¿Confirmar? (Enter = backend): → BACKEND · 💾 next_step=chapter
+
+[02:49:46] Chapter Lead...
+  - Eliminar auth Base64 y secretos hardcodeados
+  - Separar responsabilidades de app/main.py
+  - Pydantic schemas, SQL parametrizado, upload seguro
+  - CI con ruff/mypy/bandit/pip-audit/pytest ≥85%
+  [Output completo: 27077 chars]
+¿Continuar? s → ✅ output/chapter_plan.md · 💾 next_step=backend
+
+[02:50:54] Backend Developer [Ronda 1/3]...
+  [Output: 39145 chars — 13 archivos extraídos]
+¿Continuar? s
+  💾 app/__init__.py · app/config.py · app/database.py
+  💾 app/schemas.py · app/security.py · app/repositories.py
+  💾 app/services.py · app/dependencies.py · app/main.py
+  💾 app/routers/__init__.py · app/routers/requirements.py
+  💾 tests/test_api.py
+  ✅ output/backend_refactor_r1.md · 💾 next_step=reviewer
+
+[02:52:42] Tech Lead Reviewer [Ronda 1/3]...
+  ✅/⚠️  Separación de responsabilidades
+  ✅/⚠️  Secretos hardcodeados (falta validar robustez)
+  ✅/⚠️  Autorización por recurso (faltan tests negativos)
+  ✅/⚠️  Upload seguro (riesgo si se lee completo en memoria)
+  [Output completo: 8917 chars]
+¿Continuar? s → ✅ output/reviewer_report_r1.md
+  ⚠️  Ronda 1/3: RECHAZADO — ¿Reintentar? s
+
+[02:53:49] Backend Developer [Ronda 2/3]...
+  [Output: 41379 chars — 15 archivos extraídos]
+¿Continuar? s
+  💾 .github/workflows/ci.yml · requirements-dev.txt
+  💾 app/security.py · app/routers/uploads.py
+  💾 tests/test_security_regression.py · ...
+  ✅ output/backend_refactor_r2.md · 💾 next_step=reviewer
+
+[02:55:18] Tech Lead Reviewer [Ronda 2/3]...
+  ✅ Separación, Base64 eliminado, CI con ruff/mypy/bandit
+  ✅ Tests negativos: uploads, acceso cruzado
+  ⚠️  Mínimos no completamente cerrados en CI
+  ⚠️  Configuración de secretos: robustecer
+  [Output completo: 7924 chars]
+¿Continuar? s → ✅ output/reviewer_report_r2.md
+  ⚠️  Ronda 2/3: RECHAZADO — ¿Reintentar? s
+
+[02:56:51] Backend Developer [Ronda 3/3]...
+  [Output: 45684 chars — 19 archivos extraídos]
+¿Continuar? s
+  💾 requirements.txt · requirements-dev.txt · pyproject.toml
+  💾 app/__init__.py · app/config.py · app/db.py
+  💾 app/models.py · app/security.py · app/repositories.py
+  💾 app/services.py · app/dependencies.py · app/main.py
+  💾 app/routers/__init__.py · app/routers/uploads.py
+  💾 tests/conftest.py · tests/test_security.py
+  💾 tests/test_tasks.py · tests/test_uploads.py
+  ✅ output/backend_refactor_r3.md · 💾 next_step=reviewer
+
+[02:58:37] Tech Lead Reviewer [Ronda 3/3]...
+  ✅ Separación en config/security/db/repos/services/routers
+  ✅ Auth Base64 eliminada, Pydantic schemas, SQL parametrizado
+  ✅ Upload valida ownership y recurso asociado
+  ✅ ruff + mypy + bandit + pip-audit + pytest-cov
+  ⚠️  CI y cobertura: criterio no completamente cerrado
+  [Output completo: 5919 chars]
+¿Continuar? s → ✅ output/reviewer_report_r3.md
+  ⚠️  Ronda 3/3: APROBADO CON OBSERVACIONES
+  Límite de rondas alcanzado. ¿Push de todas formas? [s/n]: s
+
+[08:05:48] Preparando commit y push...
+[GIT] Tipo    : feat
+[GIT] Rondas  : 3  ·  Veredicto: OBSERVACIONES
+[GIT] Rama    : feature/equipo-01/workshop-refactor
+[GIT] Mensaje : feat(workshop-requirement): Autenticación casera basada en Base64
+  ✅ Rama creada: feature/equipo-01/workshop-refactor
+  ✅ Commit y Push → origin/feature/equipo-01/workshop-refactor
+
+[gh] gh pr create --title feat(workshop-requirement): guardrails refactoring ...
+✅ PR creado: https://github.com/NTTData-Academy/workshop-requirements-api-template/pull/11
+  🗑️  Checkpoint eliminado.
+
+============================================================
+✅ Pipeline completado.
+============================================================</pre>
+          </div>
+          <div class="out-col">
+            <div class="out-col-label">📁 Estructura generada</div>
+            <pre class="out-tree">s4_guardrails/
+├── output/
+│   ├── analysis.md
+│   ├── chapter_plan.md
+│   ├── backend_refactor_r1.md  ← 13 archivos (Ronda 1)
+│   ├── backend_refactor_r2.md  ← 15 archivos (Ronda 2)
+│   ├── backend_refactor_r3.md  ← 19 archivos (Ronda 3)
+│   ├── reviewer_report_r1.md   ← RECHAZADO
+│   ├── reviewer_report_r2.md   ← RECHAZADO
+│   ├── reviewer_report_r3.md   ← APROBADO CON OBS.
+│   └── .checkpoint.json        ← eliminado tras PR
+├── _repos/
+│   └── workshop-requirements-api-template/
+│       ├── app/__init__.py · app/config.py · app/db.py
+│       ├── app/models.py · app/security.py
+│       ├── app/repositories.py · app/services.py
+│       ├── app/dependencies.py · app/main.py
+│       ├── app/routers/__init__.py · app/routers/uploads.py
+│       ├── tests/conftest.py · tests/test_security.py
+│       ├── tests/test_tasks.py · tests/test_uploads.py
+│       ├── requirements.txt · requirements-dev.txt
+│       ├── pyproject.toml
+│       └── .github/workflows/ci.yml
+├── main.py
+└── mcp_git.py</pre>
+          </div>
+        </div>
+        <span class="out-key">Flujo completo del Día 4</span>
+        <ul class="out-list">
+          <li><strong>S1</strong> CrewAI HITL → <strong>S2</strong> LangGraph + checkpoint → <strong>S3</strong> Harness constitution + compliance score → <strong>S4</strong> Review Loop 3 rondas con feedback iterativo → PR <a href="https://github.com/NTTData-Academy/workshop-requirements-api-template/pull/11" target="_blank" style="color:#FFD54A">#11</a> en rama <code style="font-family:'DM Mono',monospace">feature/equipo-01/workshop-refactor</code></li>
+          <li><strong>Review Loop real</strong>: 3 rondas ejecutadas — el developer incorporó feedback del reviewer en cada ronda; archivos extraídos crecieron de 13 → 15 → 19 a medida que el código evolucionó</li>
+          <li>El veredicto final fue <strong>APROBADO CON OBSERVACIONES</strong> al agotar las 3 rondas; el pipeline preguntó antes de hacer push — el humano decide siempre</li>
+          <li><code style="font-family:'DM Mono',monospace">gh pr create --body-file</code>: evita problemas con caracteres especiales y no expone el token en la URL de git</li>
+        </ul>
+        <div class="flows-link-row">
+          <a class="flows-btn" href="laboratory-flows.html#s4" target="_blank">Ver de manera interactiva · S4 Guardrails</a>
+          <span class="flows-hint">Visualizador interactivo del pipeline completo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Gate G2 rubric ───────────────────────── -->
+  <div class="gate">
+    <div class="gate-head">
+      <span class="gate-chip">Gate G2</span>
+      <span class="gate-title">Caso práctico individual — Pipeline multi-agente con Review Loop</span>
+    </div>
+    <div class="gate-body">
+      <p class="gate-desc">El participante extiende el pipeline S4 para un nuevo módulo (p.ej. recuperación de contraseña, registro de usuario): configura el repo, ajusta los prompts del developer y del reviewer, verifica que el Review Loop itere correctamente con el feedback, y confirma que el PR queda abierto con el código aprobado. Evaluado en 5 dimensiones iguales.</p>
+      <div class="rubric">
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Pipeline corre end-to-end sin errores</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Review Loop itera con feedback real del reviewer</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Checkpoint funcional (retoma tras interrupción)</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">PR abierto con <code style="font-family:'DM Mono',monospace">gh pr create</code> y body descriptivo</span></div>
+        <div class="r-item"><span class="r-pct">20 %</span><span class="r-label">Prompts del developer incorporan feedback del reviewer</span></div>
+      </div>
+      <p class="gate-thr">Umbral de aprobación: <strong>≥ 80 %</strong> &nbsp;·&nbsp; Modalidad: ejecución en vivo + revisión con el trainer · 30 min</p>
+    </div>
+  </div>
+
+</main>
